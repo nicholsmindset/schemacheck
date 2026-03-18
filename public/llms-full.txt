@@ -9,7 +9,7 @@ SchemaCheck is a developer-focused API that validates Schema.org JSON-LD structu
 **Base URL**: https://schemacheck.dev
 **API prefix**: /api/v1
 **Formats**: JSON in, JSON out
-**URL fetch timeout**: 10 seconds
+**URL fetch timeout**: 25 seconds
 **Total request timeout**: 25 seconds
 
 ---
@@ -290,7 +290,7 @@ Raw JSON-LD requests are never cached. Useful for validating before publishing.
 | WebSite | — | Sitelinks Searchbox |
 | FAQPage | — | FAQ dropdown (gov/health only since 2024) |
 
-### Tier 2: Standard Validation — 10 types (coming soon)
+### Tier 2: Standard Validation — 10 types
 
 | Type | Also Validates | Rich Result |
 |------|---------------|-------------|
@@ -305,7 +305,7 @@ Raw JSON-LD requests are never cached. Useful for validating before publishing.
 | QAPage | — | Q&A rich result |
 | ProductGroup | — | Product variants |
 
-### Tier 3: Basic Validation — 10 types (planned)
+### Tier 3: Basic Validation — 10 types
 
 | Type | Rich Result |
 |------|-------------|
@@ -320,7 +320,7 @@ Raw JSON-LD requests are never cached. Useful for validating before publishing.
 | OfferShippingDetails | Merchant shipping info |
 | ClaimReview | Fact check (restricted organizations) |
 
-### Tier 4: Basic Validation — 5 types (planned)
+### Tier 4: Basic Validation — 5 types
 
 | Type | Rich Result |
 |------|-------------|
@@ -350,10 +350,12 @@ Raw JSON-LD requests are never cached. Useful for validating before publishing.
 | rate_limit_exceeded | 429 | Too many requests per minute | retry_after_seconds |
 | missing_input | 400 | No url or jsonld provided | — |
 | invalid_url | 400 | URL is malformed or non-HTTP | — |
+| invalid_jsonld | 400 | jsonld field is not an object/array | — |
+| inactive_api_key | 401 | Account has been deactivated | — |
 | no_jsonld_found | 422 | Page has no JSON-LD blocks | — |
 | parse_error | 422 | Invalid JSON or missing @type | — |
 | fetch_failed | 422 | URL returned non-2xx response | — |
-| timeout | 504 | URL fetch timed out (10s) | — |
+| fetch_timeout | 422 | URL fetch timed out (25s) | — |
 | internal_error | 500 | Unexpected server error | — |
 
 ---
@@ -396,7 +398,7 @@ Annual = 2 months free. Overage billed at per-request rate above.
 ## Technical Details
 
 - **HTML parsing**: cheerio (no headless browser — JSON-LD is in page source)
-- **URL fetch timeout**: 10 seconds
+- **URL fetch timeout**: 25 seconds
 - **Redirect handling**: follows up to 5 redirects
 - **@graph support**: flattens @graph arrays into individual schema objects
 - **Unknown @types**: validates basic JSON-LD structure, marks deprecated if applicable

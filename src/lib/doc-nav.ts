@@ -14,6 +14,12 @@ export const DOC_NAV = [
     ],
   },
   {
+    group: "Integrations",
+    items: [
+      { href: "/docs/mcp", label: "MCP Server", desc: "Use SchemaCheck inside Claude, Cursor, and other AI assistants" },
+    ],
+  },
+  {
     group: "SDK Examples",
     items: [
       { href: "/docs/code-examples/javascript", label: "JavaScript / TypeScript", desc: "Node.js, Bun, Deno, browser" },

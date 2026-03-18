@@ -69,12 +69,20 @@ function Nav() {
             vs Google&apos;s Tool
           </Link>
         </div>
-        <a
-          href="#signup"
-          className="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg transition-colors font-medium"
-        >
-          Get API Key →
-        </a>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/login"
+            className="text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            Sign in
+          </Link>
+          <a
+            href="#signup"
+            className="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg transition-colors font-medium"
+          >
+            Get API Key →
+          </a>
+        </div>
       </div>
     </nav>
   );
@@ -732,7 +740,7 @@ const PLANS: Plan[] = [
   {
     name: "Basic", monthly: 19, annual: 159,
     limit: 3_000, rate: "30 req/min", overage: "$0.008 / extra",
-    cta: "Start with Basic", href: "/pricing",
+    cta: "Start with Basic", href: "/dashboard/login?plan=basic",
     features: [
       "3,000 validations / month",
       "Everything in Free",
@@ -744,7 +752,7 @@ const PLANS: Plan[] = [
   {
     name: "Growth", monthly: 79, annual: 659,
     limit: 15_000, rate: "60 req/min", overage: "$0.005 / extra",
-    cta: "Start with Growth", href: "/pricing",
+    cta: "Start with Growth", href: "/dashboard/login?plan=growth",
     recommended: true,
     features: [
       "15,000 validations / month",
@@ -757,7 +765,7 @@ const PLANS: Plan[] = [
   {
     name: "Scale", monthly: 199, annual: 1_659,
     limit: 75_000, rate: "120 req/min", overage: "$0.003 / extra",
-    cta: "Start with Scale", href: "/pricing",
+    cta: "Start with Scale", href: "/dashboard/login?plan=scale",
     features: [
       "75,000 validations / month",
       "Everything in Growth",

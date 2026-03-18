@@ -112,6 +112,15 @@ function SidebarContent({
 
       {/* Footer links */}
       <div className="px-4 py-4 border-t border-gray-800 space-y-1">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors mb-2"
+        >
+          <svg className="w-3 h-3" fill="none" viewBox="0 0 16 16">
+            <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Dashboard
+        </Link>
         <a
           href="/openapi.json"
           target="_blank"
@@ -174,6 +183,9 @@ export function DocSidebar() {
           <span className="text-indigo-400">⬡</span>
           <span>Schema<span className="text-indigo-400">Check</span></span>
           <span className="text-gray-600 font-normal">/ Docs</span>
+        </Link>
+        <Link href="/dashboard" className="ml-auto text-xs text-gray-400 hover:text-white transition-colors">
+          Dashboard
         </Link>
       </div>
 

@@ -22,13 +22,13 @@ POST /api/v1/validate (body: {"url": "..."} or {"jsonld": {...}})
 ### Tier 1 — Full validation (7 types)
 Article (NewsArticle, BlogPosting, TechArticle, ScholarlyArticle), Product, LocalBusiness (Restaurant, Store, Hotel, MedicalBusiness), Organization (Corporation, EducationalOrganization, NGO), BreadcrumbList, WebSite, FAQPage
 
-### Tier 2 — Standard validation (10 types, coming soon)
+### Tier 2 — Standard validation (10 types)
 Review (AggregateRating), Recipe, Event (MusicEvent, SportsEvent, EducationEvent), VideoObject (Clip), SoftwareApplication (WebApplication, MobileApplication, VideoGame), JobPosting, Course (CourseInstance), ItemList, QAPage, ProductGroup
 
-### Tier 3 — Basic validation (10 types, planned)
+### Tier 3 — Basic validation (10 types)
 Book (Audiobook), Dataset (DataCatalog), DiscussionForumPosting, EmployerAggregateRating, Movie, ImageObject, ProfilePage, MerchantReturnPolicy, OfferShippingDetails, ClaimReview
 
-### Tier 4 — Basic validation (5 types, planned)
+### Tier 4 — Basic validation (5 types)
 MathSolver, Quiz, LoyaltyProgram, VacationRental, CreativeWork (subscription/paywalled content)
 
 ### Deprecated — Validated with warnings (3 types)
@@ -44,7 +44,7 @@ Returns: schemas_found, per-schema errors/warnings with fix suggestions, rich_re
 
 ## Limitations
 - JSON-LD only (Microdata and RDFa not yet supported)
-- URL fetch timeout: 10 seconds
+- URL fetch timeout: 25 seconds
 - Maximum 5 redirects followed
 
 ## MCP Server

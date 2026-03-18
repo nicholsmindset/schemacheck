@@ -206,6 +206,7 @@ export default function OptionsPage() {
       <H3>Schema object</H3>
       <Table>
         <FieldRow name="type"                          type="string"    desc="The @type value from the JSON-LD (e.g. Article, Product, Organization)." />
+        <FieldRow name="validation_depth"              type="string"    desc={<>Depth used to validate this type: <code className="text-emerald-400">&quot;full&quot;</code> (Tier 1 — required + recommended + format checks), <code className="text-emerald-400">&quot;standard&quot;</code> (Tier 2 — required + recommended), or <code className="text-emerald-400">&quot;basic&quot;</code> (Tiers 3–4 — required properties only).</>} />
         <FieldRow name="valid"                         type="boolean"   desc="true if all required properties are present and correctly typed." />
         <FieldRow name="rich_result_eligible"          type="boolean"   desc="true if this schema meets Google's current rich result requirements." />
         <FieldRow name="deprecated"                    type="boolean"   desc="true for schema types Google has retired or restricted." />
@@ -258,33 +259,72 @@ export default function OptionsPage() {
 
       {/* ── Supported types ── */}
       <H2>Supported schema types</H2>
-      <p className="text-gray-400 mb-5">
-        All types are validated against Google&apos;s current structured data requirements. Unknown types
-        are accepted but validated as generic JSON-LD.
+      <p className="text-gray-400 mb-4">
+        35 schema types validated against Google&apos;s current structured data requirements. Types are
+        organised into tiers that determine validation depth.
       </p>
+      <div className="space-y-2 mb-6 p-4 rounded-xl bg-[#111118] border border-gray-800 text-sm text-gray-400">
+        <p><span className="text-white font-medium">Tier 1 — Full:</span> Required + recommended properties, type validation, nested object checks, format validation (dates, URLs).</p>
+        <p><span className="text-white font-medium">Tier 2 — Standard:</span> Required + recommended properties, basic type checks.</p>
+        <p><span className="text-white font-medium">Tiers 3–4 — Basic:</span> Required properties only.</p>
+      </div>
       <div className="overflow-x-auto rounded-xl border border-gray-800">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-800 bg-[#111118]">
               <th className="py-2.5 px-4 text-left text-xs text-gray-500 font-semibold uppercase tracking-wide">Type</th>
+              <th className="py-2.5 px-4 text-left text-xs text-gray-500 font-semibold uppercase tracking-wide">Tier</th>
               <th className="py-2.5 px-4 text-left text-xs text-gray-500 font-semibold uppercase tracking-wide">Rich Results</th>
               <th className="py-2.5 px-4 text-left text-xs text-gray-500 font-semibold uppercase tracking-wide">Notes</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-900 [&>td]:px-4">
-            {[
-              ["Article",       "Yes", "Includes NewsArticle, BlogPosting subtypes"],
-              ["Product",       "Yes", "Checks offers.price + offers.availability"],
-              ["LocalBusiness", "Yes", "All subtypes (Restaurant, Store, etc.)"],
-              ["Organization",  "Yes", "Logo, sameAs, contactPoint"],
-              ["BreadcrumbList","Yes", "Validates itemListElement array structure"],
-              ["WebSite",       "Yes", "Sitelinks Searchbox via potentialAction"],
-              ["FAQPage",       "Restricted", "Government and health authority sites only (2024)"],
-              ["HowTo",         "Retired", "Google retired HowTo rich results (Aug 2024)"],
-            ].map(([type, eligible, notes]) => (
+          <tbody className="divide-y divide-gray-900">
+            {([
+              // Tier 1 — Full
+              ["Article",                  "1 — Full",     "Yes",        "Includes NewsArticle, BlogPosting subtypes"],
+              ["Product",                  "1 — Full",     "Yes",        "Checks offers.price + offers.availability"],
+              ["LocalBusiness",            "1 — Full",     "Yes",        "All subtypes (Restaurant, Store, Hotel…)"],
+              ["Organization",             "1 — Full",     "Yes",        "Logo, sameAs, contactPoint"],
+              ["BreadcrumbList",           "1 — Full",     "Yes",        "Validates itemListElement array structure"],
+              ["WebSite",                  "1 — Full",     "Yes",        "Sitelinks Searchbox via potentialAction"],
+              ["FAQPage",                  "1 — Full",     "Restricted", "Government/health authority sites only (2024)"],
+              // Tier 2 — Standard
+              ["Review",                   "2 — Standard", "Yes",        ""],
+              ["Recipe",                   "2 — Standard", "Yes",        ""],
+              ["Event",                    "2 — Standard", "Yes",        ""],
+              ["VideoObject",              "2 — Standard", "Yes",        ""],
+              ["SoftwareApplication",      "2 — Standard", "Yes",        ""],
+              ["JobPosting",               "2 — Standard", "Yes",        ""],
+              ["Course",                   "2 — Standard", "Yes",        ""],
+              ["ItemList",                 "2 — Standard", "Yes",        ""],
+              ["QAPage",                   "2 — Standard", "Yes",        ""],
+              ["ProductGroup",             "2 — Standard", "Yes",        ""],
+              // Tier 3 — Basic
+              ["Book",                     "3 — Basic",    "Yes",        ""],
+              ["Dataset",                  "3 — Basic",    "Yes",        ""],
+              ["DiscussionForumPosting",   "3 — Basic",    "Yes",        ""],
+              ["EmployerAggregateRating",  "3 — Basic",    "Yes",        ""],
+              ["Movie",                    "3 — Basic",    "Yes",        ""],
+              ["ImageObject",              "3 — Basic",    "Yes",        ""],
+              ["ProfilePage",              "3 — Basic",    "Yes",        ""],
+              ["MerchantReturnPolicy",     "3 — Basic",    "Yes",        ""],
+              ["OfferShippingDetails",     "3 — Basic",    "Yes",        ""],
+              ["ClaimReview",              "3 — Basic",    "Yes",        ""],
+              // Tier 4 — Basic
+              ["MathSolver",               "4 — Basic",    "Yes",        ""],
+              ["Quiz",                     "4 — Basic",    "Yes",        ""],
+              ["LoyaltyProgram",           "4 — Basic",    "Yes",        ""],
+              ["VacationRental",           "4 — Basic",    "Yes",        ""],
+              ["CreativeWork",             "4 — Basic",    "Yes",        ""],
+              // Deprecated
+              ["HowTo",                    "Deprecated",   "Retired",    "Google retired Aug 2024"],
+              ["SpecialAnnouncement",      "Deprecated",   "Retired",    "Retired 2025"],
+              ["Vehicle",                  "Deprecated",   "Retired",    "Retired 2025"],
+            ] as [string, string, string, string][]).map(([type, tier, eligible, notes]) => (
               <tr key={type} className="border-b border-gray-900">
-                <td className="py-3 px-4 font-mono text-sm text-indigo-400">{type}</td>
-                <td className="py-3 px-4">
+                <td className="py-2.5 px-4 font-mono text-sm text-indigo-400">{type}</td>
+                <td className="py-2.5 px-4 text-sm text-gray-500 whitespace-nowrap">{tier}</td>
+                <td className="py-2.5 px-4">
                   <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
                     eligible === "Yes"
                       ? "bg-emerald-900/40 text-emerald-400"
@@ -295,7 +335,7 @@ export default function OptionsPage() {
                     {eligible}
                   </span>
                 </td>
-                <td className="py-3 px-4 text-sm text-gray-400">{notes}</td>
+                <td className="py-2.5 px-4 text-sm text-gray-400">{notes}</td>
               </tr>
             ))}
           </tbody>

@@ -98,21 +98,23 @@ export default function GettingStartedPage() {
               language="json"
               showCopy={false}
               code={`{
-  "api_key": "sc_live_a1b2c3d4e5f6...",
-  "email": "you@example.com",
-  "plan": "free",
-  "requests_limit": 100,
-  "dashboard_url": "https://schemacheck.dev/dashboard",
-  "message": "Your API key has been created. Keep it safe."
+  "ok": true,
+  "email": "you@example.com"
 }`}
             />
+          </div>
+          <div className="mt-3 p-3 rounded-lg bg-indigo-950/30 border border-indigo-800/40">
+            <p className="text-sm text-indigo-300">
+              A verification email is sent to your address. Click the link inside to confirm and
+              receive your API key. The link expires in 24 hours.
+            </p>
           </div>
           <p className="mt-3 text-sm text-gray-500">
             Prefer a form?{" "}
             <Link href="/#signup" className="text-indigo-400 hover:text-indigo-300">
               Sign up on the homepage
             </Link>{" "}
-            and your key will be emailed to you.
+            — a verification email will be sent automatically.
           </p>
         </div>
       </section>
@@ -127,8 +129,8 @@ export default function GettingStartedPage() {
         </div>
         <p className="text-gray-400 mb-4 ml-10">
           Paste your key into this GET request. Replace{" "}
-          <code className="text-indigo-400 text-sm">YOUR_KEY</code> with the{" "}
-          <code className="text-indigo-400 text-sm">api_key</code> from step 1.
+          <code className="text-indigo-400 text-sm">YOUR_KEY</code> with the key from your welcome
+          email (it starts with <code className="text-indigo-400 text-sm">sc_live_</code>).
         </p>
         <div className="ml-10">
           <CodeBlock

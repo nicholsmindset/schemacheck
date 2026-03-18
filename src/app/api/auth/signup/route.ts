@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { supabase } from "@/lib/supabase";
-import { sendWelcomeEmail } from "@/lib/email";
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://schemacheck.dev";
+import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   let body: unknown;
@@ -34,7 +32,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const normalizedEmail = email.toLowerCase().trim();
 
-  // Check for any existing key with this email (any plan)
+  // Already has a verified API key — redirect to login
   const { data: existing } = await supabase
     .from("api_keys")
     .select("id")
@@ -48,52 +46,45 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         error: {
           code: "email_exists",
           message:
-            "An API key already exists for this email. Check your inbox for your key, or contact support if you need it re-sent.",
+            "An account already exists for this email. Sign in below to access your dashboard.",
         },
       },
       { status: 409 }
     );
   }
 
-  // Generate API key: sc_live_ + 32 hex chars
-  const key = `sc_live_${randomBytes(16).toString("hex")}`;
+  // Invalidate any existing unused tokens for this email
+  await supabase
+    .from("email_verifications")
+    .update({ used_at: new Date().toISOString() })
+    .eq("email", normalizedEmail)
+    .is("used_at", null);
 
-  const { data, error } = await supabase
-    .from("api_keys")
+  // Generate a new verification token (32 hex chars = 64 character string)
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+
+  const { error: insertError } = await supabase
+    .from("email_verifications")
     .insert({
-      key,
       email: normalizedEmail,
-      plan: "free",
-      requests_used: 0,
-      requests_limit: 100,
-      overage_rate: 0,
-      is_active: true,
-      notified_90: false,
-      notified_100: false,
-    })
-    .select("id, key, email, plan, requests_limit")
-    .single();
+      token,
+      expires_at: expiresAt,
+    });
 
-  if (error || !data) {
-    console.error("[signup] Supabase insert error:", error);
+  if (insertError) {
+    console.error("[signup] Failed to create verification token:", insertError);
     return NextResponse.json(
-      { error: { code: "internal_error", message: "Failed to create API key. Please try again." } },
+      { error: { code: "internal_error", message: "Failed to send verification email. Please try again." } },
       { status: 500 }
     );
   }
 
-  // Send welcome email — fire-and-forget; never block the response
-  void sendWelcomeEmail(data.email, data.key);
+  // Send verification email — fire-and-forget
+  void sendVerificationEmail(normalizedEmail, token);
 
   return NextResponse.json(
-    {
-      api_key:        data.key,
-      email:          data.email,
-      plan:           data.plan,
-      requests_limit: data.requests_limit,
-      dashboard_url:  `${APP_URL}/dashboard`,
-      message:        "Your API key has been created. Keep it safe — treat it like a password.",
-    },
-    { status: 201 }
+    { ok: true, email: normalizedEmail },
+    { status: 200 }
   );
 }

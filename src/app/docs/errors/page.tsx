@@ -24,11 +24,9 @@ const ERRORS: ErrorEntry[] = [
     when: "Request has no x-api-key header and no access_key query parameter.",
     fix: "Add your API key as a header (x-api-key: sc_live_…) or query param (?access_key=sc_live_…).",
     example: `{
-  "success": false,
   "error": {
     "code": "missing_api_key",
-    "message": "API key is required. Pass it as x-api-key header or access_key query param.",
-    "docs_url": "https://schemacheck.dev/docs/authentication"
+    "message": "API key is required. Pass it as x-api-key header or access_key query param."
   }
 }`,
   },
@@ -36,14 +34,25 @@ const ERRORS: ErrorEntry[] = [
     code: "invalid_api_key",
     status: 401,
     title: "Invalid API Key",
-    when: "The key was provided but doesn't exist in the database, is malformed, or belongs to a deactivated account.",
+    when: "The key was provided but doesn't exist in the database or is malformed.",
     fix: "Double-check the key value. Keys follow the pattern sc_live_[32 hex chars]. Get a new key at /docs/getting-started.",
     example: `{
-  "success": false,
   "error": {
     "code": "invalid_api_key",
-    "message": "API key not found or has been deactivated.",
-    "docs_url": "https://schemacheck.dev/docs/authentication"
+    "message": "Invalid or inactive API key."
+  }
+}`,
+  },
+  {
+    code: "inactive_api_key",
+    status: 401,
+    title: "Inactive API Key",
+    when: "The key exists but the account has been deactivated.",
+    fix: "Contact support if you believe this is an error. You can sign up for a new free key at /docs/getting-started.",
+    example: `{
+  "error": {
+    "code": "inactive_api_key",
+    "message": "Invalid or inactive API key."
   }
 }`,
   },
@@ -54,12 +63,9 @@ const ERRORS: ErrorEntry[] = [
     when: "Your account has used all included validations for the current billing period. Free plan accounts are blocked at the limit.",
     fix: "Upgrade to a paid plan or wait until your quota resets at the next billing cycle. Cached responses don't count against your quota.",
     example: `{
-  "success": false,
   "error": {
     "code": "quota_exceeded",
-    "message": "Monthly validation quota of 100 exceeded. Upgrade your plan to continue.",
-    "upgrade_url": "https://schemacheck.dev/pricing",
-    "docs_url": "https://schemacheck.dev/docs/errors"
+    "message": "You've used all 100 free validations this month. Upgrade to continue."
   }
 }`,
   },
@@ -70,12 +76,9 @@ const ERRORS: ErrorEntry[] = [
     when: "Too many requests in a short window. Limits are per-plan: free 10/min, basic 30/min, growth 60/min, scale 120/min.",
     fix: "Slow your request rate or implement exponential backoff. The Retry-After header tells you how many seconds to wait.",
     example: `{
-  "success": false,
   "error": {
     "code": "rate_limit_exceeded",
-    "message": "Rate limit exceeded. Free plan allows 10 requests per minute.",
-    "retry_after_seconds": 42,
-    "docs_url": "https://schemacheck.dev/docs/errors"
+    "message": "Rate limit exceeded. Your free plan allows 10 requests per minute. Retry after 2026-03-18T10:31:00.000Z."
   }
 }`,
   },
@@ -86,11 +89,9 @@ const ERRORS: ErrorEntry[] = [
     when: "POST request body contains neither a url field nor a jsonld field, or both are empty.",
     fix: "Include either url (string, valid URL) or jsonld (object) in the request body — not both, not neither.",
     example: `{
-  "success": false,
   "error": {
     "code": "missing_input",
-    "message": "Request body must include either 'url' or 'jsonld', not both and not neither.",
-    "docs_url": "https://schemacheck.dev/docs/options"
+    "message": "Provide either 'url' or 'jsonld' in the request body."
   }
 }`,
   },
@@ -98,29 +99,25 @@ const ERRORS: ErrorEntry[] = [
     code: "invalid_url",
     status: 400,
     title: "Invalid URL",
-    when: "The url parameter is present but not a valid, publicly reachable URL (e.g. missing scheme, localhost, IP address).",
+    when: "The url parameter is present but not a valid URL (e.g. missing scheme, localhost, IP address).",
     fix: "Pass a fully qualified URL including scheme: https://example.com. Private or localhost URLs are not supported.",
     example: `{
-  "success": false,
   "error": {
     "code": "invalid_url",
-    "message": "Invalid URL. Must be a fully qualified HTTP or HTTPS URL.",
-    "docs_url": "https://schemacheck.dev/docs/options"
+    "message": "URL must use http:// or https://."
   }
 }`,
   },
   {
-    code: "no_jsonld_found",
-    status: 422,
-    title: "No JSON-LD Found",
-    when: "The URL was fetched successfully but no <script type=\"application/ld+json\"> blocks were found on the page.",
-    fix: "Check the page source to confirm JSON-LD is present. If you're validating raw markup, use the jsonld body field instead of url.",
+    code: "invalid_jsonld",
+    status: 400,
+    title: "Invalid JSON-LD",
+    when: "The jsonld body field was provided but is not a valid JSON-LD object or array.",
+    fix: "Ensure the jsonld field is a plain JSON object (or array of objects) with an @type field. Strings and numbers are not accepted.",
     example: `{
-  "success": false,
   "error": {
-    "code": "no_jsonld_found",
-    "message": "No JSON-LD structured data found on this page.",
-    "docs_url": "https://schemacheck.dev/docs/errors"
+    "code": "invalid_jsonld",
+    "message": "The 'jsonld' field must be a JSON object or array."
   }
 }`,
   },
@@ -131,11 +128,9 @@ const ERRORS: ErrorEntry[] = [
     when: "A JSON-LD block was found but could not be parsed as valid JSON, or the @type field is missing or unrecognised.",
     fix: "Run the raw JSON through a JSON linter to find the syntax error. Ensure every schema block has a valid @type.",
     example: `{
-  "success": false,
   "error": {
     "code": "parse_error",
-    "message": "Failed to parse JSON-LD block: Unexpected token } at position 142.",
-    "docs_url": "https://schemacheck.dev/docs/errors"
+    "message": "Failed to parse JSON-LD block: Unexpected token } at position 142."
   }
 }`,
   },
@@ -143,29 +138,25 @@ const ERRORS: ErrorEntry[] = [
     code: "fetch_failed",
     status: 422,
     title: "URL Fetch Failed",
-    when: "SchemaCheck attempted to fetch the URL but received a non-2xx HTTP response (e.g. 404, 403, 500).",
+    when: "SchemaCheck attempted to fetch the URL but received a non-2xx HTTP response (e.g. 404, 403, 500) or a network error.",
     fix: "Verify the URL is publicly accessible. If the page requires authentication or blocks bots, use the jsonld field with the raw markup instead.",
     example: `{
-  "success": false,
   "error": {
     "code": "fetch_failed",
-    "message": "Failed to fetch URL. Server responded with HTTP 403.",
-    "docs_url": "https://schemacheck.dev/docs/errors"
+    "message": "Failed to fetch https://example.com: server responded with HTTP 403."
   }
 }`,
   },
   {
-    code: "timeout",
-    status: 504,
+    code: "fetch_timeout",
+    status: 422,
     title: "Fetch Timeout",
-    when: "The target URL did not respond within 10 seconds.",
-    fix: "Check that the URL is reachable. If the page is slow to load, consider extracting the JSON-LD and sending it via the jsonld field instead.",
+    when: "The target URL did not respond within 25 seconds.",
+    fix: "Check that the URL is reachable and not unusually slow. If the page is slow to load, extract the JSON-LD yourself and send it via the jsonld field instead.",
     example: `{
-  "success": false,
   "error": {
-    "code": "timeout",
-    "message": "Request to target URL timed out after 10 seconds.",
-    "docs_url": "https://schemacheck.dev/docs/errors"
+    "code": "fetch_timeout",
+    "message": "Validation timed out after 25 seconds."
   }
 }`,
   },
@@ -174,13 +165,11 @@ const ERRORS: ErrorEntry[] = [
     status: 500,
     title: "Internal Server Error",
     when: "An unexpected error occurred on SchemaCheck's servers. This is not caused by your request.",
-    fix: "Retry after a short delay. If the error persists, check the status page or contact support.",
+    fix: "Retry after a short delay. If the error persists, contact support.",
     example: `{
-  "success": false,
   "error": {
     "code": "internal_error",
-    "message": "An unexpected error occurred. Please try again or contact support.",
-    "docs_url": "https://schemacheck.dev/docs/errors"
+    "message": "An unexpected error occurred during validation."
   }
 }`,
   },
@@ -192,7 +181,6 @@ const STATUS_COLOR: Record<number, string> = {
   422: "bg-orange-500/10 text-orange-400 border-orange-500/20",
   429: "bg-purple-500/10 text-purple-400 border-purple-500/20",
   500: "bg-red-500/10 text-red-400 border-red-500/20",
-  504: "bg-red-500/10 text-red-400 border-red-500/20",
 };
 
 const RETRY_CODE = `async function validateWithRetry(url: string, apiKey: string, maxRetries = 3) {
@@ -246,8 +234,7 @@ export default function ErrorsPage() {
       <section className="mb-12">
         <h2 className="text-xl font-semibold text-white mb-3">Error response shape</h2>
         <p className="text-gray-400 mb-4">
-          All error responses set{" "}
-          <code className="text-indigo-400 text-sm">success: false</code> and include an{" "}
+          All error responses include an{" "}
           <code className="text-indigo-400 text-sm">error</code> object. The{" "}
           <code className="text-indigo-400 text-sm">code</code> field is machine-readable and
           stable — safe to switch on in your code.
@@ -255,12 +242,9 @@ export default function ErrorsPage() {
         <CodeBlock
           language="json"
           code={`{
-  "success": false,
   "error": {
-    "code": "invalid_api_key",       // stable machine-readable string
-    "message": "Human-readable explanation.",
-    "docs_url": "https://schemacheck.dev/docs/errors"
-    // some errors include extra fields: upgrade_url, retry_after_seconds
+    "code": "invalid_api_key",   // stable machine-readable string
+    "message": "Human-readable explanation."
   }
 }`}
         />

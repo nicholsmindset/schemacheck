@@ -127,7 +127,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen bg-[#0a0a0f] text-gray-100">{children}</body>
+      <body className="min-h-screen bg-[#0a0a0f] text-gray-100" suppressHydrationWarning>{children}</body>
     </html>
   );
 }

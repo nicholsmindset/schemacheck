@@ -124,3 +124,25 @@ export async function createCheckoutSession(
 
   return getStripe().checkout.sessions.create(sessionParams);
 }
+
+// ============================================================
+// Customer Portal session factory
+// ============================================================
+
+/**
+ * Create a Stripe Customer Portal session so paid users can manage their
+ * subscription, update payment methods, and view invoices.
+ *
+ * Prerequisites: The Customer Portal must be configured and activated in
+ * the Stripe Dashboard under Billing > Customer portal.
+ */
+export async function createPortalSession(
+  stripeCustomerId: string,
+  returnUrl: string
+): Promise<string> {
+  const session = await getStripe().billingPortal.sessions.create({
+    customer: stripeCustomerId,
+    return_url: returnUrl,
+  });
+  return session.url;
+}

@@ -64,6 +64,10 @@ export const POST = withAuth(async (request, auth) => {
     return errorResponse("invalid_url", "The 'url' field must be a string.");
   }
 
+  if (jsonld !== undefined && (typeof jsonld !== "object" || jsonld === null)) {
+    return errorResponse("invalid_jsonld", "The 'jsonld' field must be a JSON object or array.");
+  }
+
   const input: ValidateInput = url
     ? { url: url as string }
     : { jsonld: jsonld as ValidateInput["jsonld"] };
@@ -156,10 +160,12 @@ async function handleValidation(
     const urlHash   = hashUrl(input.url);
     const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString();
 
-    void supabase.from("validation_cache").upsert(
+    supabase.from("validation_cache").upsert(
       { url_hash: urlHash, url: input.url, result, expires_at: expiresAt },
       { onConflict: "url_hash" }
-    );
+    ).then(({ error }) => {
+      if (error) console.error("[cache] upsert failed:", error.message, error.details, error.code);
+    });
   }
 
   // 5. Charge credit + log (increment awaited; threshold alerts fire-and-forget)

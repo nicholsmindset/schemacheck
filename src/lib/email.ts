@@ -40,6 +40,36 @@ async function sendEmail(to: string, subject: string, text: string): Promise<voi
 }
 
 // ============================================================
+// Verification email (sent before API key is created)
+// ============================================================
+
+export async function sendVerificationEmail(
+  email: string,
+  token: string
+): Promise<void> {
+  const verifyUrl = `${APP_URL}/api/auth/verify?token=${token}`;
+  const subject = "Confirm your SchemaCheck email";
+
+  const text = `
+Welcome to SchemaCheck!
+
+Please verify your email address to get your free API key.
+
+Click this link to confirm:
+  ${verifyUrl}
+
+This link expires in 24 hours.
+
+If you didn't sign up for SchemaCheck, you can safely ignore this email.
+
+Thanks,
+SchemaCheck
+  `.trim();
+
+  await sendEmail(email, subject, text);
+}
+
+// ============================================================
 // Welcome email (sent on signup)
 // ============================================================
 

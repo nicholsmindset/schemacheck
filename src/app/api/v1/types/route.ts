@@ -80,7 +80,7 @@ const TYPES_DATA = {
     {
       type: "Review",
       also_matches: ["AggregateRating"],
-      status: "coming_soon",
+      status: "supported",
       tier: 2,
       validation_depth: "standard",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/review-snippet",
@@ -90,7 +90,7 @@ const TYPES_DATA = {
     {
       type: "Recipe",
       also_matches: [],
-      status: "coming_soon",
+      status: "supported",
       tier: 2,
       validation_depth: "standard",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/recipe",
@@ -100,7 +100,7 @@ const TYPES_DATA = {
     {
       type: "Event",
       also_matches: ["MusicEvent", "SportsEvent", "EducationEvent"],
-      status: "coming_soon",
+      status: "supported",
       tier: 2,
       validation_depth: "standard",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/event",
@@ -110,7 +110,7 @@ const TYPES_DATA = {
     {
       type: "VideoObject",
       also_matches: ["Clip"],
-      status: "coming_soon",
+      status: "supported",
       tier: 2,
       validation_depth: "standard",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/video",
@@ -120,7 +120,7 @@ const TYPES_DATA = {
     {
       type: "SoftwareApplication",
       also_matches: ["WebApplication", "MobileApplication", "VideoGame"],
-      status: "coming_soon",
+      status: "supported",
       tier: 2,
       validation_depth: "standard",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/software-app",
@@ -130,7 +130,7 @@ const TYPES_DATA = {
     {
       type: "JobPosting",
       also_matches: [],
-      status: "coming_soon",
+      status: "supported",
       tier: 2,
       validation_depth: "standard",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/job-posting",
@@ -140,7 +140,7 @@ const TYPES_DATA = {
     {
       type: "Course",
       also_matches: ["CourseInstance"],
-      status: "coming_soon",
+      status: "supported",
       tier: 2,
       validation_depth: "standard",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/course-info",
@@ -150,7 +150,7 @@ const TYPES_DATA = {
     {
       type: "ItemList",
       also_matches: [],
-      status: "coming_soon",
+      status: "supported",
       tier: 2,
       validation_depth: "standard",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/carousel",
@@ -160,7 +160,7 @@ const TYPES_DATA = {
     {
       type: "QAPage",
       also_matches: [],
-      status: "coming_soon",
+      status: "supported",
       tier: 2,
       validation_depth: "standard",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/qapage",
@@ -170,7 +170,7 @@ const TYPES_DATA = {
     {
       type: "ProductGroup",
       also_matches: [],
-      status: "coming_soon",
+      status: "supported",
       tier: 2,
       validation_depth: "standard",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/product-variants",
@@ -182,7 +182,7 @@ const TYPES_DATA = {
     {
       type: "Book",
       also_matches: ["Audiobook"],
-      status: "planned",
+      status: "supported",
       tier: 3,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/book",
@@ -192,7 +192,7 @@ const TYPES_DATA = {
     {
       type: "Dataset",
       also_matches: ["DataCatalog"],
-      status: "planned",
+      status: "supported",
       tier: 3,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/dataset",
@@ -202,7 +202,7 @@ const TYPES_DATA = {
     {
       type: "DiscussionForumPosting",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 3,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/discussion-forum",
@@ -212,7 +212,7 @@ const TYPES_DATA = {
     {
       type: "EmployerAggregateRating",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 3,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/employer-aggregate-rating",
@@ -222,7 +222,7 @@ const TYPES_DATA = {
     {
       type: "Movie",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 3,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/movie",
@@ -232,7 +232,7 @@ const TYPES_DATA = {
     {
       type: "ImageObject",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 3,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata",
@@ -242,7 +242,7 @@ const TYPES_DATA = {
     {
       type: "ProfilePage",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 3,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/profile-page",
@@ -252,7 +252,7 @@ const TYPES_DATA = {
     {
       type: "MerchantReturnPolicy",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 3,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/merchant-listing",
@@ -262,7 +262,7 @@ const TYPES_DATA = {
     {
       type: "OfferShippingDetails",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 3,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/merchant-listing",
@@ -272,7 +272,7 @@ const TYPES_DATA = {
     {
       type: "ClaimReview",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 3,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/factcheck",
@@ -285,7 +285,7 @@ const TYPES_DATA = {
     {
       type: "MathSolver",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 4,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/math-solvers",
@@ -295,7 +295,7 @@ const TYPES_DATA = {
     {
       type: "Quiz",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 4,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/education-qa",
@@ -305,7 +305,7 @@ const TYPES_DATA = {
     {
       type: "LoyaltyProgram",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 4,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/loyalty-program",
@@ -315,7 +315,7 @@ const TYPES_DATA = {
     {
       type: "VacationRental",
       also_matches: ["LodgingBusiness", "Accommodation"],
-      status: "planned",
+      status: "supported",
       tier: 4,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/vacation-rental",
@@ -325,7 +325,7 @@ const TYPES_DATA = {
     {
       type: "CreativeWork",
       also_matches: [],
-      status: "planned",
+      status: "supported",
       tier: 4,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/subscription-and-paywalled-content",
@@ -339,7 +339,7 @@ const TYPES_DATA = {
       type: "HowTo",
       also_matches: [],
       status: "deprecated",
-      tier: 0,
+      tier: null,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/how-to",
       required_properties: ["name", "step"],
@@ -350,7 +350,7 @@ const TYPES_DATA = {
       type: "SpecialAnnouncement",
       also_matches: [],
       status: "deprecated",
-      tier: 0,
+      tier: null,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/special-announcements",
       required_properties: ["name", "datePosted"],
@@ -361,7 +361,7 @@ const TYPES_DATA = {
       type: "Vehicle",
       also_matches: ["Car"],
       status: "deprecated",
-      tier: 0,
+      tier: null,
       validation_depth: "basic",
       google_docs_url: "https://developers.google.com/search/docs/appearance/structured-data/vehicle-listing",
       required_properties: ["name", "vehicleIdentificationNumber"],
@@ -369,9 +369,9 @@ const TYPES_DATA = {
       note: "Vehicle Listing rich results retired by Google in 2025. Validated with deprecation warning.",
     },
   ],
-  total_supported: 7,
-  total_coming_soon: 11,
-  total_planned: 14,
+  total_supported: 32,
+  total_coming_soon: 0,
+  total_planned: 0,
   total_deprecated: 3,
   schema_org_version: "V29.4",
   last_updated: "2026-03-18",
