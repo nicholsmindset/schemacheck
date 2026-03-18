@@ -1,0 +1,641 @@
+# SchemaCheck API — Full Reference
+
+> The REST API for validating Schema.org structured data. Send a URL or raw JSON-LD, get back errors, warnings, rich result eligibility, and actionable fix suggestions.
+
+## Overview
+
+SchemaCheck is a developer-focused API that validates Schema.org JSON-LD structured data. It is the REST API equivalent of Google's Rich Results Test, designed for automation, AI agents, SEO tools, and CMS integrations.
+
+**Base URL**: https://schemacheck.dev
+**API prefix**: /api/v1
+**Formats**: JSON in, JSON out
+**URL fetch timeout**: 10 seconds
+**Total request timeout**: 25 seconds
+
+---
+
+## Authentication
+
+Two auth methods — use either:
+
+1. **Header** (recommended for server-side POST requests):
+   ```
+   x-api-key: sc_live_YOUR_KEY_HERE
+   ```
+
+2. **Query parameter** (convenient for GET requests, no headers needed):
+   ```
+   ?access_key=sc_live_YOUR_KEY_HERE
+   ```
+
+API key format: `sc_live_` + 32 hex characters.
+Get a free key: `POST /api/auth/signup` with `{"email": "you@example.com"}`
+
+---
+
+## Endpoints
+
+### POST /api/auth/signup
+Create a free API key. No password required.
+
+Request:
+```json
+{"email": "you@example.com"}
+```
+
+Response (201):
+```json
+{
+  "api_key": "sc_live_a1b2c3d4e5f6...",
+  "email": "you@example.com",
+  "plan": "free",
+  "requests_limit": 100,
+  "dashboard_url": "https://schemacheck.dev/dashboard",
+  "message": "Your API key has been created. Keep it safe."
+}
+```
+
+Errors: 400 (missing email), 409 (email already registered).
+
+---
+
+### POST /api/auth/login
+Passwordless login — retrieve your API key by email.
+
+Request:
+```json
+{"email": "you@example.com"}
+```
+
+Response (200):
+```json
+{
+  "api_key": "sc_live_...",
+  "email": "you@example.com",
+  "plan": "free",
+  "requests_used": 42,
+  "requests_limit": 100,
+  "credits_remaining": 58,
+  "dashboard_url": "https://schemacheck.dev/dashboard"
+}
+```
+
+Errors: 400 (missing email), 404 (not found).
+
+---
+
+### POST /api/auth/checkout
+Create a Stripe checkout session for plan upgrades. Requires valid API key (x-api-key header or access_key param).
+
+Request:
+```json
+{"plan": "growth", "billing": "monthly"}
+```
+
+Fields:
+- `plan` (required): "basic" | "growth" | "scale"
+- `billing` (optional, default "monthly"): "monthly" | "annual"
+
+Response (200):
+```json
+{"url": "https://checkout.stripe.com/..."}
+```
+
+Redirect the user to this URL to complete payment. On success, Stripe redirects to `/dashboard?success=true`. On cancel, redirects to `/pricing`.
+
+---
+
+### GET /api/v1/validate
+Validate all JSON-LD on a public URL.
+
+```
+GET /api/v1/validate?url=https://example.com&access_key=YOUR_KEY
+```
+
+Parameters:
+- `url` (required): Fully-qualified HTTP/HTTPS URL
+- `access_key` (optional): API key (alternative to x-api-key header)
+
+Results are cached by SHA-256 of the normalized URL for 1 hour. Cached responses cost 0 credits.
+
+---
+
+### POST /api/v1/validate
+Validate a URL or pass raw JSON-LD directly.
+
+Headers: `Content-Type: application/json`, `x-api-key: YOUR_KEY`
+
+**Option A — URL**:
+```json
+{"url": "https://example.com"}
+```
+
+**Option B — Raw JSON-LD object**:
+```json
+{"jsonld": {"@context": "https://schema.org", "@type": "Article", "headline": "..."}}
+```
+
+**Option C — Multiple JSON-LD objects (array)**:
+```json
+{"jsonld": [{"@type": "Article", ...}, {"@type": "Organization", ...}]}
+```
+
+Raw JSON-LD requests are never cached. Useful for validating before publishing.
+
+---
+
+## Response Format
+
+### Success (200)
+```json
+{
+  "success": true,
+  "url": "https://example.com",
+  "schemas_found": 2,
+  "schemas": [
+    {
+      "type": "Article",
+      "valid": false,
+      "rich_result_eligible": false,
+      "deprecated": false,
+      "deprecation_note": null,
+      "errors": [
+        {
+          "severity": "error",
+          "property": "datePublished",
+          "message": "Required property 'datePublished' is missing",
+          "fix": "Add \"datePublished\": \"2026-03-18\" to your Article schema",
+          "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/article"
+        }
+      ],
+      "warnings": [
+        {
+          "severity": "warning",
+          "property": "dateModified",
+          "message": "Recommended property 'dateModified' is missing",
+          "fix": "Add \"dateModified\": \"2026-03-18\"",
+          "google_docs_url": "..."
+        }
+      ],
+      "properties_found": ["headline", "author", "image"],
+      "properties_missing_required": ["datePublished"],
+      "properties_missing_recommended": ["dateModified", "publisher"],
+      "rich_result": {
+        "eligible": false,
+        "reason": "Missing required property: datePublished",
+        "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/article"
+      }
+    }
+  ],
+  "summary": {
+    "total_schemas": 2,
+    "valid_schemas": 1,
+    "invalid_schemas": 1,
+    "total_errors": 1,
+    "total_warnings": 2,
+    "rich_result_eligible": 1,
+    "score": 72
+  },
+  "meta": {
+    "api_version": "1.0",
+    "validated_at": "2026-03-18T10:30:00Z",
+    "cached": false,
+    "credits_used": 1,
+    "credits_remaining": 99,
+    "response_time_ms": 420
+  }
+}
+```
+
+### Error (4xx / 5xx)
+```json
+{
+  "success": false,
+  "error": {
+    "code": "missing_api_key",
+    "message": "API key is required. Pass it as x-api-key header or access_key query param.",
+    "docs_url": "https://schemacheck.dev/docs/errors",
+    "upgrade_url": "...",        // present on quota_exceeded only
+    "retry_after_seconds": 42   // present on rate_limit_exceeded only
+  }
+}
+```
+
+---
+
+## Field Reference
+
+### schemas[] object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| type | string | Schema.org @type, e.g. "Article" |
+| valid | boolean | true if all required properties present and valid |
+| rich_result_eligible | boolean | true if qualifies for Google Rich Results |
+| deprecated | boolean | true if Google retired/restricted this type |
+| deprecation_note | string\|null | Explains deprecation status |
+| errors | Issue[] | Required properties missing — prevents rich results |
+| warnings | Issue[] | Recommended properties missing — won't prevent but reduces quality |
+| properties_found | string[] | All top-level properties found on this schema |
+| properties_missing_required | string[] | Required properties that are absent |
+| properties_missing_recommended | string[] | Recommended properties that are absent |
+| rich_result | RichResult | Rich result eligibility details with reason and docs link |
+
+### Issue object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| severity | "error"\|"warning" | error = required, warning = recommended |
+| property | string | The schema property with the issue |
+| message | string | Human-readable description |
+| fix | string | Actionable fix suggestion |
+| google_docs_url | string | Link to Google's structured data documentation |
+
+### summary object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| total_schemas | integer | Total JSON-LD blocks found |
+| valid_schemas | integer | Schemas with no errors |
+| invalid_schemas | integer | Schemas with at least one error |
+| total_errors | integer | Sum of all errors across all schemas |
+| total_warnings | integer | Sum of all warnings across all schemas |
+| rich_result_eligible | integer | Number of rich-result-eligible schemas |
+| score | integer (0–100) | Health score: 100 − (errors × 40) − (warnings × 10), min 0 |
+
+### meta object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| api_version | string | Current API version |
+| validated_at | ISO 8601 | Timestamp of validation |
+| cached | boolean | true if served from cache (1-hour TTL) |
+| credits_used | integer | 0 for cached/errored; 1 for successful validation |
+| credits_remaining | integer | Credits left in current billing period |
+| response_time_ms | integer | Total server-side processing time |
+
+---
+
+## Supported Schema Types (35 total)
+
+### Tier 1: Full Validation — 7 types
+
+| Type | Also Validates | Rich Result |
+|------|---------------|-------------|
+| Article | NewsArticle, BlogPosting, TechArticle, ScholarlyArticle | Article rich result |
+| Product | — | Product snippet, merchant listing |
+| LocalBusiness | Restaurant, Store, Hotel, MedicalBusiness, FoodEstablishment | Business info panel |
+| Organization | Corporation, EducationalOrganization, GovernmentOrganization, NGO | Knowledge panel |
+| BreadcrumbList | — | Breadcrumb trail in SERP |
+| WebSite | — | Sitelinks Searchbox |
+| FAQPage | — | FAQ dropdown (gov/health only since 2024) |
+
+### Tier 2: Standard Validation — 10 types (coming soon)
+
+| Type | Also Validates | Rich Result |
+|------|---------------|-------------|
+| Review | AggregateRating | Star rating snippet |
+| Recipe | — | Recipe rich card |
+| Event | MusicEvent, SportsEvent, EducationEvent | Event listing |
+| VideoObject | Clip | Video rich result |
+| SoftwareApplication | WebApplication, MobileApplication, VideoGame | App rich result |
+| JobPosting | — | Google for Jobs listing |
+| Course | CourseInstance | Course info |
+| ItemList | — | Carousel rich result |
+| QAPage | — | Q&A rich result |
+| ProductGroup | — | Product variants |
+
+### Tier 3: Basic Validation — 10 types (planned)
+
+| Type | Rich Result |
+|------|-------------|
+| Book (Audiobook) | Book actions |
+| Dataset (DataCatalog) | Dataset snippet |
+| DiscussionForumPosting | Discussion forum |
+| EmployerAggregateRating | Employer rating |
+| Movie | Movie carousel |
+| ImageObject | Image license metadata |
+| ProfilePage | Profile page |
+| MerchantReturnPolicy | Merchant return policy |
+| OfferShippingDetails | Merchant shipping info |
+| ClaimReview | Fact check (restricted organizations) |
+
+### Tier 4: Basic Validation — 5 types (planned)
+
+| Type | Rich Result |
+|------|-------------|
+| MathSolver | Math solver |
+| Quiz | Education Q&A |
+| LoyaltyProgram | Loyalty program |
+| VacationRental | Vacation rental |
+| CreativeWork | Subscription/paywalled content |
+
+### Deprecated — Validated with Warnings (3 types)
+
+| Type | Status | Since |
+|------|--------|-------|
+| HowTo | Retired by Google | August 2024 |
+| SpecialAnnouncement | Retired by Google | 2025 |
+| Vehicle (Car) | Vehicle Listing retired | 2025 |
+
+---
+
+## Error Codes
+
+| Code | HTTP | Description | Extra fields |
+|------|------|-------------|--------------|
+| missing_api_key | 401 | No key provided | — |
+| invalid_api_key | 401 | Key not found or deactivated | — |
+| quota_exceeded | 429 | Free plan monthly limit reached | upgrade_url |
+| rate_limit_exceeded | 429 | Too many requests per minute | retry_after_seconds |
+| missing_input | 400 | No url or jsonld provided | — |
+| invalid_url | 400 | URL is malformed or non-HTTP | — |
+| no_jsonld_found | 422 | Page has no JSON-LD blocks | — |
+| parse_error | 422 | Invalid JSON or missing @type | — |
+| fetch_failed | 422 | URL returned non-2xx response | — |
+| timeout | 504 | URL fetch timed out (10s) | — |
+| internal_error | 500 | Unexpected server error | — |
+
+---
+
+## Pricing
+
+| Plan | Requests/mo | Monthly | Annual | Per Extra | Rate Limit |
+|------|-------------|---------|--------|-----------|------------|
+| Free | 100 | $0 | — | Hard stop | 10/min |
+| Basic | 3,000 | $19 | $190 | $0.008 | 30/min |
+| Growth | 15,000 | $79 | $790 | $0.005 | 60/min |
+| Scale | 75,000 | $199 | $1,990 | $0.003 | 120/min |
+
+Annual = 2 months free. Overage billed at per-request rate above.
+
+---
+
+## Billing Rules
+
+- **Cached results** (meta.cached = true): credits_used = 0, never billed
+- **Failed requests** (400, 401, 422, 429, 500): credits_used = 0, never billed
+- **Successful validations** (200, not cached): credits_used = 1
+- **Free plan at limit**: returns 429 quota_exceeded, hard stop
+- **Paid plans over limit**: continues with per-request overage billing
+- **Usage alerts**: email sent at 90% and 100% of monthly limit
+- **Monthly reset**: requests_used resets to 0 on billing anniversary
+
+---
+
+## Caching
+
+- **Cache key**: SHA-256 of normalized URL (lowercased, trailing slash stripped)
+- **TTL**: 1 hour from creation
+- **Scope**: shared across all API keys (public URL validation is idempotent)
+- **Bypass**: use `jsonld` field instead of `url` — raw JSON-LD is never cached
+- **Cache hit**: meta.cached = true, credits_used = 0, response_time_ms reflects cache lookup only
+
+---
+
+## Technical Details
+
+- **HTML parsing**: cheerio (no headless browser — JSON-LD is in page source)
+- **URL fetch timeout**: 10 seconds
+- **Redirect handling**: follows up to 5 redirects
+- **@graph support**: flattens @graph arrays into individual schema objects
+- **Unknown @types**: validates basic JSON-LD structure, marks deprecated if applicable
+- **Database**: Supabase (PostgreSQL)
+- **Payments**: Stripe subscriptions with webhook sync
+
+---
+
+## MCP Server
+
+SchemaCheck ships an MCP (Model Context Protocol) server for AI tool integration.
+
+**npm package**: `schemacheck-mcp`
+**Tool name**: `validate_schema`
+**Compatible with**: Claude Desktop, Cursor, VS Code (GitHub Copilot), Windsurf, and any MCP-compatible environment.
+
+Quick setup (Claude Desktop `claude_desktop_config.json`):
+```json
+{
+  "mcpServers": {
+    "schemacheck": {
+      "command": "npx",
+      "args": ["-y", "schemacheck-mcp"],
+      "env": { "SCHEMACHECK_API_KEY": "sc_live_YOUR_KEY" }
+    }
+  }
+}
+```
+
+The `validate_schema` tool accepts either `url` (string) or `jsonld` (object) and returns the full validation response including errors, warnings, rich result eligibility, and fix suggestions.
+
+---
+
+## SDK Examples
+
+Full copy-paste examples at https://schemacheck.dev/docs/:
+- JavaScript / TypeScript (Node.js, Bun, Deno, browser)
+- Python (requests)
+- PHP (cURL, Guzzle)
+- Go (net/http)
+- Ruby (Net::HTTP, Faraday)
+- C# / .NET (HttpClient)
+
+---
+
+## Google-Supported Rich Result Types — Complete List
+
+### Tier 1: Supported Now (7 types)
+
+| Type | Also Validates | Google Docs |
+|------|---------------|-------------|
+| Article | NewsArticle, BlogPosting, TechArticle, ScholarlyArticle | https://developers.google.com/search/docs/appearance/structured-data/article |
+| Product | Offer, AggregateRating nested | https://developers.google.com/search/docs/appearance/structured-data/product |
+| LocalBusiness | Restaurant, Store, Hotel, MedicalBusiness, FoodEstablishment | https://developers.google.com/search/docs/appearance/structured-data/local-business |
+| Organization | Corporation, EducationalOrganization, NGO, GovernmentOrganization | https://developers.google.com/search/docs/appearance/structured-data/organization |
+| BreadcrumbList | — | https://developers.google.com/search/docs/appearance/structured-data/breadcrumb |
+| WebSite | Sitelinks Searchbox via potentialAction | https://developers.google.com/search/docs/appearance/structured-data/sitelinks-searchbox |
+| FAQPage | Restricted to gov/health since 2024; validated with deprecation warning | https://developers.google.com/search/docs/appearance/structured-data/faqpage |
+
+### Tier 2: Coming Soon
+
+Review/AggregateRating, Recipe, Event, VideoObject, SoftwareApplication, JobPosting, Course, ItemList/Carousel, QAPage
+
+### Tier 3: Planned
+
+Book (Audiobook), Dataset (DataCatalog), DiscussionForumPosting, EmployerAggregateRating, Movie, ImageObject, ProfilePage, MerchantReturnPolicy, OfferShippingDetails, ClaimReview
+
+### Tier 4: Planned
+
+MathSolver, Quiz, LoyaltyProgram, VacationRental, CreativeWork
+
+### Deprecated (Validated With Warnings)
+
+| Type | Status | Since |
+|------|--------|-------|
+| HowTo | Retired by Google | August 2024 |
+| SpecialAnnouncement | Retired by Google | 2025 |
+| Vehicle (Car) | Vehicle Listing retired | 2025 |
+
+Use GET /api/v1/types for the complete machine-readable list with required_properties, recommended_properties, and google_docs_url per type.
+
+---
+
+## Required and Recommended Properties — Tier 1 Types
+
+### Article (also: NewsArticle, BlogPosting)
+Required: headline (string, ≤110 chars), author (Person or Organization with name), datePublished (ISO 8601)
+Recommended: image (URL or ImageObject), dateModified, publisher (Organization with name + logo), description, url
+Rich result requirements: all required + image
+
+### Product
+Required: name (string)
+Recommended: image (URL), offers (Offer with price + priceCurrency + availability), description, sku, brand (Organization with name), aggregateRating (ratingValue + reviewCount), review
+Rich result requirements: name + image + offers
+
+### LocalBusiness (also: Restaurant, Store, Hotel, etc.)
+Required: name (string), address (PostalAddress with streetAddress, addressLocality, addressRegion, postalCode, addressCountry)
+Recommended: telephone, openingHoursSpecification (dayOfWeek + opens + closes), url, image, priceRange ("$"/"$$"/"$$$"), aggregateRating, geo (GeoCoordinates), sameAs
+Rich result requirements: name + address
+
+### Organization (also: Corporation, NGO, etc.)
+Required: name (string)
+Recommended: url, logo (ImageObject), sameAs (array of URLs), contactPoint (ContactPoint with telephone + contactType), address, description
+Rich result requirements: name + url + logo
+
+### BreadcrumbList
+Required: itemListElement (array of ListItem, each with position + name + item URL)
+Recommended: (none)
+Rich result requirements: itemListElement with valid ListItem array
+
+### WebSite
+Required: name (string), url (URL of homepage)
+Recommended: potentialAction (SearchAction with target URL template + query-input), description, sameAs
+Rich result requirements: name + url + potentialAction (for Sitelinks Searchbox)
+
+### FAQPage
+Required: mainEntity (array of Question, each with name + acceptedAnswer.text)
+Recommended: (none)
+Rich result requirements: mainEntity with valid Question array. NOTE: Only eligible for gov/health domains since 2024.
+
+---
+
+## Example Requests and Responses
+
+### Example 1: Valid Article (all checks pass)
+
+Request:
+```
+GET /api/v1/validate?url=https://example.com/article&access_key=sc_live_...
+```
+
+Response:
+```json
+{
+  "success": true,
+  "url": "https://example.com/article",
+  "schemas_found": 1,
+  "schemas": [
+    {
+      "type": "Article",
+      "valid": true,
+      "rich_result_eligible": true,
+      "deprecated": false,
+      "deprecation_note": null,
+      "errors": [],
+      "warnings": [
+        {
+          "severity": "warning",
+          "property": "dateModified",
+          "message": "Recommended property 'dateModified' is missing",
+          "fix": "Add \"dateModified\": \"2026-03-18\" to your Article schema",
+          "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/article"
+        }
+      ],
+      "properties_found": ["headline", "author", "datePublished", "image", "publisher"],
+      "properties_missing_required": [],
+      "properties_missing_recommended": ["dateModified", "description"],
+      "rich_result": {
+        "eligible": true,
+        "reason": "All required properties present",
+        "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/article"
+      }
+    }
+  ],
+  "summary": { "total_schemas": 1, "valid_schemas": 1, "invalid_schemas": 0, "total_errors": 0, "total_warnings": 1, "rich_result_eligible": 1, "score": 88 },
+  "meta": { "api_version": "1.0", "validated_at": "2026-03-18T12:00:00Z", "cached": false, "credits_used": 1, "credits_remaining": 99, "response_time_ms": 310 }
+}
+```
+
+### Example 2: Product schema missing required Offer properties (errors returned)
+
+Request:
+```json
+POST /api/v1/validate
+{"jsonld": {"@context":"https://schema.org","@type":"Product","name":"Widget Pro"}}
+```
+
+Response:
+```json
+{
+  "success": true,
+  "schemas_found": 1,
+  "schemas": [
+    {
+      "type": "Product",
+      "valid": true,
+      "rich_result_eligible": false,
+      "deprecated": false,
+      "deprecation_note": null,
+      "errors": [],
+      "warnings": [
+        {
+          "severity": "warning",
+          "property": "image",
+          "message": "Recommended property 'image' is missing (required for rich results)",
+          "fix": "Add an image URL or ImageObject",
+          "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/product"
+        },
+        {
+          "severity": "warning",
+          "property": "offers",
+          "message": "Recommended property 'offers' is missing (required for rich results)",
+          "fix": "Add an Offer object with price, priceCurrency, and availability",
+          "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/product"
+        }
+      ],
+      "properties_found": ["name"],
+      "properties_missing_required": [],
+      "properties_missing_recommended": ["image", "offers", "description", "sku", "brand"],
+      "rich_result": {
+        "eligible": false,
+        "reason": "Missing image and offers — both required for Product rich results",
+        "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/product"
+      }
+    }
+  ],
+  "summary": { "total_schemas": 1, "valid_schemas": 1, "invalid_schemas": 0, "total_errors": 0, "total_warnings": 2, "rich_result_eligible": 0, "score": 32 },
+  "meta": { "api_version": "1.0", "validated_at": "2026-03-18T12:00:00Z", "cached": false, "credits_used": 1, "credits_remaining": 98, "response_time_ms": 12 }
+}
+```
+
+### Example 3: URL with no JSON-LD found
+
+Request:
+```
+GET /api/v1/validate?url=https://example.com/plain-page&access_key=sc_live_...
+```
+
+Response:
+```json
+{
+  "success": false,
+  "error": {
+    "code": "no_jsonld_found",
+    "message": "No <script type=\"application/ld+json\"> blocks found on this page.",
+    "docs_url": "https://schemacheck.dev/docs/errors#no_jsonld_found"
+  }
+}
+```
+
+Note: no_jsonld_found returns 422 and costs 0 credits.
+

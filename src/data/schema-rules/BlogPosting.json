@@ -1,0 +1,63 @@
+{
+  "type": "BlogPosting",
+  "also_matches": [],
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/article",
+  "required_properties": [
+    {
+      "property": "headline",
+      "type": "string",
+      "max_length": 110,
+      "description": "The headline of the blog post. Must not exceed 110 characters.",
+      "rich_result_required": true
+    },
+    {
+      "property": "author",
+      "type": "object",
+      "expected_type": ["Person", "Organization"],
+      "description": "The author of the blog post.",
+      "nested_recommended": ["name", "url"],
+      "rich_result_required": true
+    },
+    {
+      "property": "datePublished",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the blog post was first published, in ISO 8601 format.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "image",
+      "type": "url",
+      "description": "A representative image for the blog post. Required for rich results.",
+      "rich_result_required": true
+    },
+    {
+      "property": "dateModified",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the blog post was most recently modified."
+    },
+    {
+      "property": "publisher",
+      "type": "object",
+      "expected_type": ["Organization"],
+      "description": "The publisher of the blog post.",
+      "nested_recommended": ["name", "logo"]
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A short description of the blog post."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The canonical URL of the blog post."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null,
+  "validation_depth": "full"
+}

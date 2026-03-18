@@ -1,0 +1,46 @@
+{
+  "type": "OfferShippingDetails",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/merchant-listing",
+  "required_properties": [
+    {
+      "property": "shippingRate",
+      "type": "object",
+      "expected_type": ["MonetaryAmount"],
+      "description": "The shipping cost for this offer.",
+      "nested_recommended": ["value", "currency"],
+      "rich_result_required": true
+    },
+    {
+      "property": "shippingDestination",
+      "type": "object",
+      "expected_type": ["DefinedRegion"],
+      "description": "The destination region to which this shipping rate applies.",
+      "nested_recommended": ["addressCountry"],
+      "rich_result_required": true
+    },
+    {
+      "property": "deliveryTime",
+      "type": "object",
+      "expected_type": ["ShippingDeliveryTime"],
+      "description": "The estimated delivery time for the shipment.",
+      "nested_recommended": ["handlingTime", "transitTime"],
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "transitTimeLabel",
+      "type": "string",
+      "description": "A label for the transit time (e.g. 'Standard', 'Express')."
+    },
+    {
+      "property": "doesNotShip",
+      "type": "string",
+      "description": "Set to true if there is no shipping to the destination region."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

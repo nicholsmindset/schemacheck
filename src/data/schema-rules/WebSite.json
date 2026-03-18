@@ -1,0 +1,42 @@
+{
+  "type": "WebSite",
+  "also_matches": [],
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/sitelinks-searchbox",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the website.",
+      "rich_result_required": true
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the website's homepage.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "potentialAction",
+      "type": "object",
+      "expected_type": ["SearchAction"],
+      "description": "A SearchAction that enables the Sitelinks Searchbox. Required for sitelinks searchbox rich result.",
+      "nested_recommended": ["target", "query-input"],
+      "rich_result_required": true
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the website."
+    },
+    {
+      "property": "sameAs",
+      "type": "url",
+      "description": "URLs of pages that verify this website's identity on other platforms."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null,
+  "validation_depth": "full"
+}

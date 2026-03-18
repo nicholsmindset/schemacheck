@@ -1,0 +1,107 @@
+---
+title: "Why there's no API for schema validation (until now)"
+date: "2026-03-10"
+excerpt: "Google's Rich Results Test, Schema.org's validator, and every other schema checker require a browser. Here's why the API gap exists — and what we built to fix it."
+category: "Engineering"
+tags: ["schema.org", "api", "developer-tools", "structured-data"]
+readingTime: "5 min read"
+author: "Robert Nichols"
+---
+
+Every developer who has tried to automate Schema.org validation runs into the same wall: there is no API.
+
+Google's Rich Results Test is the standard. It renders a page through Googlebot, extracts JSON-LD and microdata, and tells you whether your structured data qualifies for rich results in Search. It's accurate. It's authoritative. And it is a web UI with no programmatic access whatsoever.
+
+Schema.org's own validator (validator.schema.org) validates JSON-LD against the full Schema.org specification — far more thorough coverage than Google's tool. Also web UI only.
+
+The Merkle schema markup validator, SEMrush's structured data checker, Ahrefs — all web UI. All require a human to paste in a URL or markup and press a button.
+
+## Why the gap exists
+
+The existing tools were built for a specific audience: SEO professionals manually checking pages before launch. That workflow doesn't need an API. You open a tab, paste a URL, review the results, close the tab. A button is exactly the right interface for that job.
+
+But this design decision has a side effect: structured data validation fell out of the developer tooling ecosystem entirely. There's no `npm install schema-validator`. No REST endpoint. No CI integration. No way to run the same check that a human does in a browser, but at scale, from code.
+
+This creates an asymmetric situation. Developers have rich tooling for everything adjacent to schema validation:
+
+- **HTML validation**: W3C validator has an API. htmlhint, html-validate — all automatable.
+- **Accessibility**: axe-core runs in Node. Pa11y is an NPM package. Lighthouse has a programmatic API.
+- **Performance**: Lighthouse API, WebPageTest API, Core Web Vitals via CrUX API.
+- **SEO meta tags**: Any HTTP client can fetch and parse `<title>`, `<meta>`, Open Graph tags.
+
+Structured data sits next to all of these in the SEO/technical-SEO toolchain, but unlike all of them, it has no automation path.
+
+## What this costs in practice
+
+The absence of an API has three practical consequences:
+
+**Schema regressions ship silently.** A developer refactors a component and accidentally removes the `datePublished` field from an Article schema. The build passes. The tests pass. No one notices until Google's Search Console shows a drop in rich results — sometimes weeks later. A CI check would have caught it in seconds.
+
+**Bulk audits are manual labor.** An SEO agency wants to audit schema across 500 client pages. Without an API, that's 500 manual tab opens, 500 copy-paste actions, 500 screenshots. With an API, it's a script.
+
+**AI agents are blocked.** When a user asks an LLM agent to "audit this site's structured data," the agent has nowhere to go. It can fetch the raw HTML and look for JSON-LD, but it can't validate against Google's rich result requirements or get per-property fix suggestions. Every existing tool requires a browser.
+
+## What we built
+
+SchemaCheck is a REST API that does what the web tools do, but programmatically.
+
+Send a URL via GET request:
+
+```
+GET /api/v1/validate?url=https://example.com&access_key=YOUR_KEY
+```
+
+Or POST raw JSON-LD directly:
+
+```json
+POST /api/v1/validate
+Content-Type: application/json
+
+{
+  "jsonld": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "My article"
+  }
+}
+```
+
+The response tells you exactly what's wrong, why it matters, and how to fix it:
+
+```json
+{
+  "schemas": [{
+    "type": "Article",
+    "errors": [{
+      "property": "author",
+      "message": "Required property missing",
+      "fix": "Add an author property with a Person or Organization value",
+      "docs_url": "https://developers.google.com/search/docs/appearance/structured-data/article"
+    }],
+    "rich_result_eligible": false
+  }],
+  "summary": {
+    "score": 45,
+    "total_errors": 1,
+    "rich_result_eligible": false
+  }
+}
+```
+
+The response is designed for programmatic consumption: consistent shape, machine-readable codes, actionable fix messages, and a 0–100 health score that's easy to use in conditions and thresholds.
+
+## What we're not
+
+A few things worth being explicit about:
+
+**We're not Google.** Google's Rich Results Test uses Googlebot's actual renderer, which executes JavaScript. SchemaCheck fetches server-side HTML. If your schema is injected by client-side JavaScript, you'll get different results from us than from Google. For schemas that depend on JS rendering, Google's tool is still the ground truth. Use SchemaCheck for automation; use Google's tool to verify before launch.
+
+**We don't cover the full Schema.org spec.** Schema.org defines hundreds of types. We support 9 types at launch — the ones Google uses for rich results: Article, NewsArticle, BlogPosting, Product, LocalBusiness, Organization, BreadcrumbList, WebSite, and FAQPage. Coverage will grow.
+
+**We're not a replacement for human review.** An API catches property-level errors. It doesn't catch semantically wrong data — wrong prices, incorrect publication dates, missing content that's actually present. Human review still matters for quality.
+
+## The gap is closing
+
+The tools that exist today were built for the workflow that existed when they were built: manual, one-at-a-time, browser-based. Developer workflows have changed. CI/CD is standard. Observability is standard. AI-assisted development is standard. Structured data validation should fit into those workflows — not require stepping outside of them.
+
+That's what SchemaCheck is: the API that should have existed already.

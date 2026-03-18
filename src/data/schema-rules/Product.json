@@ -1,0 +1,63 @@
+{
+  "type": "Product",
+  "also_matches": [],
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/product",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the product.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "image",
+      "type": "url",
+      "description": "An image of the product. Required for rich results.",
+      "rich_result_required": true
+    },
+    {
+      "property": "offers",
+      "type": "object",
+      "expected_type": ["Offer"],
+      "description": "An offer for the product. Required for rich results.",
+      "nested_recommended": ["price", "priceCurrency", "availability"],
+      "rich_result_required": true
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the product."
+    },
+    {
+      "property": "sku",
+      "type": "string",
+      "description": "The Stock Keeping Unit (SKU) of the product."
+    },
+    {
+      "property": "brand",
+      "type": "object",
+      "expected_type": ["Brand", "Organization"],
+      "description": "The brand of the product.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "aggregateRating",
+      "type": "object",
+      "expected_type": ["AggregateRating"],
+      "description": "The overall rating of the product based on multiple ratings or reviews.",
+      "nested_recommended": ["ratingValue", "reviewCount"]
+    },
+    {
+      "property": "review",
+      "type": "object",
+      "expected_type": ["Review"],
+      "description": "A review of the product.",
+      "nested_recommended": ["reviewRating", "author"]
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null,
+  "validation_depth": "full"
+}

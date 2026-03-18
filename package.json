@@ -1,0 +1,37 @@
+{
+  "name": "schemacheck",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.47.10",
+    "@tailwindcss/postcss": "^4.2.1",
+    "cheerio": "^1.0.0",
+    "gray-matter": "^4.0.3",
+    "next": "^15.1.7",
+    "next-mdx-remote": "^6.0.0",
+    "postcss": "^8.5.8",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "rehype-slug": "^6.0.0",
+    "stripe": "^17.5.0",
+    "tailwindcss": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.6",
+    "@types/react": "^19.0.4",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.18.0",
+    "eslint-config-next": "^15.1.7",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.4"
+  }
+}

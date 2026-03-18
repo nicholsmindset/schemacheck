@@ -1,0 +1,104 @@
+{
+  "type": "Recipe",
+  "also_matches": [],
+  "validation_depth": "standard",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/recipe",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the recipe.",
+      "rich_result_required": true
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "An image of the finished dish. Required for rich results.",
+      "rich_result_required": true
+    },
+    {
+      "property": "recipeInstructions",
+      "type": "array",
+      "description": "The steps to make the recipe. Use HowToStep objects for best results.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "author",
+      "type": "object",
+      "expected_type": ["Person", "Organization"],
+      "description": "The author of the recipe.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "datePublished",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the recipe was published."
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A short description of the recipe."
+    },
+    {
+      "property": "prepTime",
+      "type": "string",
+      "description": "Preparation time in ISO 8601 duration format (e.g. PT15M for 15 minutes)."
+    },
+    {
+      "property": "cookTime",
+      "type": "string",
+      "description": "Cook time in ISO 8601 duration format (e.g. PT30M for 30 minutes)."
+    },
+    {
+      "property": "totalTime",
+      "type": "string",
+      "description": "Total time for the recipe in ISO 8601 duration format."
+    },
+    {
+      "property": "recipeYield",
+      "type": "string",
+      "description": "The quantity produced by the recipe (e.g. '4 servings', '24 cookies')."
+    },
+    {
+      "property": "recipeIngredient",
+      "type": "array",
+      "description": "An array of ingredient strings used in the recipe."
+    },
+    {
+      "property": "recipeCategory",
+      "type": "string",
+      "description": "The category of the recipe (e.g. 'Dessert', 'Breakfast')."
+    },
+    {
+      "property": "recipeCuisine",
+      "type": "string",
+      "description": "The cuisine of the recipe (e.g. 'Italian', 'Thai')."
+    },
+    {
+      "property": "nutrition",
+      "type": "object",
+      "expected_type": ["NutritionInformation"],
+      "description": "Nutritional information for the recipe.",
+      "nested_recommended": ["calories"]
+    },
+    {
+      "property": "aggregateRating",
+      "type": "object",
+      "expected_type": ["AggregateRating"],
+      "description": "The aggregate rating for the recipe.",
+      "nested_recommended": ["ratingValue", "ratingCount"]
+    },
+    {
+      "property": "video",
+      "type": "object",
+      "expected_type": ["VideoObject"],
+      "description": "A video depicting the recipe.",
+      "nested_recommended": ["name", "description", "thumbnailUrl"]
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

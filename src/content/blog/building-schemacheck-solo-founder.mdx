@@ -1,0 +1,115 @@
+---
+title: "Building SchemaCheck: a solo founder's journey"
+date: "2026-03-15"
+excerpt: "How I went from a frustrating debugging session to building a REST API for schema validation — the technical decisions, the things I got wrong, and what it looks like to ship a focused API product."
+category: "Engineering"
+tags: ["indie-hacker", "startup", "next-js", "supabase"]
+readingTime: "7 min read"
+author: "Robert Nichols"
+---
+
+This is the post I wanted to read before I started building SchemaCheck. It's about the problem I found, the technical decisions I made, what I got wrong, and what shipping a solo API product actually looks like.
+
+## The problem I kept running into
+
+I've been building SEO tooling on and off for a few years. One recurring pain point: schema validation.
+
+Every time I needed to validate JSON-LD at scale — audit a site's entire catalog, verify schema hadn't regressed in CI, check schema as part of an automated workflow — I hit the same wall. Every validator is a web UI. There's no API. You paste a URL in a browser, you get a result, you go on with your day. You cannot do this from code.
+
+I looked for alternatives. The closest thing was parsing the raw JSON-LD myself and checking required properties with a hand-rolled validator. That works for simple cases but doesn't get you Google's eligibility criteria, deprecation warnings, or fix suggestions. You end up reimplementing a subset of what Google's tool does, badly.
+
+The solution is obvious: a REST API that does what the web tools do. I looked for it for years. No one had built it. So I built it.
+
+## Technical decisions
+
+### Next.js App Router for everything
+
+The API, the marketing site, and the docs are all one Next.js 15 app. The API lives at `/app/api/v1/validate/route.ts`. This is not the typical architecture for a production API — you'd usually separate concerns — but for a solo-founder v1, it's pragmatic.
+
+The advantages: one deploy, one domain, zero orchestration. The tradeoff: Next.js serverless functions have execution time limits and cold start overhead. For a synchronous HTTP-fetch-then-validate API, cold starts are the main concern. I haven't hit meaningful cold start issues in practice.
+
+### Supabase for auth and usage tracking
+
+I needed: API key storage, per-key usage counters, and Stripe customer linkage. Supabase handles this with a small schema:
+
+- `api_keys` — key hash, plan, usage count, Stripe IDs
+- `usage_logs` — per-request log for billing and analytics
+- `validation_cache` — URL → result cache with 1-hour TTL
+
+The alternative was building this myself on PlanetScale or Postgres. Supabase saved a week of work on auth plumbing that wasn't the product.
+
+### The validator architecture
+
+The core validation logic lives in `src/lib/validator/`. The pipeline is:
+
+1. **Extractor** (cheerio) — fetch the URL, parse the HTML, extract all `<script type="application/ld+json">` blocks
+2. **Parser** — JSON parse each block, flatten `@graph` arrays into individual schemas
+3. **Rules engine** — load a JSON rule file for each `@type`, check required and recommended properties
+4. **Rich results** — check Google's eligibility criteria for the specific schema type
+
+Each schema type has a JSON rule file in `src/data/schema-rules/`. Example for Product:
+
+```json
+{
+  "type": "Product",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/product",
+  "required_properties": ["name"],
+  "recommended_properties": ["image", "description", "sku"],
+  "rich_result_required": ["name", "offers"],
+  "property_types": {
+    "offers": "Offer|AggregateOffer"
+  }
+}
+```
+
+Rule files are plain JSON. Adding a new schema type means writing a new file and updating the extractor's type map. No code changes to the validation pipeline.
+
+### Caching
+
+URL validation results are cached for 1 hour keyed by SHA-256 of the normalized URL. Cache hits don't consume credits.
+
+The implementation is simple: before fetching the page, check `validation_cache` for a non-expired entry. If found, return it with `meta.cached: true`. If not, validate and insert.
+
+I considered using Redis (Upstash) for the cache. I went with Postgres (Supabase) instead, since I already had it. The difference in cache read latency (5ms vs 0.5ms) doesn't matter when the alternative is a 300ms HTTP fetch. Adding Redis later is easy if the scale demands it.
+
+## Things I got wrong
+
+**Underestimating the Google deprecation complexity.** Google retired several rich result types quietly over 2024–2025. HowTo was retired in August 2024. FAQPage was restricted to government and health sites. I had to build a deprecation detection system on top of the basic property validation. The rule file format now includes `deprecated` and `deprecation_note` fields for each type.
+
+**The @graph problem.** JSON-LD `@graph` arrays are common — many CMS-generated schemas wrap multiple schema types in a single `@graph` block. My initial parser handled top-level schemas only. I had to add `@graph` flattening, which required recursively unwrapping nested graph structures. This took longer than it should have.
+
+**Type coercion in property validation.** Schema.org allows multiple value types for many properties. The `author` field on an Article can be a `Person`, an `Organization`, or an array of either. My first version only checked presence, not type. I refactored to validate type-coercion cases, which added a lot of edge case handling.
+
+## What the business model looks like
+
+Free tier: 100 validations/month. Enough to cover CI checks and daily monitoring of a few key pages.
+
+Paid tiers are volume-based: $9/month for 3,000 validations, up to $79/month for 75,000. Overages are metered at $0.003–$0.008 per validation depending on plan.
+
+The target customers aren't individuals doing one-off checks — they can use Google's free web UI. The target is teams running automated workflows: SEO platforms, CMS companies, developer tooling, AI agent builders. Those teams have volume requirements that make the paid plans reasonable.
+
+## What "alive and maintained" looks like for a solo product
+
+The things that signal active maintenance to developers evaluating an API:
+
+- A changelog with dates (not "coming soon")
+- Response times under 500ms consistently
+- Clear error messages with codes, not vague 500 responses
+- Docs that show working code, not placeholders
+- A status page
+
+I'm building all of these. The changelog is live at `/changelog`. The error reference documents every error code. The docs have real, runnable code examples in six languages. Status page is next.
+
+The thing I can't fake: actual usage. If the API is useful, people will use it, and usage makes the product better — edge cases surface, feature requests clarify priorities, word-of-mouth replaces cold outreach.
+
+## What's next
+
+**More schema types.** Event, Recipe, JobPosting, and VideoObject are the most-requested. Each one needs a Google docs review, a rule file, and test cases against real-world pages.
+
+**Bulk endpoint.** A `POST /api/v1/validate/batch` endpoint that accepts an array of URLs and returns results in parallel. Useful for large-scale audits without client-side concurrency logic.
+
+**Schema diff.** Compare schema before and after a deploy. Useful for catching regressions without running a full audit.
+
+**MCP improvements.** The MCP server is working but basic. I want to add support for batch validation and schema comparison tools.
+
+If you're building something on top of SchemaCheck, I want to hear about it. The use cases I haven't thought of are always the most interesting ones.

@@ -1,0 +1,85 @@
+{
+  "type": "Event",
+  "also_matches": ["BusinessEvent", "ChildrensEvent", "ComedyEvent", "CourseInstance", "DanceEvent", "DeliveryEvent", "EducationEvent", "ExhibitionEvent", "Festival", "FoodEvent", "LiteraryEvent", "MusicEvent", "PublicationEvent", "SaleEvent", "ScreeningEvent", "SocialEvent", "SportsEvent", "TheaterEvent", "VisualArtsEvent"],
+  "validation_depth": "standard",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/event",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the event.",
+      "rich_result_required": true
+    },
+    {
+      "property": "startDate",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The start date and time of the event in ISO 8601 format.",
+      "rich_result_required": true
+    },
+    {
+      "property": "location",
+      "type": "object",
+      "expected_type": ["Place", "VirtualLocation"],
+      "description": "The location of the event. Use VirtualLocation for online events.",
+      "nested_recommended": ["name", "address"],
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "endDate",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The end date and time of the event in ISO 8601 format."
+    },
+    {
+      "property": "eventStatus",
+      "type": "string",
+      "description": "The status of the event (e.g. https://schema.org/EventScheduled)."
+    },
+    {
+      "property": "eventAttendanceMode",
+      "type": "string",
+      "description": "Whether the event is online, offline, or mixed (e.g. https://schema.org/OfflineEventAttendanceMode)."
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the event."
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "An image representing the event."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "A URL with details about the event."
+    },
+    {
+      "property": "offers",
+      "type": "object",
+      "expected_type": ["Offer"],
+      "description": "An offer to buy tickets for the event.",
+      "nested_recommended": ["price", "priceCurrency", "url", "availability", "validFrom"]
+    },
+    {
+      "property": "performer",
+      "type": "object",
+      "expected_type": ["Person", "Organization", "PerformingGroup"],
+      "description": "A performer at the event.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "organizer",
+      "type": "object",
+      "expected_type": ["Organization", "Person"],
+      "description": "The organizer of the event.",
+      "nested_recommended": ["name", "url"]
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

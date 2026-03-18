@@ -1,0 +1,71 @@
+{
+  "type": "Course",
+  "also_matches": ["CourseInstance"],
+  "validation_depth": "standard",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/course-info",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the course.",
+      "rich_result_required": true
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the course. Must be unique and specific to this course.",
+      "rich_result_required": true
+    },
+    {
+      "property": "provider",
+      "type": "object",
+      "expected_type": ["Organization"],
+      "description": "The organization that provides the course.",
+      "nested_recommended": ["name", "sameAs"],
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the course page."
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "An image representing the course."
+    },
+    {
+      "property": "hasCourseInstance",
+      "type": "object",
+      "expected_type": ["CourseInstance"],
+      "description": "An instance of the course being offered with specific schedule information.",
+      "nested_recommended": ["courseMode", "instructor", "startDate", "endDate"]
+    },
+    {
+      "property": "courseCode",
+      "type": "string",
+      "description": "The identifier for the course (e.g. 'CS101')."
+    },
+    {
+      "property": "educationalLevel",
+      "type": "string",
+      "description": "The level of the course (e.g. 'Beginner', 'Intermediate', 'Advanced')."
+    },
+    {
+      "property": "inLanguage",
+      "type": "string",
+      "description": "The language the course is taught in (BCP47 format, e.g. 'en')."
+    },
+    {
+      "property": "offers",
+      "type": "object",
+      "expected_type": ["Offer"],
+      "description": "An offer for the course, including pricing.",
+      "nested_recommended": ["price", "priceCurrency"]
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

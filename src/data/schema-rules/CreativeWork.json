@@ -1,0 +1,51 @@
+{
+  "type": "CreativeWork",
+  "also_matches": ["Article", "NewsArticle", "BlogPosting", "WebPage"],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/subscription-and-paywalled-content",
+  "required_properties": [
+    {
+      "property": "isAccessibleForFree",
+      "type": "string",
+      "description": "Set to 'False' to indicate this is paywalled content. Required to tell Google the page has restricted access.",
+      "rich_result_required": true
+    },
+    {
+      "property": "hasPart",
+      "type": "array",
+      "description": "The sections of the content. Paywalled sections should have cssSelector and isAccessibleForFree: false.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The title of the content."
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the content."
+    },
+    {
+      "property": "publisher",
+      "type": "object",
+      "expected_type": ["Organization"],
+      "description": "The publisher of the content.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The canonical URL of the content."
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "A representative image for the content."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

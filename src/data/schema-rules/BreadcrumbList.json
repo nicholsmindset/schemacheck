@@ -1,0 +1,17 @@
+{
+  "type": "BreadcrumbList",
+  "also_matches": [],
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/breadcrumb",
+  "required_properties": [
+    {
+      "property": "itemListElement",
+      "type": "array",
+      "description": "The ordered list of breadcrumb items. Each item should be a ListItem with position, name, and item properties.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [],
+  "deprecated": false,
+  "deprecation_note": null,
+  "validation_depth": "full"
+}

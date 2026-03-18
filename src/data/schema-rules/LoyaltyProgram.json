@@ -1,0 +1,46 @@
+{
+  "type": "LoyaltyProgram",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/loyalty-program",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the loyalty program.",
+      "rich_result_required": true
+    },
+    {
+      "property": "hasMembershipDataType",
+      "type": "array",
+      "description": "The types of data associated with membership (e.g. points, tiers). Each item should describe the benefit type.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the loyalty program page."
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the loyalty program and its benefits."
+    },
+    {
+      "property": "programName",
+      "type": "string",
+      "description": "The name of the program (may differ from the organization name)."
+    },
+    {
+      "property": "membershipLevel",
+      "type": "object",
+      "expected_type": ["LoyaltyMembership"],
+      "description": "A specific membership tier or level within the program.",
+      "nested_recommended": ["name", "membershipPointsEarned"]
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

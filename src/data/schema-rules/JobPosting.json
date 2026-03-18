@@ -1,0 +1,89 @@
+{
+  "type": "JobPosting",
+  "also_matches": [],
+  "validation_depth": "standard",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/job-posting",
+  "required_properties": [
+    {
+      "property": "title",
+      "type": "string",
+      "description": "The title of the job position.",
+      "rich_result_required": true
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "The full description of the job. HTML is supported.",
+      "rich_result_required": true
+    },
+    {
+      "property": "hiringOrganization",
+      "type": "object",
+      "expected_type": ["Organization"],
+      "description": "The organization offering the job.",
+      "nested_recommended": ["name", "sameAs", "logo"],
+      "rich_result_required": true
+    },
+    {
+      "property": "jobLocation",
+      "type": "object",
+      "expected_type": ["Place"],
+      "description": "The location where the job is performed.",
+      "nested_recommended": ["address"],
+      "rich_result_required": true
+    },
+    {
+      "property": "datePosted",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the job posting was published, in ISO 8601 format.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "validThrough",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the job posting expires, in ISO 8601 format."
+    },
+    {
+      "property": "employmentType",
+      "type": "string",
+      "description": "The type of employment (e.g. 'FULL_TIME', 'PART_TIME', 'CONTRACTOR', 'TEMPORARY', 'INTERN')."
+    },
+    {
+      "property": "baseSalary",
+      "type": "object",
+      "expected_type": ["MonetaryAmount"],
+      "description": "The base salary for the job.",
+      "nested_recommended": ["currency", "value"]
+    },
+    {
+      "property": "identifier",
+      "type": "object",
+      "expected_type": ["PropertyValue"],
+      "description": "A property-value pair for a job identifier (e.g. requisition number).",
+      "nested_recommended": ["name", "value"]
+    },
+    {
+      "property": "applicantLocationRequirements",
+      "type": "object",
+      "expected_type": ["AdministrativeArea"],
+      "description": "Geographic area requirements for the applicant.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "jobLocationType",
+      "type": "string",
+      "description": "Set to 'TELECOMMUTE' for fully remote jobs."
+    },
+    {
+      "property": "workHours",
+      "type": "string",
+      "description": "The typical working hours for the job (e.g. '40 hours per week')."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

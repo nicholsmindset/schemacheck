@@ -1,0 +1,41 @@
+{
+  "type": "MathSolver",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/math-solvers",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the math solver tool or application.",
+      "rich_result_required": true
+    },
+    {
+      "property": "potentialAction",
+      "type": "object",
+      "expected_type": ["SolveMathAction"],
+      "description": "The action that this solver can perform. Must be a SolveMathAction.",
+      "nested_recommended": ["target", "mathExpression"],
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the math solver and what types of problems it can solve."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the math solver."
+    },
+    {
+      "property": "educationalLevel",
+      "type": "string",
+      "description": "The educational level of the math problems handled (e.g. 'High School', 'University')."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

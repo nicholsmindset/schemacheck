@@ -1,0 +1,53 @@
+{
+  "type": "HowTo",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/how-to",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the how-to guide.",
+      "rich_result_required": false
+    },
+    {
+      "property": "step",
+      "type": "array",
+      "description": "The steps to complete the task. Each step should be a HowToStep with text.",
+      "rich_result_required": false
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the how-to guide."
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "An image illustrating the how-to guide."
+    },
+    {
+      "property": "totalTime",
+      "type": "string",
+      "description": "Total time to complete the task in ISO 8601 duration format."
+    },
+    {
+      "property": "supply",
+      "type": "object",
+      "expected_type": ["HowToSupply"],
+      "description": "Supplies needed for the task.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "tool",
+      "type": "object",
+      "expected_type": ["HowToTool"],
+      "description": "Tools needed for the task.",
+      "nested_recommended": ["name"]
+    }
+  ],
+  "deprecated": true,
+  "deprecation_note": "Google retired HowTo rich results in August 2024. This markup will not generate rich results but is still valid Schema.org and can be used for semantic purposes."
+}

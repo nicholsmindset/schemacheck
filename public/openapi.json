@@ -1,0 +1,472 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SchemaCheck API",
+    "version": "1.0.0",
+    "description": "Validate Schema.org structured data in one API call. Send a URL or raw JSON-LD, get back errors, warnings, rich result eligibility, and fix suggestions. Based on Schema.org vocabulary V29.4 (827 types, 1,528 properties) and Google's current rich result requirements.",
+    "contact": { "email": "support@schemacheck.dev", "url": "https://schemacheck.dev" },
+    "license": { "name": "Proprietary" },
+    "x-supported-types": ["Article", "NewsArticle", "BlogPosting", "TechArticle", "ScholarlyArticle", "Product", "LocalBusiness", "Organization", "BreadcrumbList", "WebSite", "FAQPage", "Review", "AggregateRating", "Recipe", "Event", "VideoObject", "SoftwareApplication", "JobPosting", "Course", "ItemList", "QAPage", "ProductGroup", "Book", "Dataset", "DiscussionForumPosting", "EmployerAggregateRating", "Movie", "ImageObject", "ProfilePage", "MerchantReturnPolicy", "OfferShippingDetails", "ClaimReview", "MathSolver", "Quiz", "LoyaltyProgram", "VacationRental", "CreativeWork", "HowTo", "SpecialAnnouncement", "Vehicle"],
+    "x-total-types": 35,
+    "x-schema-org-version": "V29.4",
+    "x-types-endpoint": "https://schemacheck.dev/api/v1/types"
+  },
+  "externalDocs": {
+    "description": "Full documentation — quickstart, error reference, code examples, and supported schema types",
+    "url": "https://schemacheck.dev/docs"
+  },
+  "servers": [
+    { "url": "https://schemacheck.dev", "description": "Production" },
+    { "url": "https://api.schemacheck.dev", "description": "API subdomain alias" }
+  ],
+  "security": [{ "ApiKeyHeader": [] }, { "ApiKeyQuery": [] }],
+  "components": {
+    "securitySchemes": {
+      "ApiKeyHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key",
+        "description": "Pass your API key in the x-api-key header."
+      },
+      "ApiKeyQuery": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "access_key",
+        "description": "Pass your API key as the access_key query parameter (GET requests only)."
+      }
+    },
+    "schemas": {
+      "ValidationIssue": {
+        "type": "object",
+        "required": ["severity", "property", "message", "fix"],
+        "properties": {
+          "severity": {
+            "type": "string",
+            "enum": ["error", "warning"],
+            "description": "'error' means a required property is missing or malformed — this will prevent the schema from qualifying for rich results. 'warning' means a recommended property is missing — rich results may still appear, but with reduced quality or features."
+          },
+          "property": {
+            "type": "string",
+            "description": "The Schema.org property name that has an issue (e.g. 'author', 'datePublished', 'offers'). Use this field for programmatic checks — it is stable across API versions."
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable description of the problem. Do not switch on this field programmatically — use 'property' instead, as message wording may change."
+          },
+          "fix": {
+            "type": "string",
+            "description": "Actionable instruction for resolving the issue. Written to be understandable by a developer or passed directly to an LLM for automated remediation."
+          },
+          "google_docs_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Direct link to the relevant section of Google's structured data documentation for this schema type."
+          }
+        }
+      },
+      "RichResult": {
+        "type": "object",
+        "properties": {
+          "eligible": { "type": "boolean" },
+          "reason": { "type": "string" },
+          "google_docs_url": { "type": "string", "format": "uri" }
+        }
+      },
+      "SchemaResult": {
+        "type": "object",
+        "required": ["type", "valid", "rich_result_eligible", "deprecated", "errors", "warnings", "properties_found", "properties_missing_required", "properties_missing_recommended", "rich_result"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The Schema.org @type found in this JSON-LD block (e.g. 'Article', 'Product'). Subtypes like NewsArticle or BlogPosting are normalized to their parent type for validation purposes."
+          },
+          "valid": {
+            "type": "boolean",
+            "description": "true if all required properties defined by Google's structured data guidelines are present and correctly typed. A valid schema may still have warnings for missing recommended properties."
+          },
+          "rich_result_eligible": {
+            "type": "boolean",
+            "description": "true if this schema meets the minimum requirements for Google to display an enhanced rich result in Search. A schema can be valid but not rich-result-eligible (e.g. Product without offers or image)."
+          },
+          "deprecated": {
+            "type": "boolean",
+            "description": "true if Google has retired or restricted this schema type. Deprecated types are still validated, but with a deprecation_note explaining the restriction."
+          },
+          "deprecation_note": {
+            "type": "string",
+            "nullable": true,
+            "description": "Explanation of why this type is deprecated or restricted. For example, FAQPage is restricted to government and health websites since 2024; HowTo was retired in August 2024."
+          },
+          "errors": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ValidationIssue" },
+            "description": "Required properties that are missing or malformed. Each error prevents the schema from qualifying for rich results. Fix all errors before deploying."
+          },
+          "warnings": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ValidationIssue" },
+            "description": "Recommended properties that are missing. Warnings don't block rich results, but including these properties improves the quality and appearance of rich result features."
+          },
+          "properties_found": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Top-level Schema.org property names found in this schema block."
+          },
+          "properties_missing_required": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Required property names that are absent. Use this for programmatic checks — e.g. check if 'offers' is in this array for a Product schema."
+          },
+          "properties_missing_recommended": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Recommended property names that are absent. Adding these improves schema quality and rich result appearance."
+          },
+          "rich_result": { "$ref": "#/components/schemas/RichResult" }
+        }
+      },
+      "ValidationSummary": {
+        "type": "object",
+        "description": "Aggregate statistics across all schemas found on the page or in the request.",
+        "properties": {
+          "total_schemas": { "type": "integer", "description": "Total number of JSON-LD blocks found and validated." },
+          "valid_schemas": { "type": "integer", "description": "Number of schemas with no required-property errors." },
+          "invalid_schemas": { "type": "integer", "description": "Number of schemas with at least one required-property error." },
+          "total_errors": { "type": "integer", "description": "Sum of all errors across all schemas on the page." },
+          "total_warnings": { "type": "integer", "description": "Sum of all warnings across all schemas on the page." },
+          "rich_result_eligible": { "type": "integer", "description": "Number of schemas that meet Google's rich result eligibility requirements." },
+          "score": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Overall schema health score from 0 to 100. 100 means all required and recommended properties are present. Use as a threshold in CI checks — e.g. fail the build if score < 80."
+          }
+        }
+      },
+      "ValidationMeta": {
+        "type": "object",
+        "description": "Metadata about the validation request itself — timing, caching, and credit usage.",
+        "properties": {
+          "api_version": { "type": "string", "description": "The API version that processed this request." },
+          "validated_at": { "type": "string", "format": "date-time", "description": "ISO 8601 timestamp of when the validation was performed." },
+          "cached": {
+            "type": "boolean",
+            "description": "true if this result was served from the 1-hour URL cache. Cached results return instantly and cost 0 credits. Use result.meta.cached in monitoring dashboards to distinguish fresh from cached data."
+          },
+          "credits_used": {
+            "type": "integer",
+            "description": "Number of credits consumed by this request. 0 for cached results, errors (4xx/5xx), and rate-limited requests. 1 for successful validations."
+          },
+          "credits_remaining": { "type": "integer", "description": "Credits remaining in the current billing period for this API key." },
+          "response_time_ms": { "type": "integer", "description": "Total server-side processing time in milliseconds, excluding network latency." }
+        }
+      },
+      "ValidationResponse": {
+        "type": "object",
+        "required": ["success", "schemas_found", "schemas", "summary", "meta"],
+        "properties": {
+          "success": { "type": "boolean", "enum": [true] },
+          "url": { "type": "string", "format": "uri", "description": "The URL that was validated (present for URL requests)." },
+          "schemas_found": { "type": "integer" },
+          "schemas": { "type": "array", "items": { "$ref": "#/components/schemas/SchemaResult" } },
+          "summary": { "$ref": "#/components/schemas/ValidationSummary" },
+          "meta": { "$ref": "#/components/schemas/ValidationMeta" }
+        }
+      },
+      "ApiError": {
+        "type": "object",
+        "required": ["success", "error"],
+        "properties": {
+          "success": { "type": "boolean", "enum": [false] },
+          "error": {
+            "type": "object",
+            "required": ["code", "message"],
+            "properties": {
+              "code": { "type": "string", "description": "Machine-readable error code. Stable across API versions." },
+              "message": { "type": "string", "description": "Human-readable error description." },
+              "docs_url": { "type": "string", "format": "uri" },
+              "upgrade_url": { "type": "string", "format": "uri", "description": "Present on quota_exceeded errors." },
+              "retry_after_seconds": { "type": "integer", "description": "Present on rate_limit_exceeded errors." }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/auth/signup": {
+      "post": {
+        "operationId": "signup",
+        "summary": "Create a free API key",
+        "description": "Sign up with an email address and receive a free API key (100 validations/month). No password required.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": { "type": "string", "format": "email" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "API key created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "api_key": { "type": "string", "example": "sc_live_a1b2c3d4..." },
+                    "email": { "type": "string", "format": "email" },
+                    "plan": { "type": "string", "example": "free" },
+                    "requests_limit": { "type": "integer", "example": 100 },
+                    "dashboard_url": { "type": "string", "format": "uri" },
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid or missing email", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } },
+          "409": { "description": "Email already registered", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "operationId": "login",
+        "summary": "Retrieve API key by email",
+        "description": "Passwordless login — returns the API key and usage stats for the given email address.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": { "type": "string", "format": "email" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "api_key": { "type": "string" },
+                    "email": { "type": "string", "format": "email" },
+                    "plan": { "type": "string" },
+                    "requests_used": { "type": "integer" },
+                    "requests_limit": { "type": "integer" },
+                    "credits_remaining": { "type": "integer" },
+                    "dashboard_url": { "type": "string", "format": "uri" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid or missing email" },
+          "404": { "description": "Email not found" }
+        }
+      }
+    },
+    "/api/auth/checkout": {
+      "post": {
+        "operationId": "createCheckout",
+        "summary": "Create a Stripe checkout session",
+        "description": "Creates a Stripe checkout session for plan upgrades. Requires a valid API key. Returns a Stripe-hosted checkout URL.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["plan"],
+                "properties": {
+                  "plan": { "type": "string", "enum": ["basic", "growth", "scale"] },
+                  "billing": { "type": "string", "enum": ["monthly", "annual"], "default": "monthly" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout session created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": { "type": "string", "format": "uri", "description": "Stripe-hosted checkout URL. Redirect the user here." }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid plan or billing period" },
+          "401": { "description": "Missing or invalid API key" }
+        }
+      }
+    },
+    "/api/v1/types": {
+      "get": {
+        "operationId": "listTypes",
+        "summary": "List all supported schema types",
+        "description": "Returns all schema types that SchemaCheck can validate, grouped by status (supported, coming_soon, planned, deprecated). No authentication required. Call this before validate_schema to check if a given type is supported. Useful for AI agents to discover capabilities before making validation calls.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "List of schema types with metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "types": {
+                      "type": "array",
+                      "description": "All schema types SchemaCheck knows about, across all tiers and statuses.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": { "type": "string", "description": "Schema.org type name (e.g. 'Article', 'Product')." },
+                          "also_matches": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "description": "Subtypes that are validated using this type's rule file (e.g. Article also validates NewsArticle, BlogPosting)."
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": ["supported", "coming_soon", "planned", "deprecated"],
+                            "description": "'supported' = validates now. 'coming_soon' = in active development. 'planned' = on the roadmap. 'deprecated' = validated with a deprecation warning."
+                          },
+                          "tier": {
+                            "type": "integer",
+                            "description": "Development tier: 1 = supported, 2 = coming soon, 3 = planned, 4 = future, 0 = deprecated."
+                          },
+                          "google_docs_url": { "type": "string", "format": "uri", "description": "Link to Google's structured data documentation for this type." },
+                          "required_properties": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "description": "Property names that must be present for the schema to be considered valid. Only populated for Tier 1 (supported) types."
+                          },
+                          "recommended_properties": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "description": "Property names that Google recommends but doesn't strictly require. Missing these triggers warnings, not errors. Only populated for Tier 1 (supported) types."
+                          },
+                          "note": { "type": "string", "description": "Optional note about restrictions, deprecation status, or upcoming changes." }
+                        }
+                      }
+                    },
+                    "total_supported": { "type": "integer", "description": "Number of types currently supported (Tier 1)." },
+                    "total_coming_soon": { "type": "integer", "description": "Number of types in active development (Tier 2)." },
+                    "total_planned": { "type": "integer", "description": "Number of types on the roadmap (Tier 3 + 4)." },
+                    "total_deprecated": { "type": "integer", "description": "Number of types that are deprecated but still validated with warnings." },
+                    "schema_org_version": { "type": "string", "description": "The Schema.org vocabulary version this API is based on." },
+                    "last_updated": { "type": "string", "format": "date", "description": "Date the type list was last updated." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/validate": {
+      "get": {
+        "operationId": "validateUrl",
+        "summary": "Validate a URL",
+        "description": "Fetch the HTML at the given URL, extract all JSON-LD blocks, and validate each schema. Results are cached for 1 hour — cached responses cost 0 credits.",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "uri" },
+            "description": "The fully-qualified HTTP or HTTPS URL to validate."
+          },
+          {
+            "name": "access_key",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" },
+            "description": "API key (alternative to x-api-key header). Recommended for GET requests."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Validation successful",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ValidationResponse" } } }
+          },
+          "400": { "description": "Invalid or missing URL", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } },
+          "401": { "description": "Missing or invalid API key", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } },
+          "422": { "description": "URL fetch failed or no JSON-LD found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } },
+          "429": { "description": "Rate limit or quota exceeded", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } },
+          "504": { "description": "URL fetch timed out", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } }
+        }
+      },
+      "post": {
+        "operationId": "validatePost",
+        "summary": "Validate a URL or raw JSON-LD",
+        "description": "Pass a URL (same as GET) or a raw JSON-LD object/array for direct validation. Raw JSON-LD is never cached.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "oneOf": [
+                  {
+                    "title": "URL input",
+                    "required": ["url"],
+                    "properties": {
+                      "url": { "type": "string", "format": "uri", "description": "URL to fetch and validate." }
+                    }
+                  },
+                  {
+                    "title": "JSON-LD input",
+                    "required": ["jsonld"],
+                    "properties": {
+                      "jsonld": {
+                        "description": "Raw JSON-LD object or @graph array. Never cached.",
+                        "oneOf": [
+                          { "type": "object" },
+                          { "type": "array", "items": { "type": "object" } }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Validation successful",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ValidationResponse" } } }
+          },
+          "400": { "description": "Missing or invalid input", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } },
+          "401": { "description": "Missing or invalid API key", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } },
+          "422": { "description": "URL fetch failed, no JSON-LD found, or parse error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } },
+          "429": { "description": "Rate limit or quota exceeded", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } },
+          "504": { "description": "URL fetch timed out", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ApiError" } } } }
+        }
+      }
+    }
+  }
+}

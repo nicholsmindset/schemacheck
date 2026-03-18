@@ -1,0 +1,35 @@
+{
+  "type": "QAPage",
+  "also_matches": [],
+  "validation_depth": "standard",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/qapage",
+  "required_properties": [
+    {
+      "property": "mainEntity",
+      "type": "object",
+      "expected_type": ["Question"],
+      "description": "The primary question on the page. Must be a Question object with a name and acceptedAnswer.",
+      "nested_recommended": ["name", "acceptedAnswer", "suggestedAnswer"],
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The title of the Q&A page."
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A short description of the page content."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The canonical URL of the Q&A page."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

@@ -1,0 +1,51 @@
+{
+  "type": "MerchantReturnPolicy",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/merchant-listing",
+  "required_properties": [
+    {
+      "property": "applicableCountry",
+      "type": "string",
+      "description": "The 2-letter ISO 3166-1 country code where this return policy applies (e.g. 'US').",
+      "rich_result_required": true
+    },
+    {
+      "property": "returnPolicyCategory",
+      "type": "string",
+      "description": "The category of return policy (e.g. https://schema.org/MerchantReturnFiniteReturnWindow).",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "merchantReturnDays",
+      "type": "string",
+      "description": "The number of days from the delivery date that returns are accepted."
+    },
+    {
+      "property": "returnMethod",
+      "type": "string",
+      "description": "The method of return (e.g. https://schema.org/ReturnByMail)."
+    },
+    {
+      "property": "returnShippingFeesAmount",
+      "type": "object",
+      "expected_type": ["MonetaryAmount"],
+      "description": "The shipping fees for returning an item.",
+      "nested_recommended": ["value", "currency"]
+    },
+    {
+      "property": "refundType",
+      "type": "string",
+      "description": "The type of refund offered (e.g. https://schema.org/FullRefund)."
+    },
+    {
+      "property": "itemCondition",
+      "type": "string",
+      "description": "The condition of items accepted for return (e.g. https://schema.org/NewCondition)."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

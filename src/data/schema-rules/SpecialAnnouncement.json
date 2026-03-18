@@ -1,0 +1,46 @@
+{
+  "type": "SpecialAnnouncement",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/special-announcements",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "A short, one-line summary of the announcement.",
+      "rich_result_required": false
+    },
+    {
+      "property": "datePosted",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the announcement was made, in ISO 8601 format.",
+      "rich_result_required": false
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "expires",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the announcement expires or is no longer valid."
+    },
+    {
+      "property": "text",
+      "type": "string",
+      "description": "The full text of the announcement."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "A URL with full details about the announcement."
+    },
+    {
+      "property": "category",
+      "type": "url",
+      "description": "The category of this announcement (e.g. https://www.wikidata.org/wiki/Q81068910 for COVID-related)."
+    }
+  ],
+  "deprecated": true,
+  "deprecation_note": "Google retired SpecialAnnouncement rich results in 2025. This markup will not generate rich results."
+}

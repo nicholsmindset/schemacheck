@@ -1,0 +1,257 @@
+---
+title: "How to validate JSON-LD structured data with an API"
+date: "2026-03-12"
+excerpt: "A practical guide to programmatic Schema.org validation — GET requests for live URLs, POST requests for raw JSON-LD, batch processing with concurrency control, and CI integration."
+category: "Guides"
+tags: ["json-ld", "api", "tutorial", "structured-data", "ci-cd"]
+readingTime: "6 min read"
+author: "Robert Nichols"
+---
+
+JSON-LD structured data lives in a `<script type="application/ld+json">` tag and tells Google what your content is: an Article, a Product, a LocalBusiness. Get it right and you unlock rich results — star ratings, pricing, and article metadata shown directly in search. Get it wrong — or silently lose required properties — and those rich results disappear.
+
+This guide covers how to validate JSON-LD programmatically using the SchemaCheck API, from a simple one-off check to a full CI integration.
+
+## Get an API key
+
+Sign up at [schemacheck.dev](/docs/getting-started). Free plan includes 100 validations/month — enough to cover CI checks and daily monitoring of key pages. No credit card required.
+
+Your API key has the format `sc_live_...`.
+
+## Validate a URL
+
+The simplest case: you have a live URL and want to know if its structured data is valid.
+
+```bash
+curl "https://schemacheck.dev/api/v1/validate?url=https://example.com/article&access_key=YOUR_KEY"
+```
+
+**JavaScript:**
+
+```typescript
+async function validateUrl(url: string, apiKey: string) {
+  const res = await fetch(
+    `https://schemacheck.dev/api/v1/validate?url=${encodeURIComponent(url)}&access_key=${apiKey}`
+  );
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
+
+const result = await validateUrl("https://example.com/article", process.env.SCHEMACHECK_API_KEY);
+console.log(result.summary.score);          // 0–100 health score
+console.log(result.summary.rich_result_eligible); // true/false
+```
+
+**Python:**
+
+```python
+import requests
+
+def validate_url(url: str, api_key: str) -> dict:
+    resp = requests.get(
+        "https://schemacheck.dev/api/v1/validate",
+        params={"url": url, "access_key": api_key},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+result = validate_url("https://example.com/article", os.environ["SCHEMACHECK_API_KEY"])
+```
+
+The response returns a `schemas` array (one entry per JSON-LD block found on the page), a `summary` with aggregate stats, and a `meta` object with timing and cache info.
+
+## Understanding the response
+
+```json
+{
+  "success": true,
+  "schemas": [
+    {
+      "type": "Article",
+      "errors": [
+        {
+          "property": "author",
+          "message": "Required property missing",
+          "severity": "error",
+          "fix": "Add an author property with a Person or Organization value",
+          "docs_url": "https://developers.google.com/search/docs/appearance/structured-data/article"
+        }
+      ],
+      "warnings": [],
+      "rich_result_eligible": false,
+      "properties_present": ["headline", "datePublished", "image"],
+      "properties_missing_required": ["author"]
+    }
+  ],
+  "summary": {
+    "score": 55,
+    "total_errors": 1,
+    "total_warnings": 0,
+    "rich_result_eligible": false
+  },
+  "meta": {
+    "cached": false,
+    "response_time_ms": 340
+  }
+}
+```
+
+Key fields to know:
+
+- `errors` — required properties missing or malformed. Each error prevents rich results.
+- `warnings` — recommended properties missing. Won't block rich results, but hurt quality.
+- `rich_result_eligible` — whether this schema type can show enhanced results in Google.
+- `score` — 0–100. 100 means all required and recommended properties present.
+- `fix` — actionable message for each error. Ready to pass to an LLM or display to a developer.
+- `cached` — if `true`, this was a cache hit. No credit was used.
+
+## Validate raw JSON-LD (without a live page)
+
+You can validate JSON-LD before publishing by POSTing the raw object:
+
+```typescript
+async function validateJsonLd(jsonld: object, apiKey: string) {
+  const res = await fetch("https://schemacheck.dev/api/v1/validate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+    },
+    body: JSON.stringify({ jsonld }),
+  });
+  return res.json();
+}
+
+// Check schema before it hits production
+const result = await validateJsonLd({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "My Product",
+  "offers": {
+    "@type": "Offer",
+    "price": "29.99",
+    "priceCurrency": "USD"
+  }
+}, process.env.SCHEMACHECK_API_KEY);
+```
+
+This is useful for:
+
+- **CMS plugins** — validate schema before saving to the database
+- **Code review** — validate schema changes in a PR before merging
+- **Schema generation** — verify the output of a schema generation library
+
+## Batch validate a list of URLs
+
+For sitemap audits or bulk validation, process URLs in parallel with a concurrency limit:
+
+```typescript
+async function validateBatch(urls: string[], apiKey: string, concurrency = 5) {
+  const results = [];
+
+  for (let i = 0; i < urls.length; i += concurrency) {
+    const batch = urls.slice(i, i + concurrency);
+    const settled = await Promise.allSettled(
+      batch.map(url =>
+        fetch(`https://schemacheck.dev/api/v1/validate?url=${encodeURIComponent(url)}&access_key=${apiKey}`)
+          .then(r => r.json())
+      )
+    );
+
+    for (let j = 0; j < batch.length; j++) {
+      const s = settled[j];
+      if (s.status === "fulfilled" && s.value.success) {
+        results.push({ url: batch[j], ...s.value.summary });
+      }
+    }
+  }
+
+  return results.sort((a, b) => a.score - b.score); // worst first
+}
+```
+
+**Rate limits by plan:**
+
+| Plan | Limit |
+|------|-------|
+| Free | 10 req/min |
+| Basic | 30 req/min |
+| Growth | 60 req/min |
+| Scale | 120 req/min |
+
+Set `concurrency` conservatively (3–5) to stay within your plan's rate limit.
+
+## Integrate with CI
+
+The most valuable use of SchemaCheck: blocking deploys when required schema properties go missing.
+
+**GitHub Actions:**
+
+```yaml
+- name: Validate schema markup
+  run: |
+    for url in "https://example.com" "https://example.com/product/best-seller"; do
+      RESULT=$(curl -sf "https://schemacheck.dev/api/v1/validate?url=$url&access_key=$SCHEMACHECK_API_KEY")
+      ERRORS=$(echo $RESULT | jq '.summary.total_errors')
+      SCORE=$(echo $RESULT | jq '.summary.score')
+      echo "$url — score: $SCORE/100, errors: $ERRORS"
+      if [ "$ERRORS" -gt 0 ]; then
+        echo "Schema errors:"
+        echo $RESULT | jq '.schemas[].errors[] | "  \(.property): \(.message)"'
+        exit 1
+      fi
+    done
+```
+
+This runs on every push to `main`. If any of your key pages have schema errors, the deploy is blocked and the error message tells you exactly which property is missing.
+
+## Handle caching
+
+The API caches URL validation results for 1 hour. If the same URL is called twice within that window:
+
+- The second call returns `meta.cached: true`
+- No credit is consumed for the second call
+- The response is identical to the first
+
+This means you can call the API aggressively in development without burning credits. In production, pair caching-aware logic with any dashboard or monitoring tool:
+
+```typescript
+const result = await validateUrl(url, apiKey);
+
+if (result.meta.cached) {
+  console.log("Cache hit — no credit used");
+} else {
+  console.log(`Fresh result — took ${result.meta.response_time_ms}ms`);
+}
+```
+
+## What to do with errors
+
+Each error object includes:
+
+- `property` — the Schema.org property that's missing or wrong
+- `message` — human-readable description
+- `fix` — specific instruction for resolving the error
+- `docs_url` — link to the relevant Google structured data documentation
+
+Don't switch on `message` (it can change). Switch on `property` or check `properties_missing_required` for robust logic:
+
+```typescript
+const productSchema = result.schemas.find(s => s.type === "Product");
+
+if (productSchema?.properties_missing_required.includes("offers")) {
+  // Flag for the e-commerce team
+}
+
+if (result.summary.score < 80) {
+  // Alert monitoring channel
+}
+```
+
+## Next steps
+
+- **[Bulk audit from a sitemap](/use-cases/seo-audit)** — Python script that pulls all URLs, validates each, and sorts by score
+- **[CI/CD integration](/use-cases/seo-audit#ci)** — Full GitHub Actions workflow
+- **[CMS publish hooks](/use-cases/cms-plugins)** — WordPress, Shopify, and Webflow integration
+- **[API reference](/docs/options)** — Full response schema documentation

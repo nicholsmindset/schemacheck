@@ -1,0 +1,58 @@
+{
+  "type": "ClaimReview",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/factcheck",
+  "required_properties": [
+    {
+      "property": "claimReviewed",
+      "type": "string",
+      "description": "A short summary of the claim being evaluated.",
+      "rich_result_required": true
+    },
+    {
+      "property": "reviewRating",
+      "type": "object",
+      "expected_type": ["Rating"],
+      "description": "The truthfulness rating of the claim.",
+      "nested_recommended": ["alternateName", "ratingValue", "bestRating", "worstRating"],
+      "rich_result_required": true
+    },
+    {
+      "property": "author",
+      "type": "object",
+      "expected_type": ["Organization", "Person"],
+      "description": "The organization or person that performed the fact-check.",
+      "nested_recommended": ["name", "url"],
+      "rich_result_required": true
+    },
+    {
+      "property": "itemReviewed",
+      "type": "object",
+      "expected_type": ["Claim"],
+      "description": "The specific claim being reviewed.",
+      "nested_recommended": ["author", "datePublished", "appearance"],
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the fact-check article."
+    },
+    {
+      "property": "datePublished",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the fact-check was published."
+    },
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The title of the fact-check article."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": "ClaimReview rich results are restricted to eligible fact-checking organizations. Validate with Google before relying on this for rich results."
+}

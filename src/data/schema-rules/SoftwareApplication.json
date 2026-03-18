@@ -1,0 +1,70 @@
+{
+  "type": "SoftwareApplication",
+  "also_matches": ["WebApplication", "MobileApplication", "VideoGame"],
+  "validation_depth": "standard",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/software-app",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the application.",
+      "rich_result_required": true
+    },
+    {
+      "property": "applicationCategory",
+      "type": "string",
+      "description": "The type of application (e.g. 'GameApplication', 'MusicApplication', 'SocialNetworkingApplication').",
+      "rich_result_required": true
+    },
+    {
+      "property": "operatingSystem",
+      "type": "string",
+      "description": "The operating systems the application runs on (e.g. 'Windows', 'iOS', 'Android', 'Web').",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "offers",
+      "type": "object",
+      "expected_type": ["Offer"],
+      "description": "An offer for the application, including price. Required for rich results.",
+      "nested_recommended": ["price", "priceCurrency"],
+      "rich_result_required": true
+    },
+    {
+      "property": "aggregateRating",
+      "type": "object",
+      "expected_type": ["AggregateRating"],
+      "description": "The aggregate user rating of the application.",
+      "nested_recommended": ["ratingValue", "ratingCount"]
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the application."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the application's homepage."
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "An icon or screenshot of the application."
+    },
+    {
+      "property": "downloadUrl",
+      "type": "url",
+      "description": "A direct URL to download the application."
+    },
+    {
+      "property": "softwareVersion",
+      "type": "string",
+      "description": "The version of the application."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

@@ -1,0 +1,65 @@
+{
+  "type": "Vehicle",
+  "also_matches": ["Car"],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/vehicle-listing",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the vehicle (e.g. '2020 Honda Civic LX').",
+      "rich_result_required": false
+    },
+    {
+      "property": "vehicleIdentificationNumber",
+      "type": "string",
+      "description": "The 17-character Vehicle Identification Number (VIN).",
+      "rich_result_required": false
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the vehicle."
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "An image of the vehicle."
+    },
+    {
+      "property": "offers",
+      "type": "object",
+      "expected_type": ["Offer"],
+      "description": "The price and availability of the vehicle.",
+      "nested_recommended": ["price", "priceCurrency"]
+    },
+    {
+      "property": "brand",
+      "type": "object",
+      "expected_type": ["Brand"],
+      "description": "The brand/make of the vehicle.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "mileageFromOdometer",
+      "type": "object",
+      "expected_type": ["QuantitativeValue"],
+      "description": "The odometer reading of the vehicle.",
+      "nested_recommended": ["value", "unitCode"]
+    },
+    {
+      "property": "vehicleConfiguration",
+      "type": "string",
+      "description": "The trim level, variant, or configuration of the vehicle."
+    },
+    {
+      "property": "numberOfDoors",
+      "type": "string",
+      "description": "The number of doors on the vehicle."
+    }
+  ],
+  "deprecated": true,
+  "deprecation_note": "Google retired Vehicle Listing rich results in 2025. This markup will not generate rich results but is still valid Schema.org."
+}

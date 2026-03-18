@@ -1,0 +1,57 @@
+{
+  "type": "ProductGroup",
+  "also_matches": [],
+  "validation_depth": "standard",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/product-variants",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the product group.",
+      "rich_result_required": true
+    },
+    {
+      "property": "hasVariant",
+      "type": "array",
+      "description": "The individual product variants in this group. Each variant must be a Product with its own offers.",
+      "rich_result_required": true
+    },
+    {
+      "property": "variesBy",
+      "type": "string",
+      "description": "The product attributes that vary between variants (e.g. 'color', 'size'). Use https://schema.org/size or custom properties.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the product group."
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "A representative image for the product group."
+    },
+    {
+      "property": "brand",
+      "type": "object",
+      "expected_type": ["Brand", "Organization"],
+      "description": "The brand of the product group.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "sku",
+      "type": "string",
+      "description": "The product group's SKU or identifier."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the product group page."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

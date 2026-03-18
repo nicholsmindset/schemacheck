@@ -1,0 +1,38 @@
+{
+  "type": "ItemList",
+  "also_matches": ["BreadcrumbList"],
+  "validation_depth": "standard",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/carousel",
+  "required_properties": [
+    {
+      "property": "itemListElement",
+      "type": "array",
+      "description": "An array of ListItem objects. Each item must have a 'position' property. For carousel use, each item should also have either a 'url' or a nested item entity.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the list."
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the list."
+    },
+    {
+      "property": "numberOfItems",
+      "type": "string",
+      "description": "The number of items in the list."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the page that hosts this list."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

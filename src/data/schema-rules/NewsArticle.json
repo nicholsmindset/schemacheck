@@ -1,0 +1,68 @@
+{
+  "type": "NewsArticle",
+  "also_matches": [],
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/article",
+  "required_properties": [
+    {
+      "property": "headline",
+      "type": "string",
+      "max_length": 110,
+      "description": "The headline of the news article. Must not exceed 110 characters.",
+      "rich_result_required": true
+    },
+    {
+      "property": "author",
+      "type": "object",
+      "expected_type": ["Person", "Organization"],
+      "description": "The author of the article.",
+      "nested_recommended": ["name", "url"],
+      "rich_result_required": true
+    },
+    {
+      "property": "datePublished",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the article was first published, in ISO 8601 format.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "image",
+      "type": "url",
+      "description": "A representative image for the article. Required for rich results.",
+      "rich_result_required": true
+    },
+    {
+      "property": "dateModified",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the article was most recently modified."
+    },
+    {
+      "property": "publisher",
+      "type": "object",
+      "expected_type": ["Organization"],
+      "description": "The publisher of the news article.",
+      "nested_recommended": ["name", "logo"]
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A short description of the article."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The canonical URL of the article."
+    },
+    {
+      "property": "thumbnailUrl",
+      "type": "url",
+      "description": "A thumbnail image URL for the article."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null,
+  "validation_depth": "full"
+}

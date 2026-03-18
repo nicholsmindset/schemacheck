@@ -1,0 +1,55 @@
+{
+  "type": "ImageObject",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/image-license-metadata",
+  "required_properties": [
+    {
+      "property": "contentUrl",
+      "type": "url",
+      "description": "A URL to the actual image file.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "license",
+      "type": "url",
+      "description": "A URL to the license page for the image."
+    },
+    {
+      "property": "acquireLicensePage",
+      "type": "url",
+      "description": "A URL to a page where users can learn how to license the image."
+    },
+    {
+      "property": "creditText",
+      "type": "string",
+      "description": "The credit text to display when the image is used."
+    },
+    {
+      "property": "creator",
+      "type": "object",
+      "expected_type": ["Person", "Organization"],
+      "description": "The creator of the image.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "copyrightNotice",
+      "type": "string",
+      "description": "A copyright notice for the image."
+    },
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name or title of the image."
+    },
+    {
+      "property": "caption",
+      "type": "string",
+      "description": "A caption for the image."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

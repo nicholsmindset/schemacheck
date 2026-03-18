@@ -1,0 +1,59 @@
+# SchemaCheck API
+
+Schema markup validation API for developers and AI agents. Validates Schema.org JSON-LD structured data against Google's current rich result requirements.
+
+## Authentication
+- Header: `x-api-key: YOUR_KEY`
+- Query param: `access_key=YOUR_KEY`
+
+## Endpoint
+GET /api/v1/validate?url=https://example.com&access_key=YOUR_KEY
+POST /api/v1/validate (body: {"url": "..."} or {"jsonld": {...}})
+
+## What it validates
+- JSON-LD syntax and structure
+- Required properties per Google's specs
+- Recommended properties (flagged as warnings)
+- Rich result eligibility
+- Deprecated type detection (HowTo, FAQPage restrictions, etc.)
+
+## Supported Schema Types (35 total across 4 tiers)
+
+### Tier 1 — Full validation (7 types)
+Article (NewsArticle, BlogPosting, TechArticle, ScholarlyArticle), Product, LocalBusiness (Restaurant, Store, Hotel, MedicalBusiness), Organization (Corporation, EducationalOrganization, NGO), BreadcrumbList, WebSite, FAQPage
+
+### Tier 2 — Standard validation (10 types, coming soon)
+Review (AggregateRating), Recipe, Event (MusicEvent, SportsEvent, EducationEvent), VideoObject (Clip), SoftwareApplication (WebApplication, MobileApplication, VideoGame), JobPosting, Course (CourseInstance), ItemList, QAPage, ProductGroup
+
+### Tier 3 — Basic validation (10 types, planned)
+Book (Audiobook), Dataset (DataCatalog), DiscussionForumPosting, EmployerAggregateRating, Movie, ImageObject, ProfilePage, MerchantReturnPolicy, OfferShippingDetails, ClaimReview
+
+### Tier 4 — Basic validation (5 types, planned)
+MathSolver, Quiz, LoyaltyProgram, VacationRental, CreativeWork (subscription/paywalled content)
+
+### Deprecated — Validated with warnings (3 types)
+HowTo (retired Aug 2024), SpecialAnnouncement (retired 2025), Vehicle/Car (retired 2025)
+
+## Response Format
+Returns: schemas_found, per-schema errors/warnings with fix suggestions, rich_result_eligible boolean, validation score (0-100), Google docs links
+
+## Billing
+- Free: 100 validations/month
+- Cached results and failed requests don't consume credits
+- Paid plans: $19/mo (3K), $79/mo (15K), $199/mo (75K)
+
+## Limitations
+- JSON-LD only (Microdata and RDFa not yet supported)
+- URL fetch timeout: 10 seconds
+- Maximum 5 redirects followed
+
+## MCP Server
+npm install schemacheck-mcp
+
+## Reference Documentation
+- Google Structured Data Guide: https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data
+- Google Rich Result Gallery: https://developers.google.com/search/docs/appearance/structured-data/search-gallery
+- Schema.org Full Type List (827 types): https://schema.org/docs/full.html
+- Schema.org Developers: https://schema.org/docs/developers.html
+- SchemaCheck Docs: https://schemacheck.dev/docs
+- SchemaCheck OpenAPI Spec: https://schemacheck.dev/openapi.json

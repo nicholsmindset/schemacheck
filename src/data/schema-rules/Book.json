@@ -1,0 +1,60 @@
+{
+  "type": "Book",
+  "also_matches": ["Audiobook"],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/book",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The title of the book.",
+      "rich_result_required": true
+    },
+    {
+      "property": "author",
+      "type": "object",
+      "expected_type": ["Person", "Organization"],
+      "description": "The author of the book.",
+      "nested_recommended": ["name"],
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "isbn",
+      "type": "string",
+      "description": "The ISBN of the book."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the book page."
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "The cover image of the book."
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the book."
+    },
+    {
+      "property": "workExample",
+      "type": "object",
+      "expected_type": ["Book"],
+      "description": "A specific edition or format of the book (e.g. paperback, ebook).",
+      "nested_recommended": ["isbn", "bookFormat", "potentialAction"]
+    },
+    {
+      "property": "potentialAction",
+      "type": "object",
+      "expected_type": ["ReadAction"],
+      "description": "A link to read the book online.",
+      "nested_recommended": ["target"]
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

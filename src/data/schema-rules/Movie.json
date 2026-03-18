@@ -1,0 +1,72 @@
+{
+  "type": "Movie",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/movie",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The title of the movie.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "image",
+      "type": "url",
+      "description": "A poster or representative image for the movie."
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A brief description or synopsis of the movie."
+    },
+    {
+      "property": "dateCreated",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The year or date the movie was released."
+    },
+    {
+      "property": "director",
+      "type": "object",
+      "expected_type": ["Person"],
+      "description": "The director of the movie.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "actor",
+      "type": "object",
+      "expected_type": ["Person"],
+      "description": "An actor in the movie.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "aggregateRating",
+      "type": "object",
+      "expected_type": ["AggregateRating"],
+      "description": "The aggregate rating of the movie.",
+      "nested_recommended": ["ratingValue", "ratingCount"]
+    },
+    {
+      "property": "trailer",
+      "type": "object",
+      "expected_type": ["VideoObject"],
+      "description": "The trailer of the movie.",
+      "nested_recommended": ["name", "embedUrl", "thumbnailUrl"]
+    },
+    {
+      "property": "contentRating",
+      "type": "string",
+      "description": "The MPAA rating of the movie (e.g. 'PG-13')."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the movie page."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

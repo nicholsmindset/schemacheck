@@ -1,0 +1,49 @@
+{
+  "type": "EmployerAggregateRating",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/employer-aggregate-rating",
+  "required_properties": [
+    {
+      "property": "itemReviewed",
+      "type": "object",
+      "expected_type": ["Organization"],
+      "description": "The employer being rated. Must be an Organization with a name.",
+      "nested_recommended": ["name", "sameAs"],
+      "rich_result_required": true
+    },
+    {
+      "property": "ratingValue",
+      "type": "string",
+      "description": "The rating value, typically a number between 1 and 5.",
+      "rich_result_required": true
+    },
+    {
+      "property": "ratingCount",
+      "type": "string",
+      "description": "The number of ratings that were used to calculate the aggregate rating.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "bestRating",
+      "type": "string",
+      "description": "The highest possible rating value (defaults to 5 if omitted)."
+    },
+    {
+      "property": "worstRating",
+      "type": "string",
+      "description": "The lowest possible rating value (defaults to 1 if omitted)."
+    },
+    {
+      "property": "author",
+      "type": "object",
+      "expected_type": ["Person", "Organization"],
+      "description": "The entity that compiled the aggregate rating.",
+      "nested_recommended": ["name"]
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

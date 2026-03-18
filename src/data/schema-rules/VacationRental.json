@@ -1,0 +1,66 @@
+{
+  "type": "VacationRental",
+  "also_matches": ["LodgingBusiness", "Accommodation"],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/vacation-rental",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the vacation rental property.",
+      "rich_result_required": true
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the vacation rental property.",
+      "rich_result_required": true
+    },
+    {
+      "property": "address",
+      "type": "object",
+      "expected_type": ["PostalAddress"],
+      "description": "The address of the rental property.",
+      "nested_recommended": ["streetAddress", "addressLocality", "addressRegion", "postalCode", "addressCountry"],
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "image",
+      "type": "url",
+      "description": "An image of the rental property."
+    },
+    {
+      "property": "offers",
+      "type": "object",
+      "expected_type": ["Offer"],
+      "description": "The price and availability for the rental.",
+      "nested_recommended": ["price", "priceCurrency"]
+    },
+    {
+      "property": "numberOfRooms",
+      "type": "string",
+      "description": "The number of rooms in the property."
+    },
+    {
+      "property": "amenityFeature",
+      "type": "object",
+      "expected_type": ["LocationFeatureSpecification"],
+      "description": "An amenity feature of the rental property.",
+      "nested_recommended": ["name", "value"]
+    },
+    {
+      "property": "checkInTime",
+      "type": "string",
+      "description": "The time guests may check in (ISO 8601 time format, e.g. T15:00)."
+    },
+    {
+      "property": "checkOutTime",
+      "type": "string",
+      "description": "The time guests must check out (ISO 8601 time format, e.g. T11:00)."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

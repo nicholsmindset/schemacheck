@@ -1,0 +1,54 @@
+{
+  "type": "Organization",
+  "also_matches": ["Corporation", "EducationalOrganization", "GovernmentOrganization", "NGO", "SportsOrganization", "NewsMediaOrganization"],
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/organization",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the organization.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the organization's official website.",
+      "rich_result_required": true
+    },
+    {
+      "property": "logo",
+      "type": "url",
+      "description": "The logo of the organization. Required for rich results.",
+      "rich_result_required": true
+    },
+    {
+      "property": "sameAs",
+      "type": "url",
+      "description": "URLs of pages about the organization on other authoritative sites (e.g. Wikipedia, social profiles)."
+    },
+    {
+      "property": "contactPoint",
+      "type": "object",
+      "expected_type": ["ContactPoint"],
+      "description": "Contact information for the organization.",
+      "nested_recommended": ["telephone", "contactType"]
+    },
+    {
+      "property": "address",
+      "type": "object",
+      "expected_type": ["PostalAddress"],
+      "description": "The physical address of the organization.",
+      "nested_recommended": ["streetAddress", "addressLocality", "addressCountry"]
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A short description of the organization."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null,
+  "validation_depth": "full"
+}

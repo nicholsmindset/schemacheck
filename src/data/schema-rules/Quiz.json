@@ -1,0 +1,48 @@
+{
+  "type": "Quiz",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/education-qa",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name or title of the quiz.",
+      "rich_result_required": true
+    },
+    {
+      "property": "hasPart",
+      "type": "array",
+      "description": "The practice problem items in this quiz. Each item should be a Question with text and acceptedAnswer.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "about",
+      "type": "object",
+      "expected_type": ["Thing"],
+      "description": "The topic or subject matter of the quiz.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "educationalLevel",
+      "type": "string",
+      "description": "The educational level for which the quiz is intended (e.g. 'Grade 10', 'University')."
+    },
+    {
+      "property": "educationalAlignment",
+      "type": "object",
+      "expected_type": ["AlignmentObject"],
+      "description": "The educational standard this quiz aligns to.",
+      "nested_recommended": ["alignmentType", "targetName"]
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the quiz content."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

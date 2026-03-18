@@ -1,0 +1,63 @@
+{
+  "type": "Dataset",
+  "also_matches": ["DataCatalog"],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/dataset",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the dataset.",
+      "rich_result_required": true
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the dataset.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the dataset page."
+    },
+    {
+      "property": "creator",
+      "type": "object",
+      "expected_type": ["Person", "Organization"],
+      "description": "The creator or author of the dataset.",
+      "nested_recommended": ["name"]
+    },
+    {
+      "property": "license",
+      "type": "url",
+      "description": "The license URL under which the dataset is distributed."
+    },
+    {
+      "property": "keywords",
+      "type": "string",
+      "description": "Keywords or tags describing the dataset."
+    },
+    {
+      "property": "distribution",
+      "type": "object",
+      "expected_type": ["DataDownload"],
+      "description": "A downloadable form of the dataset.",
+      "nested_recommended": ["encodingFormat", "contentUrl"]
+    },
+    {
+      "property": "variableMeasured",
+      "type": "string",
+      "description": "The variables that are measured in the dataset."
+    },
+    {
+      "property": "identifier",
+      "type": "string",
+      "description": "A unique identifier for the dataset (e.g. DOI)."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

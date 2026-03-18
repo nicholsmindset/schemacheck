@@ -1,0 +1,79 @@
+{
+  "type": "VideoObject",
+  "also_matches": ["Clip"],
+  "validation_depth": "standard",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/video",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The title of the video.",
+      "rich_result_required": true
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A description of the video.",
+      "rich_result_required": true
+    },
+    {
+      "property": "thumbnailUrl",
+      "type": "url",
+      "description": "A URL pointing to the video thumbnail image. Required for rich results.",
+      "rich_result_required": true
+    },
+    {
+      "property": "uploadDate",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the video was first published, in ISO 8601 format.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "contentUrl",
+      "type": "url",
+      "description": "A URL pointing to the actual video media file."
+    },
+    {
+      "property": "embedUrl",
+      "type": "url",
+      "description": "A URL pointing to a player for the video."
+    },
+    {
+      "property": "duration",
+      "type": "string",
+      "description": "The duration of the video in ISO 8601 duration format (e.g. PT1M30S)."
+    },
+    {
+      "property": "expires",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date after which the video will no longer be available."
+    },
+    {
+      "property": "hasPart",
+      "type": "object",
+      "expected_type": ["Clip"],
+      "description": "Key segments (clips) within the video, used for key moments rich results.",
+      "nested_recommended": ["name", "startOffset", "endOffset", "url"]
+    },
+    {
+      "property": "interactionStatistic",
+      "type": "object",
+      "expected_type": ["InteractionCounter"],
+      "description": "Statistics about interactions with the video (e.g. view count).",
+      "nested_recommended": ["interactionType", "userInteractionCount"]
+    },
+    {
+      "property": "publisher",
+      "type": "object",
+      "expected_type": ["Organization"],
+      "description": "The publisher of the video.",
+      "nested_recommended": ["name", "logo"]
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

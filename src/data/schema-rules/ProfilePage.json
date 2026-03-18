@@ -1,0 +1,46 @@
+{
+  "type": "ProfilePage",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/profile-page",
+  "required_properties": [
+    {
+      "property": "mainEntity",
+      "type": "object",
+      "expected_type": ["Person", "Organization"],
+      "description": "The person or organization whose profile is represented on this page.",
+      "nested_recommended": ["name", "url", "image"],
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the profile page or person."
+    },
+    {
+      "property": "description",
+      "type": "string",
+      "description": "A brief description of the profile."
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The canonical URL of the profile page."
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "A profile photo or avatar."
+    },
+    {
+      "property": "dateModified",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the profile was last modified."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

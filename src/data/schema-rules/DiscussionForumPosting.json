@@ -1,0 +1,67 @@
+{
+  "type": "DiscussionForumPosting",
+  "also_matches": [],
+  "validation_depth": "basic",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/discussion-forum",
+  "required_properties": [
+    {
+      "property": "headline",
+      "type": "string",
+      "description": "The headline or title of the forum post.",
+      "rich_result_required": true
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The canonical URL of the forum post.",
+      "rich_result_required": true
+    },
+    {
+      "property": "author",
+      "type": "object",
+      "expected_type": ["Person", "Organization"],
+      "description": "The author of the forum post.",
+      "nested_recommended": ["name", "url"],
+      "rich_result_required": true
+    },
+    {
+      "property": "datePublished",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the post was first published, in ISO 8601 format.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "text",
+      "type": "string",
+      "description": "The text body of the forum post."
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "An image associated with the forum post."
+    },
+    {
+      "property": "commentCount",
+      "type": "string",
+      "description": "The number of comments on the post."
+    },
+    {
+      "property": "interactionStatistic",
+      "type": "object",
+      "expected_type": ["InteractionCounter"],
+      "description": "Statistics about interactions with the post (e.g. comment count, view count).",
+      "nested_recommended": ["interactionType", "userInteractionCount"]
+    },
+    {
+      "property": "dateModified",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the post was last modified."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}

@@ -1,0 +1,17 @@
+{
+  "type": "FAQPage",
+  "also_matches": [],
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/faqpage",
+  "required_properties": [
+    {
+      "property": "mainEntity",
+      "type": "array",
+      "description": "The list of Question items. Each should have a name (question text) and an acceptedAnswer with text.",
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [],
+  "deprecated": false,
+  "deprecation_note": "As of 2024, Google restricts FAQPage rich results to government and health websites only. Other sites may still use this schema for semantic markup purposes.",
+  "validation_depth": "full"
+}

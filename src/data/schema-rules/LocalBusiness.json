@@ -1,0 +1,72 @@
+{
+  "type": "LocalBusiness",
+  "also_matches": ["Restaurant", "FoodEstablishment", "Store", "Hotel", "LodgingBusiness", "MedicalBusiness", "HealthAndBeautyBusiness", "AutomotiveBusiness", "HomeAndConstructionBusiness"],
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/local-business",
+  "required_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The name of the business.",
+      "rich_result_required": true
+    },
+    {
+      "property": "address",
+      "type": "object",
+      "expected_type": ["PostalAddress"],
+      "description": "The physical address of the business.",
+      "nested_recommended": ["streetAddress", "addressLocality", "addressRegion", "postalCode", "addressCountry"],
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "telephone",
+      "type": "string",
+      "description": "The telephone number of the business."
+    },
+    {
+      "property": "openingHoursSpecification",
+      "type": "object",
+      "expected_type": ["OpeningHoursSpecification"],
+      "description": "The opening hours of the business.",
+      "nested_recommended": ["dayOfWeek", "opens", "closes"]
+    },
+    {
+      "property": "url",
+      "type": "url",
+      "description": "The URL of the business website."
+    },
+    {
+      "property": "image",
+      "type": "url",
+      "description": "An image of the business."
+    },
+    {
+      "property": "priceRange",
+      "type": "string",
+      "description": "The price range of the business, indicated by a string like '$', '$$', or '$$$'."
+    },
+    {
+      "property": "aggregateRating",
+      "type": "object",
+      "expected_type": ["AggregateRating"],
+      "description": "The overall rating of the business.",
+      "nested_recommended": ["ratingValue", "reviewCount"]
+    },
+    {
+      "property": "geo",
+      "type": "object",
+      "expected_type": ["GeoCoordinates"],
+      "description": "The geographic coordinates of the business location.",
+      "nested_recommended": ["latitude", "longitude"]
+    },
+    {
+      "property": "sameAs",
+      "type": "url",
+      "description": "URLs of pages that unambiguously identify the business (e.g. Yelp, Google Maps)."
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null,
+  "validation_depth": "full"
+}

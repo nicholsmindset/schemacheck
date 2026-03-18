@@ -1,0 +1,59 @@
+{
+  "type": "Review",
+  "also_matches": ["AggregateRating"],
+  "validation_depth": "standard",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/review-snippet",
+  "required_properties": [
+    {
+      "property": "itemReviewed",
+      "type": "object",
+      "expected_type": ["Thing", "Product", "Book", "Movie", "LocalBusiness", "Organization"],
+      "description": "The item being reviewed. Must be a typed object (e.g. Product, Book, Movie).",
+      "nested_recommended": ["name"],
+      "rich_result_required": true
+    },
+    {
+      "property": "reviewRating",
+      "type": "object",
+      "expected_type": ["Rating"],
+      "description": "The rating given in this review. Must contain ratingValue.",
+      "nested_recommended": ["ratingValue", "bestRating", "worstRating"],
+      "rich_result_required": true
+    },
+    {
+      "property": "author",
+      "type": "object",
+      "expected_type": ["Person", "Organization"],
+      "description": "The author of the review.",
+      "nested_recommended": ["name"],
+      "rich_result_required": true
+    }
+  ],
+  "recommended_properties": [
+    {
+      "property": "name",
+      "type": "string",
+      "description": "The title of the review."
+    },
+    {
+      "property": "reviewBody",
+      "type": "string",
+      "description": "The full text content of the review."
+    },
+    {
+      "property": "datePublished",
+      "type": "date",
+      "format": "ISO8601",
+      "description": "The date the review was published, in ISO 8601 format."
+    },
+    {
+      "property": "publisher",
+      "type": "object",
+      "expected_type": ["Organization"],
+      "description": "The organization that published the review.",
+      "nested_recommended": ["name"]
+    }
+  ],
+  "deprecated": false,
+  "deprecation_note": null
+}
