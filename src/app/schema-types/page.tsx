@@ -433,7 +433,7 @@ export default function SchemaTypesPage() {
       <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16 lg:py-20">
         <div className="mb-12">
           <div className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-            <a href="/" className="hover:text-gray-400">SchemaCheck</a>
+            <Link href="/" className="hover:text-gray-400">SchemaCheck</Link>
             <span>/</span>
             <span className="text-gray-400">Schema Types</span>
           </div>
