@@ -31,6 +31,7 @@ const links = {
     { label: "Changelog", href: "/changelog" },
     { label: "Customers", href: "/customers" },
     { label: "vs Google Rich Results Test", href: "/comparisons/google-rich-results-test-alternative" },
+    { label: "Status", href: "https://status.schemacheck.dev" },
     { label: "Privacy", href: "/legal/privacy" },
     { label: "Terms", href: "/legal/terms" },
   ],

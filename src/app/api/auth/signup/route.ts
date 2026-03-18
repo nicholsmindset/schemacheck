@@ -54,6 +54,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
+  // Check if we're still in launch promo window (first 50 users)
+  const { count: userCount } = await supabase
+    .from("api_keys")
+    .select("id", { count: "exact", head: true });
+
+  const isLaunchPromo = (userCount ?? 0) < 50;
+  const requestsLimit = isLaunchPromo ? 500 : 100;
+
   // Create API key immediately — users get instant access without waiting for email
   const apiKey = `sc_live_${randomBytes(16).toString("hex")}`;
 
@@ -64,7 +72,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       email: normalizedEmail,
       plan: "free",
       requests_used: 0,
-      requests_limit: 100,
+      requests_limit: requestsLimit,
       overage_rate: 0,
       is_active: true,
       notified_90: false,

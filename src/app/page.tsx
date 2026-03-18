@@ -1020,10 +1020,14 @@ function SignupCta() {
         <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 mb-3">
           Validate your structured data
         </h2>
-        <p className="text-gray-400 mb-8">
+        <p className="text-gray-400 mb-4">
           Enter your email and get an API key instantly.
           <br />Free forever — no credit card required.
         </p>
+        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-950/60 border border-indigo-800/50 px-4 py-1.5 mb-6">
+          <span className="text-indigo-400 text-sm">Launch offer:</span>
+          <span className="text-white text-sm font-medium">first 50 signups get 500 free validations/month</span>
+        </div>
 
         {status === "success" ? (
           <div className={cn("rounded-2xl border p-6 text-left", BORDER, CARD)}>
