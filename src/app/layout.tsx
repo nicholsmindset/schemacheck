@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://schemacheck.dev";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.schemacheck.dev";
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
@@ -39,6 +39,9 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  verification: {
+    google: "Ar1ecZMjoIpQFhdJ6uYDQdHqfIRHVHGTSqN02kWAleI",
   },
 };
 
@@ -86,7 +89,7 @@ export default function RootLayout({
                   name: "SchemaCheck API",
                   url: APP_URL,
                   description:
-                    "REST API for validating Schema.org JSON-LD structured data. Checks against Google's current rich result requirements for 7 schema types. Returns errors, warnings, rich result eligibility, and fix suggestions.",
+                    "REST API for validating Schema.org JSON-LD structured data. Checks against Google's current rich result requirements for 35+ schema types. Returns errors, warnings, rich result eligibility, and fix suggestions.",
                   applicationCategory: "DeveloperApplication",
                   operatingSystem: "Web",
                   offers: [

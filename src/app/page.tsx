@@ -277,7 +277,7 @@ function JsonHighlight({ code }: { code: string }) {
 // ─── Stats bar ────────────────────────────────────────────────────────────────
 function StatsBar() {
   const stats = [
-    { value: "7",     label: "Schema types supported", sub: "(growing)" },
+    { value: "35+",   label: "Schema types supported", sub: "across 4 validation tiers" },
     { value: "99.9%", label: "Uptime SLA",             sub: "monitored 24/7" },
     { value: "100",   label: "Free validations / month", sub: "forever, no card required" },
   ];
@@ -731,7 +731,7 @@ const PLANS: Plan[] = [
     features: [
       "100 validations / month",
       "GET + POST endpoints",
-      "All 7 schema types",
+      "All 35+ schema types",
       "Rich result eligibility",
       "Fix suggestions + google_docs_url",
       "1-hour response cache",
@@ -908,7 +908,7 @@ const FAQS: FaqItem[] = [
   },
   {
     q: "What schema types do you support?",
-    a: "Article (+ NewsArticle, BlogPosting, TechArticle), Product, LocalBusiness (+ Restaurant and 8 subtypes), Organization (+ Corp, NGO and others), BreadcrumbList, WebSite, and FAQPage. New types are added regularly.",
+    a: "35+ types across 4 tiers: Article, Product, LocalBusiness, Organization, BreadcrumbList, WebSite, FAQPage (Tier 1 — full validation), plus Recipe, Event, VideoObject, JobPosting, Course, SoftwareApplication and more (Tiers 2–4). See the full list at /schema-types.",
   },
   {
     q: "Is there really a free tier — forever?",
@@ -1194,8 +1194,32 @@ function Footer() {
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
 export default function HomePage() {
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      { "@type": "Question", name: "Do failed validations count against my quota?",
+        acceptedAnswer: { "@type": "Answer", text: "No. Only successful 200 responses from real computation count. 4xx errors never consume a credit." } },
+      { "@type": "Question", name: "Do cached responses count against my quota?",
+        acceptedAnswer: { "@type": "Answer", text: "No. URL results are cached for 1 hour. Repeat requests for the same URL within that window return instantly and use zero credits." } },
+      { "@type": "Question", name: "What schema types do you support?",
+        acceptedAnswer: { "@type": "Answer", text: "35+ schema types across 4 validation tiers including Article, Product, LocalBusiness, Organization, BreadcrumbList, WebSite, FAQPage, Recipe, Event, VideoObject, JobPosting, Course, SoftwareApplication and more." } },
+      { "@type": "Question", name: "Is there really a free tier — forever?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes. 100 validations per month, no credit card, no trial period, no expiry." } },
+      { "@type": "Question", name: "How fast is the API?",
+        acceptedAnswer: { "@type": "Answer", text: "JSON-LD input is typically under 50ms. URL requests return in 1–3 seconds. Cache hits are near-instant." } },
+      { "@type": "Question", name: "Do you support Microdata or RDFa?",
+        acceptedAnswer: { "@type": "Answer", text: "Not yet. SchemaCheck currently validates JSON-LD only — the format Google recommends." } },
+      { "@type": "Question", name: "Can I cancel anytime?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes. Cancel from your dashboard at any time. You retain access until the end of the current billing period. No cancellation fees." } },
+      { "@type": "Question", name: "What is the refund policy?",
+        acceptedAnswer: { "@type": "Answer", text: "30-day no-questions refund on all paid plans." } },
+    ],
+  };
+
   return (
     <div className={cn("min-h-screen", BG)}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <Nav />
       <main>
         <Hero />

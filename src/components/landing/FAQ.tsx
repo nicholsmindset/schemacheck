@@ -9,7 +9,7 @@ const faqs = [
   },
   {
     q: "What schema types are supported?",
-    a: "MVP supports 9 types: Article, NewsArticle, BlogPosting, Product, LocalBusiness, Organization, BreadcrumbList, WebSite, and FAQPage. Unknown types get basic JSON-LD structure validation with no credit charge.",
+    a: "35+ schema types across 4 validation tiers. Tier 1 (full validation): Article, Product, LocalBusiness, Organization, BreadcrumbList, WebSite, FAQPage. Tiers 2–4 add Recipe, Event, VideoObject, JobPosting, Course, SoftwareApplication, and more. Unknown types get basic JSON-LD structure validation with no credit charge.",
   },
   {
     q: "How does the 1-hour cache work?",

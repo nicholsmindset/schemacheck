@@ -7,6 +7,16 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "2mb",
     },
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "schemacheck.dev" }],
+        destination: "https://www.schemacheck.dev/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
