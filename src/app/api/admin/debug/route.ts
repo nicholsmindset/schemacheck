@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 export async function GET() {
-  const pw = process.env.ADMIN_PASSWORD ?? "NOT_SET";
   return NextResponse.json({
-    length: pw.length,
-    chars: pw.split("").map((c) => c.charCodeAt(0)),
-    value: pw,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD ?? "NOT_SET",
+    SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? "SET" : "NOT_SET",
+    RESEND: process.env.RESEND_API_KEY ? "SET" : "NOT_SET",
+    NODE_ENV: process.env.NODE_ENV,
   });
 }
