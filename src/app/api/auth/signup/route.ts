@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { supabase } from "@/lib/supabase";
 import { sendVerificationEmail } from "@/lib/email";
+import { SESSION_COOKIE, SESSION_COOKIE_OPTIONS } from "@/lib/dashboard-auth";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   let body: unknown;
@@ -53,38 +54,54 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // Invalidate any existing unused tokens for this email
+  // Create API key immediately — users get instant access without waiting for email
+  const apiKey = `sc_live_${randomBytes(16).toString("hex")}`;
+
+  const { error: keyError } = await supabase
+    .from("api_keys")
+    .insert({
+      key: apiKey,
+      email: normalizedEmail,
+      plan: "free",
+      requests_used: 0,
+      requests_limit: 100,
+      overage_rate: 0,
+      is_active: true,
+      notified_90: false,
+      notified_100: false,
+    });
+
+  if (keyError) {
+    console.error("[signup] Failed to create API key:", keyError);
+    return NextResponse.json(
+      { error: { code: "internal_error", message: "Failed to create account. Please try again." } },
+      { status: 500 }
+    );
+  }
+
+  // Invalidate any existing unused verification tokens for this email
   await supabase
     .from("email_verifications")
     .update({ used_at: new Date().toISOString() })
     .eq("email", normalizedEmail)
     .is("used_at", null);
 
-  // Generate a new verification token (32 hex chars = 64 character string)
+  // Generate verification token for email confirmation (optional but good hygiene)
   const token = randomBytes(32).toString("hex");
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
-  const { error: insertError } = await supabase
+  await supabase
     .from("email_verifications")
-    .insert({
-      email: normalizedEmail,
-      token,
-      expires_at: expiresAt,
-    });
-
-  if (insertError) {
-    console.error("[signup] Failed to create verification token:", insertError);
-    return NextResponse.json(
-      { error: { code: "internal_error", message: "Failed to send verification email. Please try again." } },
-      { status: 500 }
-    );
-  }
+    .insert({ email: normalizedEmail, token, expires_at: expiresAt });
 
   // Send verification email — fire-and-forget
   void sendVerificationEmail(normalizedEmail, token);
 
-  return NextResponse.json(
-    { ok: true, email: normalizedEmail },
+  // Set session cookie so user lands on dashboard on next load
+  const response = NextResponse.json(
+    { ok: true, email: normalizedEmail, api_key: apiKey },
     { status: 200 }
   );
+  response.cookies.set(SESSION_COOKIE, apiKey, SESSION_COOKIE_OPTIONS);
+  return response;
 }

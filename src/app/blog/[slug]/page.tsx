@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = getPost(slug);
   if (!post) return {};
 
-  const ogUrl = `https://schemacheck.dev/blog/${slug}`;
+  const ogUrl = `https://www.schemacheck.dev/blog/${slug}`;
 
   return {
     title: `${post.title} | SchemaCheck Blog`,
@@ -64,21 +64,27 @@ export default async function BlogPostPage({ params }: Props) {
     datePublished: post.date,
     dateModified: post.date,
     author: {
-      "@type": "Person",
-      name: post.author,
+      "@type": "Organization",
+      name: "SchemaCheck",
+      url: "https://www.schemacheck.dev",
     },
     publisher: {
       "@type": "Organization",
       name: "SchemaCheck",
-      url: "https://schemacheck.dev",
+      url: "https://www.schemacheck.dev",
+      logo: { "@type": "ImageObject", url: "https://www.schemacheck.dev/logo.png" },
     },
-    url: `https://schemacheck.dev/blog/${slug}`,
+    url: `https://www.schemacheck.dev/blog/${slug}`,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://www.schemacheck.dev/blog/${slug}`,
+    },
     keywords: post.tags.join(", "),
     articleSection: post.category,
     isPartOf: {
       "@type": "WebSite",
       name: "SchemaCheck",
-      url: "https://schemacheck.dev",
+      url: "https://www.schemacheck.dev",
     },
   });
 

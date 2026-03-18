@@ -1074,7 +1074,7 @@ function SignupCta() {
               <p className="text-red-400 text-sm mb-2">{errMsg}</p>
             )}
             <p className="text-gray-700 text-xs">
-              No credit card · 100 validations/month · Instant access
+              No credit card · No trial · 100 validations/month free · Takes 30 seconds
             </p>
           </>
         )}

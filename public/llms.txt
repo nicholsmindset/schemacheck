@@ -1,59 +1,398 @@
 # SchemaCheck API
 
-Schema markup validation API for developers and AI agents. Validates Schema.org JSON-LD structured data against Google's current rich result requirements.
+SchemaCheck is a REST API for validating Schema.org JSON-LD structured data. Developers and AI agents use SchemaCheck to audit markup, check Google rich result eligibility, and get actionable fix suggestions — in a single API call.
+
+Website: https://www.schemacheck.dev
+Docs: https://www.schemacheck.dev/docs
+OpenAPI spec: https://www.schemacheck.dev/openapi.json
+Pricing: https://www.schemacheck.dev/pricing
+Schema types reference: https://www.schemacheck.dev/schema-types
+
+## Who It's For
+
+- Backend developers adding schema markup to websites
+- SEO engineers auditing structured data at scale
+- CMS platforms validating markup before publish
+- AI agents that need to verify or generate Schema.org JSON-LD
+- E-commerce teams checking product schema for rich results
+
+## What Problem It Solves
+
+Google's Rich Results Test and Search Console are manual, browser-based tools. SchemaCheck exposes the same validation logic as a programmatic API: send a URL or raw JSON-LD, get back machine-readable errors, warnings, rich result eligibility, and fix suggestions. No browser required.
+
+---
 
 ## Authentication
-- Header: `x-api-key: YOUR_KEY`
-- Query param: `access_key=YOUR_KEY`
 
-## Endpoint
-GET /api/v1/validate?url=https://example.com&access_key=YOUR_KEY
-POST /api/v1/validate (body: {"url": "..."} or {"jsonld": {...}})
+Two methods — both work on all endpoints:
 
-## What it validates
-- JSON-LD syntax and structure
-- Required properties per Google's specs
-- Recommended properties (flagged as warnings)
-- Rich result eligibility
-- Deprecated type detection (HowTo, FAQPage restrictions, etc.)
+**Header (recommended for server-side):**
+```
+x-api-key: YOUR_API_KEY
+```
 
-## Supported Schema Types (35 total across 4 tiers)
+**Query parameter (quick testing):**
+```
+?access_key=YOUR_API_KEY
+```
+
+Get a free API key at: https://www.schemacheck.dev (100 validations/month, no credit card)
+
+---
+
+## API Endpoints
+
+### GET /api/v1/validate
+
+Fetch a URL, extract its JSON-LD, and validate it.
+
+**Request:**
+```
+GET https://www.schemacheck.dev/api/v1/validate?url=https://example.com/product
+x-api-key: sc_live_abc123
+```
+
+**Parameters:**
+- `url` (required) — the fully-qualified URL to fetch and validate
+- `access_key` (optional) — API key as query param instead of header
+
+**Notes:**
+- URL responses cached for 1 hour; cached results use 0 credits
+- Maximum 25-second fetch timeout
+- Maximum 5 redirects followed
+
+---
+
+### POST /api/v1/validate
+
+Validate a URL or raw JSON-LD object directly.
+
+**Request (URL mode):**
+```
+POST https://www.schemacheck.dev/api/v1/validate
+Content-Type: application/json
+x-api-key: sc_live_abc123
+
+{ "url": "https://example.com/product" }
+```
+
+**Request (JSON-LD mode):**
+```
+POST https://www.schemacheck.dev/api/v1/validate
+Content-Type: application/json
+x-api-key: sc_live_abc123
+
+{
+  "jsonld": {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "My Article Title",
+    "author": { "@type": "Person", "name": "Jane Doe" },
+    "datePublished": "2024-01-15"
+  }
+}
+```
+
+**Body fields:**
+- `url` (string) — fetch and validate a live URL
+- `jsonld` (object or array) — validate raw JSON-LD directly (never cached)
+
+Provide exactly one of `url` or `jsonld`.
+
+---
+
+### GET /api/v1/types
+
+Returns the full list of supported schema types with tier, validation depth, required/recommended properties, and Google docs URLs.
+
+```
+GET https://www.schemacheck.dev/api/v1/types
+```
+
+No authentication required.
+
+---
+
+## Response Format
+
+```json
+{
+  "url": "https://example.com/product",
+  "schemas_found": 1,
+  "validation_score": 82,
+  "rich_result_eligible": true,
+  "cached": false,
+  "credits_used": 1,
+  "schemas": [
+    {
+      "@type": "Product",
+      "rich_result_eligible": true,
+      "rich_result_type": "Product rich result",
+      "rich_result_reason": "All required properties present",
+      "errors": [],
+      "warnings": [
+        {
+          "property": "sku",
+          "message": "Recommended property missing",
+          "fix": "Add a 'sku' property with the product's stock-keeping unit identifier",
+          "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/product"
+        }
+      ],
+      "validation_score": 82,
+      "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/product"
+    }
+  ]
+}
+```
+
+**Top-level fields:**
+- `url` — the URL that was validated (null for raw JSON-LD input)
+- `schemas_found` — number of schema objects detected
+- `validation_score` — 0–100 composite score across all schemas
+- `rich_result_eligible` — true if any schema qualifies for Google rich results
+- `cached` — true if result was returned from cache (credits_used will be 0)
+- `credits_used` — 0 or 1 (0 for errors, cache hits, and unknown types)
+
+**Per-schema fields:**
+- `@type` — the detected schema type
+- `rich_result_eligible` — true/false for this specific type
+- `rich_result_type` — human-readable rich result name (e.g. "Article rich result")
+- `rich_result_reason` — explanation of eligibility or blocking issue
+- `errors` — array of validation errors (missing required properties, wrong types)
+- `warnings` — array of recommendations (missing recommended properties)
+- `validation_score` — 0–100 score for this specific schema
+- `google_docs_url` — link to Google's documentation for this schema type
+
+**Error and warning objects:**
+```json
+{
+  "property": "datePublished",
+  "message": "Required property missing",
+  "fix": "Add a 'datePublished' property with an ISO 8601 date string (e.g. '2024-01-15')",
+  "google_docs_url": "https://developers.google.com/search/docs/appearance/structured-data/article"
+}
+```
+
+---
+
+## Code Examples
+
+### curl (URL validation)
+```bash
+curl "https://www.schemacheck.dev/api/v1/validate?url=https://example.com" \
+  -H "x-api-key: YOUR_KEY"
+```
+
+### curl (JSON-LD validation)
+```bash
+curl -X POST "https://www.schemacheck.dev/api/v1/validate" \
+  -H "x-api-key: YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonld": {"@context": "https://schema.org", "@type": "Article", "headline": "Test", "author": {"@type": "Person", "name": "Jane"}, "datePublished": "2024-01-15"}}'
+```
+
+### JavaScript (fetch)
+```javascript
+const response = await fetch("https://www.schemacheck.dev/api/v1/validate", {
+  method: "POST",
+  headers: {
+    "x-api-key": "YOUR_KEY",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    url: "https://example.com/product",
+  }),
+});
+const result = await response.json();
+console.log(result.rich_result_eligible); // true or false
+console.log(result.schemas[0].errors);    // array of issues
+```
+
+### Python (requests)
+```python
+import requests
+
+response = requests.post(
+    "https://www.schemacheck.dev/api/v1/validate",
+    headers={"x-api-key": "YOUR_KEY"},
+    json={"url": "https://example.com/article"},
+)
+data = response.json()
+print(data["validation_score"])
+print(data["schemas"][0]["errors"])
+```
+
+---
+
+## Supported Schema Types (35 total)
 
 ### Tier 1 — Full validation (7 types)
-Article (NewsArticle, BlogPosting, TechArticle, ScholarlyArticle), Product, LocalBusiness (Restaurant, Store, Hotel, MedicalBusiness), Organization (Corporation, EducationalOrganization, NGO), BreadcrumbList, WebSite, FAQPage
+All required and recommended properties validated. Rich result eligibility checked against Google's current specs.
+
+| Type | Also validates subtypes |
+|------|------------------------|
+| Article | NewsArticle, BlogPosting, TechArticle, ScholarlyArticle |
+| Product | — |
+| LocalBusiness | Restaurant, FoodEstablishment, Store, Hotel, LodgingBusiness, MedicalBusiness |
+| Organization | Corporation, EducationalOrganization, GovernmentOrganization, NGO, SportsOrganization |
+| BreadcrumbList | — |
+| WebSite | — |
+| FAQPage | Note: Google restricts rich results to government and health sites (2024) |
 
 ### Tier 2 — Standard validation (10 types)
-Review (AggregateRating), Recipe, Event (MusicEvent, SportsEvent, EducationEvent), VideoObject (Clip), SoftwareApplication (WebApplication, MobileApplication, VideoGame), JobPosting, Course (CourseInstance), ItemList, QAPage, ProductGroup
+Required properties validated. Rich result eligibility checked.
+
+| Type | Also validates subtypes |
+|------|------------------------|
+| Review | AggregateRating |
+| Recipe | — |
+| Event | MusicEvent, SportsEvent, EducationEvent |
+| VideoObject | Clip |
+| SoftwareApplication | WebApplication, MobileApplication, VideoGame |
+| JobPosting | — |
+| Course | CourseInstance |
+| ItemList | — |
+| QAPage | — |
+| ProductGroup | — |
 
 ### Tier 3 — Basic validation (10 types)
+Required properties validated. Structure and syntax checked.
+
 Book (Audiobook), Dataset (DataCatalog), DiscussionForumPosting, EmployerAggregateRating, Movie, ImageObject, ProfilePage, MerchantReturnPolicy, OfferShippingDetails, ClaimReview
 
 ### Tier 4 — Basic validation (5 types)
+Structure and required properties validated.
+
 MathSolver, Quiz, LoyaltyProgram, VacationRental, CreativeWork (subscription/paywalled content)
 
-### Deprecated — Validated with warnings (3 types)
-HowTo (retired Aug 2024), SpecialAnnouncement (retired 2025), Vehicle/Car (retired 2025)
+### Deprecated — Validated with deprecation warnings (3 types)
+Still validated but returns a warning noting retirement from Google rich results.
 
-## Response Format
-Returns: schemas_found, per-schema errors/warnings with fix suggestions, rich_result_eligible boolean, validation score (0-100), Google docs links
+| Type | Retired |
+|------|---------|
+| HowTo | August 2024 |
+| SpecialAnnouncement | 2025 |
+| Vehicle / Car | 2025 |
 
-## Billing
-- Free: 100 validations/month
-- Cached results and failed requests don't consume credits
-- Paid plans: $19/mo (3K), $79/mo (15K), $199/mo (75K)
+**Unknown types:** Any schema type not in the list above is validated for basic JSON-LD structure only. Unknown types are not charged credits.
+
+---
+
+## Pricing
+
+All plans use per-validation credit billing. Credits are consumed only on successful 200 responses from live computation. Cached results and error responses (4xx) never consume credits.
+
+| Plan | Price | Validations/month | Overage rate |
+|------|-------|-------------------|--------------|
+| Free | $0 | 100 | No overage |
+| Basic | $19/mo | 3,000 | $0.008 per validation |
+| Growth | $79/mo | 15,000 | $0.005 per validation |
+| Scale | $199/mo | 75,000 | $0.003 per validation |
+
+- No credit card required for Free tier
+- Annual billing available (2 months free)
+- 30-day no-questions refund on all paid plans
+- Cancel anytime from your dashboard
+
+---
+
+## Error Codes
+
+All errors return JSON with `error` (machine-readable code) and `message` (human-readable description).
+
+| HTTP Status | Error Code | Meaning |
+|-------------|------------|---------|
+| 400 | `missing_input` | Neither `url` nor `jsonld` was provided |
+| 400 | `invalid_url` | The URL provided is not a valid HTTP/HTTPS URL |
+| 400 | `invalid_jsonld` | The `jsonld` field is not a valid JSON object or array |
+| 401 | `unauthorized` | API key missing or not recognized |
+| 422 | `fetch_error` | SchemaCheck could not fetch the target URL (timeout, DNS failure, 404, etc.) |
+| 422 | `no_schema_found` | The URL was fetched successfully but no JSON-LD was found |
+| 429 | `rate_limit_exceeded` | Monthly validation quota reached |
+| 500 | `internal_error` | Unexpected server error |
+
+**Example error response:**
+```json
+{
+  "error": "fetch_error",
+  "message": "Could not fetch https://example.com: timeout after 25 seconds"
+}
+```
+
+---
 
 ## Limitations
-- JSON-LD only (Microdata and RDFa not yet supported)
-- URL fetch timeout: 25 seconds
-- Maximum 5 redirects followed
 
-## MCP Server
+- **Format:** JSON-LD only. Microdata and RDFa are not yet supported.
+- **Fetch timeout:** 25 seconds per URL
+- **Redirects:** Maximum 5 redirects followed
+- **Cache TTL:** URL results cached for 1 hour by SHA-256 hash of the URL
+- **Schema.org version:** Validated against V29.4
+- **JavaScript-rendered content:** SchemaCheck fetches raw HTML; JSON-LD injected only by client-side JavaScript will not be detected
+
+---
+
+## MCP Server (Model Context Protocol)
+
+SchemaCheck provides an MCP server for AI agents and development environments:
+
+```bash
 npm install schemacheck-mcp
+```
+
+Docs: https://www.schemacheck.dev/docs/mcp
+
+---
+
+## Comparison: SchemaCheck vs Google Rich Results Test
+
+| Feature | SchemaCheck | Google Rich Results Test |
+|---------|-------------|--------------------------|
+| API access | Yes (REST) | No (browser only) |
+| Batch validation | Yes | No |
+| Raw JSON-LD input | Yes | No |
+| Fix suggestions | Yes | Limited |
+| Programmatic access | Yes | No |
+| Real-time (no deploy needed) | Yes | Yes |
+| Free tier | 100/mo | Unlimited (manual) |
+
+---
+
+## Frequently Asked Questions
+
+**Q: Do failed validations count against my quota?**
+A: No. Only successful 200 responses from live computation count. 4xx errors (bad API key, invalid URL, missing input, rate limit) never consume a credit.
+
+**Q: Do cached responses count against my quota?**
+A: No. URL results are cached for 1 hour. Repeat requests for the same URL within that window return instantly and use zero credits.
+
+**Q: What schema types do you support?**
+A: 35 schema types across 4 validation tiers including Article, Product, LocalBusiness, Organization, BreadcrumbList, WebSite, FAQPage, Recipe, Event, VideoObject, JobPosting, Course, SoftwareApplication, and more. See the full list at https://www.schemacheck.dev/schema-types.
+
+**Q: Is there really a free tier — forever?**
+A: Yes. 100 validations per month, no credit card, no trial period, no expiry.
+
+**Q: How fast is the API?**
+A: JSON-LD input typically returns in under 50ms. URL requests require fetching the target page — most return in 1–3 seconds. Cache hits are near-instant.
+
+**Q: Do you support Microdata or RDFa?**
+A: Not yet. SchemaCheck currently validates JSON-LD only — the format Google recommends.
+
+**Q: Can I validate multiple schemas in one call?**
+A: Yes. When a URL contains multiple JSON-LD blocks (or a single @graph with multiple types), all are validated in a single call and returned in the `schemas` array.
+
+**Q: What counts as a "validation"?**
+A: One API call that returns a 200 response with real computed results. Cached results and error responses are never charged.
+
+---
 
 ## Reference Documentation
+
 - Google Structured Data Guide: https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data
 - Google Rich Result Gallery: https://developers.google.com/search/docs/appearance/structured-data/search-gallery
-- Schema.org Full Type List (827 types): https://schema.org/docs/full.html
-- Schema.org Developers: https://schema.org/docs/developers.html
-- SchemaCheck Docs: https://schemacheck.dev/docs
-- SchemaCheck OpenAPI Spec: https://schemacheck.dev/openapi.json
+- Schema.org Full Type List: https://schema.org/docs/full.html
+- SchemaCheck Docs: https://www.schemacheck.dev/docs
+- SchemaCheck OpenAPI Spec: https://www.schemacheck.dev/openapi.json
+- SchemaCheck Quickstart: https://www.schemacheck.dev/docs/quickstart
+- SchemaCheck Authentication: https://www.schemacheck.dev/docs/authentication
+- SchemaCheck Error Reference: https://www.schemacheck.dev/docs/errors

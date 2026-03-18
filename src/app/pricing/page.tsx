@@ -9,6 +9,15 @@ export const metadata: Metadata = {
 
 const APP_URL = "https://schemacheck.dev";
 
+const breadcrumbJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://www.schemacheck.dev" },
+    { "@type": "ListItem", position: 2, name: "Pricing", item: "https://www.schemacheck.dev/pricing" },
+  ],
+});
+
 const jsonLd = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
@@ -73,6 +82,7 @@ export default function PricingPage() {
   return (
     <main>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }} />
       <div className="max-w-6xl mx-auto px-4 pt-16">
         <h1 className="text-4xl font-bold text-white text-center mb-4">Pricing</h1>
         <p className="text-gray-400 text-center mb-4">

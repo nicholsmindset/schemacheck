@@ -10,6 +10,7 @@ import { PlanBilling } from "@/components/dashboard/PlanBilling";
 import { NotifPrefs } from "@/components/dashboard/NotifPrefs";
 import { SignOutButton } from "@/components/dashboard/SignOutButton";
 import { Toast } from "@/components/dashboard/Toast";
+import { OnboardingChecklist } from "@/components/dashboard/OnboardingChecklist";
 
 interface DashboardPageProps {
   searchParams: Promise<{ success?: string; welcome?: string }>;
@@ -113,6 +114,9 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
       {/* Main content */}
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+        {/* Onboarding checklist — shown until dismissed via localStorage */}
+        <OnboardingChecklist apiKey={apiKey.key} />
+
         {/* Row 1: API Key (2/3) + Usage Overview (1/3) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
