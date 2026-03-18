@@ -62,12 +62,12 @@ function Nav() {
           <span>Schema<span className="text-indigo-400">Check</span></span>
         </Link>
         <div className="hidden sm:flex items-center gap-6 text-sm text-gray-400">
-          <a href="/docs" className="hover:text-white transition-colors">Docs</a>
+          <Link href="/docs" className="hover:text-white transition-colors">Docs</Link>
           <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-          <a href="/blog" className="hover:text-white transition-colors">Blog</a>
-          <a href="/comparisons/google-rich-results-test-alternative" className="hover:text-white transition-colors">
+          <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+          <Link href="/comparisons/google-rich-results-test-alternative" className="hover:text-white transition-colors">
             vs Google&apos;s Tool
-          </a>
+          </Link>
         </div>
         <a
           href="#signup"
@@ -927,9 +927,9 @@ const FAQS: FaqItem[] = [
     a: (
       <>
         We think so — but you should decide for yourself.{" "}
-        <a href="/comparisons/google-rich-results-test-alternative" className="text-indigo-400 underline underline-offset-2 hover:text-indigo-300 transition-colors">
+        <Link href="/comparisons/google-rich-results-test-alternative" className="text-indigo-400 underline underline-offset-2 hover:text-indigo-300 transition-colors">
           See how we compare to Google&apos;s Rich Results Test →
-        </a>
+        </Link>
       </>
     ),
   },
@@ -1032,9 +1032,9 @@ function SignupCta() {
             <div className="text-xs text-gray-600 space-y-1">
               <p>
                 Next: read the{" "}
-                <a href="/docs/quickstart" className="text-indigo-400 underline underline-offset-2 hover:text-indigo-300">
+                <Link href="/docs/quickstart" className="text-indigo-400 underline underline-offset-2 hover:text-indigo-300">
                   quickstart guide →
-                </a>
+                </Link>
               </p>
               <p>Your free plan includes 100 validations/month.</p>
             </div>

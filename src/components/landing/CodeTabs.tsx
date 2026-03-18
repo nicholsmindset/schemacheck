@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { CodeBlock } from "@/components/shared/CodeBlock";
 
 const tabs = [
@@ -104,9 +105,9 @@ export function CodeTabs() {
 
         <p className="text-center text-sm text-gray-500 mt-4">
           Also supports{" "}
-          <a href="/docs/code-examples/go" className="text-indigo-400 hover:underline">Go</a>,{" "}
-          <a href="/docs/code-examples/ruby" className="text-indigo-400 hover:underline">Ruby</a>,{" "}
-          <a href="/docs/code-examples/csharp" className="text-indigo-400 hover:underline">C#</a>{" "}
+          <Link href="/docs/code-examples/go" className="text-indigo-400 hover:underline">Go</Link>,{" "}
+          <Link href="/docs/code-examples/ruby" className="text-indigo-400 hover:underline">Ruby</Link>,{" "}
+          <Link href="/docs/code-examples/csharp" className="text-indigo-400 hover:underline">C#</Link>{" "}
           and any language that speaks HTTP.
         </p>
       </div>
