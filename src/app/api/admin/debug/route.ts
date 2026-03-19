@@ -4,12 +4,15 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const keys = Object.keys(process.env).filter(k =>
-    ["ADMIN_PASSWORD","RESEND_API_KEY","SUPABASE_SERVICE_ROLE_KEY","NODE_ENV","VERCEL","VERCEL_ENV"].includes(k)
-  );
-  const result: Record<string, string> = {};
-  for (const k of keys) result[k] = k === "NODE_ENV" || k === "VERCEL" || k === "VERCEL_ENV" ? (process.env[k] ?? "") : "SET";
-  result["ADMIN_PASSWORD_VALUE"] = process.env.ADMIN_PASSWORD ?? "NOT_SET";
-  result["total_env_keys"] = String(Object.keys(process.env).length);
+  const result: Record<string, string> = {
+    NODE_ENV: process.env.NODE_ENV ?? "NOT_SET",
+    VERCEL: process.env.VERCEL ?? "NOT_SET",
+    VERCEL_ENV: process.env.VERCEL_ENV ?? "NOT_SET",
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD ? `SET(len=${process.env.ADMIN_PASSWORD.length})` : "NOT_SET",
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? `SET(len=${process.env.SUPABASE_SERVICE_ROLE_KEY.length})` : "NOT_SET",
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ? `SET(len=${process.env.NEXT_PUBLIC_SUPABASE_URL.length})` : "NOT_SET",
+    RESEND_API_KEY: process.env.RESEND_API_KEY ? `SET(len=${process.env.RESEND_API_KEY.length})` : "NOT_SET",
+    all_keys: Object.keys(process.env).sort().join(","),
+  };
   return NextResponse.json(result);
 }
