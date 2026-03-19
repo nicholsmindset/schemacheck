@@ -5,7 +5,7 @@ import { getAllPosts, CATEGORY_COLORS, type Category } from "@/lib/blog";
 export const metadata: Metadata = {
   title: "Blog | SchemaCheck",
   description:
-    "Guides on Schema.org structured data, rich results, and SEO — from the team behind SchemaCheck.",
+    "Guides on structured data for SEO — what is structured data, how to get rich snippets, schema markup examples, and API tutorials from the team behind SchemaCheck.",
 };
 
 const CATEGORIES: Category[] = ["Engineering", "Guides", "Customer Stories", "Product Updates"];

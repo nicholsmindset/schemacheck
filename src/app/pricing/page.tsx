@@ -3,8 +3,8 @@ import { Pricing } from "@/components/landing/Pricing";
 import { Footer } from "@/components/landing/Footer";
 
 export const metadata: Metadata = {
-  title: "Pricing",
-  description: "SchemaCheck pricing — free tier with 100 validations/month. Paid plans from $19/mo with overage billing.",
+  title: "Pricing — Schema Markup Validation Tool Plans",
+  description: "Affordable structured data validator plans. Free schema checker tool with 100 validations/month — no credit card required. Paid plans from $19/mo with overage billing.",
 };
 
 const APP_URL = "https://schemacheck.dev";
@@ -84,10 +84,11 @@ export default function PricingPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }} />
       <div className="max-w-6xl mx-auto px-4 pt-16">
-        <h1 className="text-4xl font-bold text-white text-center mb-4">Pricing</h1>
-        <p className="text-gray-400 text-center mb-4">
+        <h1 className="text-4xl font-bold text-white text-center mb-4">Schema Checker Tool — Plans & Pricing</h1>
+        <p className="text-gray-400 text-center mb-2">
           Start free. Only pay for successful validations. Cached results are always free.
         </p>
+        <p className="text-center text-sm text-indigo-400 font-medium mb-2">Professional Schema Validation Tool</p>
         <p className="text-center text-sm text-gray-500 mb-12">
           Annual billing available — get 2 months free.
         </p>

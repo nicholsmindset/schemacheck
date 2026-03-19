@@ -3,9 +3,9 @@ import Link from "next/link";
 import { CodeBlock } from "@/components/shared/CodeBlock";
 
 export const metadata: Metadata = {
-  title: "Google Rich Results Test Alternative — REST API | SchemaCheck",
+  title: "Google Rich Results Test Alternative — SchemaCheck",
   description:
-    "SchemaCheck is the programmatic alternative to Google's Rich Results Test. Automate schema validation in CI, bulk-audit sitemaps, and power AI agents — with a REST API that Google's tool doesn't have.",
+    "Looking for a Google Rich Results Test tool alternative? SchemaCheck is the programmatic alternative with a REST API. Automate schema validation in CI, bulk-audit sitemaps, and power AI agents.",
 };
 
 const JSONLD = JSON.stringify(
@@ -132,7 +132,7 @@ export default function GoogleRichResultsAlternativePage() {
             Comparison
           </p>
           <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
-            The programmatic alternative to Google&apos;s Rich Results Test
+            Best Rich Results Test Alternative
           </h1>
           <p className="text-gray-400 text-xl leading-relaxed">
             Google&apos;s Rich Results Test is the industry standard for manual schema validation.
@@ -161,7 +161,7 @@ export default function GoogleRichResultsAlternativePage() {
             Why Google&apos;s Rich Results Test isn&apos;t enough for developers
           </h2>
           <p className="text-gray-400 mb-4">
-            The Rich Results Test gives you a pass/fail result for a single URL in a browser tab.
+            Unlike the Google rich snippet tool, SchemaCheck exposes a REST API — so you can automate what the Rich Results Test can only do by hand. The Rich Results Test gives you a pass/fail result for a single URL in a browser tab.
             That&apos;s exactly what you need for a pre-launch sanity check. It&apos;s not what
             you need for any of the following:
           </p>
@@ -183,7 +183,7 @@ export default function GoogleRichResultsAlternativePage() {
 
         {/* Feature comparison table */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-white mb-4">Feature comparison</h2>
+          <h2 className="text-2xl font-semibold text-white mb-4">Rich Results Test vs Google Search Console</h2>
           <div className="overflow-x-auto rounded-xl border border-gray-800">
             <table className="w-full text-sm">
               <thead>

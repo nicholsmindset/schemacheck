@@ -3,9 +3,9 @@ import Link from "next/link";
 import { CodeBlock } from "@/components/shared/CodeBlock";
 
 export const metadata: Metadata = {
-  title: "Schema Validation for SEO Audits | SchemaCheck API",
+  title: "Schema Markup Checker for SEO Audits",
   description:
-    "Automate Schema.org structured data validation in your SEO audit workflow. Catch missing required properties, deprecated types, and rich result gaps across thousands of pages — via REST API.",
+    "Include structured data in your SEO audit workflow. Use SchemaCheck as your schema markup checker to catch missing required properties, deprecated types, and rich result gaps across thousands of pages — via REST API.",
 };
 
 const JSONLD = JSON.stringify(
@@ -175,7 +175,7 @@ export default function SeoAuditPage() {
             Use Case
           </p>
           <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
-            Automate schema validation in your SEO audit workflow
+            Structured Data in SEO Audits
           </h1>
           <p className="text-gray-400 text-xl leading-relaxed">
             Most SEO audit tools skip structured data entirely. SchemaCheck gives you a REST API
@@ -222,7 +222,7 @@ export default function SeoAuditPage() {
 
         {/* What it catches */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-white mb-4">What SchemaCheck catches automatically</h2>
+          <h2 className="text-2xl font-semibold text-white mb-4">Schema Markup Tool for Audits — What SchemaCheck Catches</h2>
           <div className="space-y-2">
             {[
               { title: "Missing required properties", desc: "datePublished, author, and image on Article; name and offers on Product. Each missing property is a hard blocker for rich results." },

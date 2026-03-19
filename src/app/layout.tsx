@@ -6,12 +6,17 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.schemacheck.dev"
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: "SchemaCheck — Schema Markup Validation API",
+    default: "SchemaCheck — Schema Checker & Structured Data Validator",
     template: "%s | SchemaCheck",
   },
   description:
-    "Validate Schema.org structured data via REST API. Send a URL or JSON-LD, get back errors, warnings, rich result eligibility, and fix suggestions.",
+    "Free schema markup validator and structured data testing tool. Send a URL or JSON-LD, get errors, rich result eligibility, and fix suggestions via REST API.",
   keywords: [
+    "schema checker",
+    "schema markup validator",
+    "structured data testing tool",
+    "rich results test tool",
+    "schema test",
     "schema markup validation",
     "structured data API",
     "JSON-LD validator",
@@ -26,15 +31,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: APP_URL,
     siteName: "SchemaCheck",
-    title: "SchemaCheck — Schema Markup Validation API",
+    title: "SchemaCheck — Schema Checker & Structured Data Validator",
     description:
-      "Validate Schema.org structured data via REST API. Errors, warnings, rich result eligibility, and fix suggestions in one call.",
+      "Free schema markup validator and structured data testing tool. Send a URL or JSON-LD, get errors, rich result eligibility, and fix suggestions via REST API.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SchemaCheck — Schema Markup Validation API",
+    title: "SchemaCheck — Schema Checker & Structured Data Validator",
     description:
-      "Validate Schema.org structured data via REST API. Errors, warnings, rich result eligibility, and fix suggestions.",
+      "Free schema markup validator and structured data testing tool. Errors, rich result eligibility, and fix suggestions via REST API.",
   },
   robots: {
     index: true,

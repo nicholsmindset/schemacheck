@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Customers | SchemaCheck",
+  title: "Customer Stories — Schema Validation Success",
   description:
-    "See how developers, SEO teams, and agencies use SchemaCheck to automate structured data validation across their sites and products.",
+    "See how developers, SEO teams, and agencies use SchemaCheck for structured data SEO results. Schema markup ROI — recover rich results, protect Google Shopping, and catch regressions before Google does.",
 };
 
 interface Testimonial {
@@ -93,7 +93,7 @@ export default function CustomersPage() {
             Customers
           </p>
           <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
-            Built for developers who take structured data seriously
+            Schema Validation Customer Results
           </h1>
           <p className="text-gray-400 text-xl leading-relaxed">
             From solo founders auditing their own sites to engineering teams protecting
@@ -103,6 +103,7 @@ export default function CustomersPage() {
 
         {/* Testimonials grid */}
         <section className="mb-16">
+          <h2 className="text-xl font-semibold text-white mb-6">Rich Results Case Studies</h2>
           <div className="grid md:grid-cols-1 gap-5">
             {testimonials.map((t, i) => (
               <figure
@@ -131,7 +132,8 @@ export default function CustomersPage() {
 
         {/* Use cases */}
         <section className="mb-16">
-          <h2 className="text-xl font-semibold text-white mb-6">What teams are building with SchemaCheck</h2>
+          <h2 className="text-xl font-semibold text-white mb-2">ROI of Schema Markup Validation</h2>
+          <p className="text-gray-500 text-sm mb-6">What teams are building with SchemaCheck</p>
           <div className="grid sm:grid-cols-2 gap-4">
             {useCases.map((uc) => (
               <div key={uc.title} className="p-5 rounded-xl border border-gray-800 bg-[#111118]">

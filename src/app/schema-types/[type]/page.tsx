@@ -22,6 +22,7 @@ interface TypeData {
   slug: string;
   type: string;
   title: string;
+  h1?: string;
   metaDescription: string;
   intro: string;
   richResultType: string;
@@ -37,9 +38,10 @@ const TYPES: Record<string, TypeData> = {
   article: {
     slug: "article",
     type: "Article",
-    title: "Article Schema Validation API",
+    title: "Article Schema Markup — Validate & Test Article Structured Data",
+    h1: "Article Structured Data Guide",
     metaDescription:
-      "Validate Article JSON-LD structured data against Google's rich result requirements. Check required properties (headline, author, datePublished), rich result eligibility, and get fix suggestions via API.",
+      "Validate your article schema markup against Google's rich result requirements. Check required properties (headline, author, datePublished), NewsArticle vs Article schema, and get fix suggestions via API.",
     intro:
       "Article schema markup tells Google what your content is — a news article, blog post, or general editorial piece. With valid Article structured data, Google can display enhanced rich results including headline, author, publication date, and image in Search. Article schema applies to NewsArticle, BlogPosting, TechArticle, and ScholarlyArticle as well.",
     richResultType: "Article rich result",
@@ -113,9 +115,10 @@ const TYPES: Record<string, TypeData> = {
   product: {
     slug: "product",
     type: "Product",
-    title: "Product Schema Validation API",
+    title: "Product Schema Markup — Validate Product Structured Data",
+    h1: "Product Schema Markup Guide",
     metaDescription:
-      "Validate Product JSON-LD structured data against Google's rich result requirements. Check required properties, offers, pricing, availability, and get fix suggestions via API.",
+      "Validate product schema markup with examples. What is product schema and how does it work? Check required properties, offers, pricing, availability, and product schema generator via API.",
     intro:
       "Product schema markup enables rich results in Google Search including pricing, availability, ratings, and review snippets. E-commerce sites, marketplaces, and product review pages use Product structured data to unlock enhanced listings. A Product schema with valid Offer and AggregateRating properties can display star ratings and pricing directly in search results.",
     richResultType: "Product snippet, merchant listing, product rich result",
@@ -189,9 +192,10 @@ const TYPES: Record<string, TypeData> = {
   "local-business": {
     slug: "local-business",
     type: "LocalBusiness",
-    title: "LocalBusiness Schema Validation API",
+    title: "Local Business Schema — Validate LocalBusiness Structured Data",
+    h1: "Local Business Schema Markup Guide",
     metaDescription:
-      "Validate LocalBusiness JSON-LD structured data against Google's rich result requirements. Check required properties, address, opening hours, and get fix suggestions via API.",
+      "Complete schema for local business — validate local business schema markup, schema markup for local SEO, and get fix suggestions via API. Check address, opening hours, and required properties.",
     intro:
       "LocalBusiness schema markup helps Google understand your physical location, hours, and contact details. It applies to all brick-and-mortar businesses including restaurants, stores, hotels, medical offices, and service providers. Valid LocalBusiness structured data can surface your hours, address, and phone number directly in search results and the Knowledge Panel.",
     richResultType: "Business info panel, local knowledge panel",
@@ -282,9 +286,10 @@ const TYPES: Record<string, TypeData> = {
   organization: {
     slug: "organization",
     type: "Organization",
-    title: "Organization Schema Validation API",
+    title: "Organization Schema — Validate Organization Structured Data",
+    h1: "Organization Schema Markup Guide",
     metaDescription:
-      "Validate Organization JSON-LD structured data against Google's knowledge panel requirements. Check required properties, logo, sameAs links, and get fix suggestions via API.",
+      "Validate organization schema markup with examples. Check required properties, logo, and sameAs links for Knowledge Panel eligibility. Organization schema example and fix suggestions via API.",
     intro:
       "Organization schema markup tells Google about your company or institution — its name, logo, website, and authoritative links. Valid Organization structured data contributes to your Knowledge Panel appearance in Google Search. It applies to companies, nonprofits, educational institutions, government organizations, and any other type of organization.",
     richResultType: "Organization Knowledge Panel",
@@ -362,9 +367,10 @@ const TYPES: Record<string, TypeData> = {
   breadcrumb: {
     slug: "breadcrumb",
     type: "BreadcrumbList",
-    title: "BreadcrumbList Schema Validation API",
+    title: "Breadcrumb Schema — Validate BreadcrumbList Structured Data",
+    h1: "Breadcrumb Schema Markup Guide",
     metaDescription:
-      "Validate BreadcrumbList JSON-LD structured data against Google's breadcrumb rich result requirements. Check itemListElement structure and get fix suggestions via API.",
+      "Validate breadcrumb structured data against Google's rich result requirements. Check BreadcrumbList itemListElement structure, position values, and get fix suggestions via API.",
     intro:
       "BreadcrumbList schema markup enables Google to show your site's navigation path directly in search results — the URL line in a search result becomes a readable path like 'example.com > Products > Widgets'. This helps users understand where a page sits in your site hierarchy before they click. Valid BreadcrumbList structured data requires a correctly ordered itemListElement array.",
     richResultType: "Breadcrumb trail in search result URL",
@@ -411,9 +417,10 @@ const TYPES: Record<string, TypeData> = {
   website: {
     slug: "website",
     type: "WebSite",
-    title: "WebSite Schema Validation API",
+    title: "Website Schema — Validate WebSite Structured Data",
+    h1: "WebSite Schema Markup Guide",
     metaDescription:
-      "Validate WebSite JSON-LD structured data against Google's Sitelinks Searchbox requirements. Check required properties and SearchAction configuration via API.",
+      "Validate website structured data against Google's Sitelinks Searchbox requirements. Check WebSite schema required properties, SearchAction configuration, and get fix suggestions via API.",
     intro:
       "WebSite schema markup on your homepage enables the Sitelinks Searchbox in Google Search — the search input that sometimes appears under your site listing, letting users search your site directly from the search results page. It also helps Google associate your site name with your domain. Every site should have a WebSite schema on its homepage.",
     richResultType: "Sitelinks Searchbox",
@@ -474,9 +481,10 @@ const TYPES: Record<string, TypeData> = {
   faq: {
     slug: "faq",
     type: "FAQPage",
-    title: "FAQPage Schema Validation API",
+    title: "FAQ Schema — Validate FAQPage Structured Data",
+    h1: "FAQ Schema Markup Guide",
     metaDescription:
-      "Validate FAQPage JSON-LD structured data against Google's requirements. Check mainEntity structure, Question and Answer format, and get fix suggestions via API.",
+      "Validate FAQPage structured data against Google's requirements. FAQ schema best practices — check mainEntity structure, Question and Answer format, and rich result eligibility via API.",
     intro:
       "FAQPage schema markup structures your question-and-answer content for Google Search. As of 2024, Google restricts FAQPage rich results to government and health websites — other sites may still use this schema for semantic markup but will not receive FAQ rich results. Valid FAQPage structured data requires a mainEntity array with properly formatted Question and Answer objects.",
     richResultType: "FAQ dropdown (restricted to gov/health since 2024)",
@@ -525,9 +533,10 @@ const TYPES: Record<string, TypeData> = {
   review: {
     slug: "review",
     type: "Review",
-    title: "Review Schema Validation API",
+    title: "Review Schema — Validate Review Structured Data",
+    h1: "Schema Markup for Reviews",
     metaDescription:
-      "Validate Review and AggregateRating JSON-LD structured data against Google's review snippet requirements. Check required properties, rating values, and get fix suggestions via API.",
+      "Validate review schema markup against Google's review snippet requirements. Check Review and AggregateRating structured data — required properties, rating values, and fix suggestions via API.",
     intro:
       "Review and AggregateRating schema markup enables star ratings to appear directly in Google Search results — one of the most impactful rich results for click-through rates. AggregateRating summarizes overall scores across many reviews, while individual Review objects describe a single reviewer's opinion. Both types require an itemReviewed subject (a Product, Book, Recipe, etc.).",
     richResultType: "Star rating snippet in search results",
@@ -602,9 +611,10 @@ const TYPES: Record<string, TypeData> = {
   recipe: {
     slug: "recipe",
     type: "Recipe",
-    title: "Recipe Schema Validation API",
+    title: "Recipe Schema — Validate Recipe Structured Data",
+    h1: "Recipe Structured Data Guide",
     metaDescription:
-      "Validate Recipe JSON-LD structured data against Google's rich result requirements. Check required properties, cooking times, ingredient lists, and get fix suggestions via API.",
+      "Validate recipe structured data for Google rich results. Check required properties (name, image, recipeInstructions), cooking times, ingredient lists. Recipe rich results guide via API.",
     intro:
       "Recipe schema markup unlocks rich recipe cards in Google Search — complete with images, star ratings, cook time, and calorie information. Recipe structured data is one of the most visually distinctive rich results in Google Search, making it highly valuable for food blogs and cooking websites. Valid Recipe schema requires a name, at least one image, and structured recipe instructions.",
     richResultType: "Recipe rich card with image, ratings, and cook time",
@@ -716,9 +726,10 @@ const TYPES: Record<string, TypeData> = {
   event: {
     slug: "event",
     type: "Event",
-    title: "Event Schema Validation API",
+    title: "Event Schema — Validate Event Structured Data",
+    h1: "Event Structured Data Guide",
     metaDescription:
-      "Validate Event JSON-LD structured data against Google's event rich result requirements. Check required properties, dates, location, and get fix suggestions via API.",
+      "Validate Google event structured data against rich result requirements. Check Event schema required properties (name, startDate, location), eventStatus, and get fix suggestions via API.",
     intro:
       "Event schema markup enables Google to display your events in dedicated event rich results — including event name, date, time, and location directly in search. Events can also appear in Google Events search panels. Valid Event structured data requires a name, startDate, and location. Sub-types include MusicEvent, SportsEvent, and EducationEvent.",
     richResultType: "Event listing in Google Search and Google Events",
@@ -827,9 +838,10 @@ const TYPES: Record<string, TypeData> = {
   video: {
     slug: "video",
     type: "VideoObject",
-    title: "VideoObject Schema Validation API",
+    title: "Video Schema — Validate VideoObject Structured Data",
+    h1: "Video Schema Markup Guide",
     metaDescription:
-      "Validate VideoObject JSON-LD structured data against Google's video rich result requirements. Check required properties, thumbnail, upload date, and get fix suggestions via API.",
+      "Validate video structured data markup against Google's rich result requirements. Check VideoObject required properties (name, thumbnailUrl, uploadDate), video schema markup, and get fix suggestions.",
     intro:
       "VideoObject schema markup helps Google understand and index your video content. With valid VideoObject structured data, your videos can appear in Google Video Search, video rich results in web search, and Google Discover. This is essential for any page that embeds or hosts video content. The Clip sub-type can mark specific key moments within a video.",
     richResultType: "Video rich result, video carousel, key moments",
@@ -923,9 +935,9 @@ const TYPES: Record<string, TypeData> = {
   "software-app": {
     slug: "software-app",
     type: "SoftwareApplication",
-    title: "SoftwareApplication Schema Validation API",
+    title: "Software Application Schema — Validate SoftwareApplication Structured Data",
     metaDescription:
-      "Validate SoftwareApplication JSON-LD structured data against Google's app rich result requirements. Check required properties, ratings, pricing, and get fix suggestions via API.",
+      "Validate SoftwareApplication structured data against Google's app rich result requirements. Check required properties (name, applicationCategory, operatingSystem), ratings, pricing via API.",
     intro:
       "SoftwareApplication schema markup enables app rich results in Google Search — showing your app's rating, price, and operating system compatibility directly in search results. This applies to web apps, mobile apps, video games, and desktop software. Sub-types include WebApplication, MobileApplication, and VideoGame. Valid markup can significantly improve click-through rates for app landing pages.",
     richResultType: "App rich result with rating and pricing",
@@ -1006,9 +1018,10 @@ const TYPES: Record<string, TypeData> = {
   "job-posting": {
     slug: "job-posting",
     type: "JobPosting",
-    title: "JobPosting Schema Validation API",
+    title: "Job Posting Schema — Validate JobPosting Structured Data",
+    h1: "Job Schema Markup Guide",
     metaDescription:
-      "Validate JobPosting JSON-LD structured data against Google's job listing requirements. Check required properties, salary, location, and get fix suggestions via API.",
+      "Validate Google job posting schema against rich result requirements. Check JobPosting required properties (title, description, hiringOrganization, jobLocation), salary, and get fix suggestions.",
     intro:
       "JobPosting schema markup enables Google for Jobs — a rich job search experience integrated directly into Google Search. Valid JobPosting structured data can display your job listing with title, company, location, salary, and application deadline in Google's job search results. This is essential for any site that posts job listings, whether a company career page or a job board.",
     richResultType: "Google for Jobs listing",
@@ -1114,9 +1127,9 @@ const TYPES: Record<string, TypeData> = {
   course: {
     slug: "course",
     type: "Course",
-    title: "Course Schema Validation API",
+    title: "Course Schema — Validate Course Structured Data",
     metaDescription:
-      "Validate Course JSON-LD structured data against Google's course rich result requirements. Check required properties, provider, instances, and get fix suggestions via API.",
+      "Validate Course structured data against Google's course rich result requirements. Check required properties (name, description, provider), hasCourseInstance, and get fix suggestions via API.",
     intro:
       "Course schema markup helps your educational content appear in Google's course rich results — showing course name, provider, and key details in search. Course structured data is used by online learning platforms, universities, and anyone offering structured educational content. The CourseInstance sub-type adds scheduling and format details for specific course runs.",
     richResultType: "Course info rich result",
@@ -1196,9 +1209,9 @@ const TYPES: Record<string, TypeData> = {
   carousel: {
     slug: "carousel",
     type: "ItemList",
-    title: "ItemList (Carousel) Schema Validation API",
+    title: "ItemList Schema — Validate Carousel Structured Data",
     metaDescription:
-      "Validate ItemList JSON-LD structured data against Google's carousel rich result requirements. Check itemListElement structure and get fix suggestions via API.",
+      "Validate ItemList structured data for Google carousel rich results. Check itemListElement structure, ListItem position values, and get fix suggestions via API.",
     intro:
       "ItemList schema markup enables carousel-style rich results in Google Search — showing a horizontal list of items (articles, recipes, movies, etc.) for a single search query. Carousels are typically used on list pages or summary pages that link to individual item detail pages. Valid ItemList structured data requires an ordered itemListElement array.",
     richResultType: "Carousel rich result (horizontal list in search)",
@@ -1264,9 +1277,9 @@ const TYPES: Record<string, TypeData> = {
   "qa-page": {
     slug: "qa-page",
     type: "QAPage",
-    title: "QAPage Schema Validation API",
+    title: "QAPage Schema — Validate Q&A Structured Data",
     metaDescription:
-      "Validate QAPage JSON-LD structured data against Google's Q&A rich result requirements. Check mainEntity structure, Question and Answer format, and get fix suggestions via API.",
+      "Validate QAPage structured data against Google's Q&A rich result requirements. Check mainEntity Question and Answer format, acceptedAnswer structure, and get fix suggestions via API.",
     intro:
       "QAPage schema markup is used on pages where a single question has been asked and answered by the community — such as Stack Overflow questions, Quora answers, or forum threads. Unlike FAQPage (which lists multiple Q&A pairs), QAPage is for a single question with one or more community answers. Valid QAPage structured data can generate Q&A rich results showing the top answer directly in search.",
     richResultType: "Q&A rich result with question and top answer",
@@ -2599,9 +2612,10 @@ const TYPES: Record<string, TypeData> = {
   "how-to": {
     slug: "how-to",
     type: "HowTo",
-    title: "HowTo Schema (Retired) | SchemaCheck",
+    title: "HowTo Schema — Validate How-To Structured Data",
+    h1: "HowTo Schema Markup Guide",
     metaDescription:
-      "HowTo rich results were retired by Google in August 2024. SchemaCheck validates HowTo schema with a deprecation warning. Learn what changed and what to use instead.",
+      "HowTo structured data retired by Google in August 2024. SchemaCheck validates HowTo schema with a deprecation warning. Learn what changed, what to use instead, and howto structured data history.",
     intro:
       "HowTo schema markup was used to enable step-by-step instructional rich results in Google Search — showing numbered steps, images, and tools directly in search results. Google retired HowTo rich results in August 2024. Pages with HowTo structured data no longer receive rich results, but the markup remains valid Schema.org and can still be validated. SchemaCheck returns a deprecation warning for HowTo schemas.",
     richResultType: "Retired — no longer generates rich results (as of August 2024)",
@@ -2899,7 +2913,7 @@ export default async function SchemaTypePage({ params }: Props) {
         </nav>
 
         {/* Header */}
-        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{data.title}</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">{data.h1 ?? data.title}</h1>
         <p className="text-gray-400 text-lg leading-relaxed mb-10">{data.intro}</p>
 
         {/* Note for deprecated/restricted types */}

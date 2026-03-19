@@ -3,9 +3,11 @@ import Link from "next/link";
 import { DOC_NAV } from "@/lib/doc-nav";
 
 export const metadata: Metadata = {
-  title: "Documentation",
+  title: {
+    absolute: "SchemaCheck API Documentation — Schema Validation API",
+  },
   description:
-    "SchemaCheck API documentation — authentication, parameters, error codes, and SDK examples for JavaScript, Python, PHP, Go, Ruby, and C#.",
+    "Schema markup API for developers — validate JSON-LD structured data, check rich result eligibility, and get fix suggestions. Full JSON-LD validator API reference with code examples in JavaScript, Python, PHP, Go, Ruby, and C#.",
 };
 
 export default function DocsPage() {
@@ -15,7 +17,8 @@ export default function DocsPage() {
         <p className="text-xs font-semibold text-indigo-400 uppercase tracking-widest mb-2">
           SchemaCheck API
         </p>
-        <h1 className="text-3xl font-bold text-white mb-3">Documentation</h1>
+        <h1 className="text-3xl font-bold text-white mb-1">Structured Data Testing Tool API</h1>
+        <p className="text-indigo-400 text-sm font-medium mb-3">JSON-LD Validator API Reference</p>
         <p className="text-gray-400 text-lg leading-relaxed">
           Everything you need to integrate schema validation into your stack — from a simple cURL
           call to production-ready SDK usage.

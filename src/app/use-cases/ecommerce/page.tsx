@@ -3,9 +3,9 @@ import Link from "next/link";
 import { CodeBlock } from "@/components/shared/CodeBlock";
 
 export const metadata: Metadata = {
-  title: "Product Schema Validation for E-commerce | SchemaCheck API",
+  title: "Ecommerce Schema — Validate Product & Shopping Structured Data",
   description:
-    "Validate Product and Offer schemas for Google Shopping rich results. Check name, image, offers, price, availability, and aggregateRating at scale across Shopify, WooCommerce, and custom storefronts.",
+    "Complete ecommerce schema validation for Shopify, WooCommerce, and custom storefronts. Validate schema markup for ecommerce — Product, Offer, price, availability, and aggregateRating at scale for Google Shopping rich results.",
 };
 
 const JSONLD = JSON.stringify(
@@ -178,7 +178,7 @@ export default function EcommercePage() {
             Use Case
           </p>
           <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
-            Validate Product and Offer schemas for Google Shopping
+            Ecommerce Schema Markup Guide
           </h1>
           <p className="text-gray-400 text-xl leading-relaxed">
             Product rich results — with pricing, availability, and star ratings — require complete
@@ -254,7 +254,7 @@ export default function EcommercePage() {
 
         {/* Shopify code */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-white mb-2">Audit your entire Shopify catalog</h2>
+          <h2 className="text-2xl font-semibold text-white mb-2">Shopify Product Schema — Audit Your Entire Catalog</h2>
           <p className="text-gray-400 mb-4">
             Pull every product URL from the Shopify Admin API and validate each one. Run weekly
             as a cron job and alert on new errors.

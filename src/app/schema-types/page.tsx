@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Supported Schema Types | SchemaCheck",
+  title: "All Schema Types — Complete Guide to Structured Data Types",
   description:
-    "All 35 Schema.org structured data types supported by SchemaCheck's validation API. Validates against Google's current rich result requirements — Article, Product, LocalBusiness, Recipe, Event, and 30 more.",
+    "Explore different types of schema markup supported by SchemaCheck. All 35 Google structured data types — Article, Product, LocalBusiness, Event, and 30 more — validated against Google's current rich result requirements.",
   openGraph: {
-    title: "Supported Schema Types | SchemaCheck",
+    title: "All Schema Types — Complete Guide to Structured Data Types",
     description:
-      "All 35 Schema.org types supported by SchemaCheck. Validates against Google's rich result requirements.",
+      "Explore different types of schema markup. All 35 Google structured data types validated against Google's rich result requirements.",
   },
 };
 
@@ -438,9 +438,10 @@ export default function SchemaTypesPage() {
             <span className="text-gray-400">Schema Types</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Supported Schema Types
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">
+            Types of Schema Markup
           </h1>
+          <p className="text-indigo-400 text-sm font-medium mb-4">Types of Schema in SEO</p>
           <p className="text-gray-400 text-lg max-w-2xl">
             SchemaCheck validates structured data against{" "}
             <a

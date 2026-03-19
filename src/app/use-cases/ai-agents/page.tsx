@@ -3,9 +3,9 @@ import Link from "next/link";
 import { CodeBlock } from "@/components/shared/CodeBlock";
 
 export const metadata: Metadata = {
-  title: "Schema Validation for AI Agents & LLM Tools | SchemaCheck API",
+  title: "Schema Validation for AI Agents & MCP",
   description:
-    "Let AI agents validate Schema.org structured data programmatically. SchemaCheck is the only REST API built for LLM workflows — MCP server included for Claude, Cursor, and Copilot.",
+    "Validate structured data for AI agents using the SchemaCheck REST API. MCP schema validation for Claude, Cursor, and Copilot. The only structured data API built for LLM and MCP tool workflows.",
 };
 
 const JSONLD = JSON.stringify(
@@ -204,7 +204,7 @@ export default function AiAgentsPage() {
             Use Case
           </p>
           <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
-            Let AI agents validate structured data programmatically
+            Schema Validation for AI Agents
           </h1>
           <p className="text-gray-400 text-xl leading-relaxed">
             When a user asks an AI agent to audit a website&apos;s schema markup, the agent needs
@@ -229,7 +229,7 @@ export default function AiAgentsPage() {
 
         {/* The AI gap */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-white mb-4">Why AI agents need this</h2>
+          <h2 className="text-2xl font-semibold text-white mb-4">Structured Data API for AI Workflows</h2>
           <p className="text-gray-400 mb-4">
             Google&apos;s Rich Results Test has no API. Schema.org&apos;s validator has no API.
             Every existing tool requires a browser. When a user asks an LLM to &ldquo;audit my
@@ -285,7 +285,7 @@ export default function AiAgentsPage() {
 
         {/* MCP */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-white mb-2">MCP server for Claude &amp; Cursor</h2>
+          <h2 className="text-2xl font-semibold text-white mb-2">MCP JSON Schema Validation for Claude &amp; Cursor</h2>
           <p className="text-gray-400 mb-4">
             SchemaCheck ships an{" "}
             <a
