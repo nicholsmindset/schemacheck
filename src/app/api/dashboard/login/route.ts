@@ -14,6 +14,15 @@ import { supabase } from "@/lib/supabase";
 import { SESSION_COOKIE, SESSION_COOKIE_OPTIONS } from "@/lib/dashboard-auth";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  // Guard against missing Supabase env vars — prevents HTML 500 from crashing the client
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.error("[dashboard/login] Missing Supabase env vars");
+    return NextResponse.json(
+      { error: { code: "internal_error", message: "Service configuration error. Please contact support." } },
+      { status: 500 }
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();

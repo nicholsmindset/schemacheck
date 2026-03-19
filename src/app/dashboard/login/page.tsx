@@ -67,8 +67,9 @@ function LoginForm() {
       }
 
       router.push("/dashboard");
-    } catch {
-      setError("Network error. Please try again.");
+    } catch (err) {
+      console.error("[login] Unexpected error:", err);
+      setError("Unable to connect. Please check your connection and try again.");
       setLoading(false);
     }
   }
