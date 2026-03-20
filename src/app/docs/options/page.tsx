@@ -110,7 +110,8 @@ export default function OptionsPage() {
         <h1 className="text-3xl font-bold text-white mb-3">Parameters &amp; Response</h1>
         <p className="text-gray-400 text-lg leading-relaxed">
           Complete reference for the <code className="text-indigo-400">/api/v1/validate</code>{" "}
-          endpoint — every request parameter and every response field.
+          and <code className="text-indigo-400">/api/v1/validate/batch</code> endpoints — every
+          request parameter and every response field.
         </p>
       </div>
 
@@ -257,6 +258,166 @@ export default function OptionsPage() {
         <FieldRow name="response_time_ms"  type="number"  desc="Total server-side time in milliseconds." />
       </Table>
 
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* ── POST /validate/batch ─────────────────────────────────────────────── */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      <H2>POST /validate/batch</H2>
+      <p className="text-gray-400 mb-5">
+        Validate up to 50 URLs in a single API call. All URLs are processed concurrently and
+        partial failures are tolerated — results for successful URLs are always returned even if
+        some URLs time out or are unreachable. The entire batch counts as{" "}
+        <strong className="text-white">one API request</strong> against your rate limit; credits
+        are charged only for URLs that validate successfully (1 credit per successful URL, 0 for
+        cached or failed URLs).
+      </p>
+
+      <CodeBlock
+        language="bash"
+        code={`curl -X POST https://schemacheck.dev/api/v1/validate/batch \\
+  -H "x-api-key: YOUR_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "urls": [
+      "https://example.com/page1",
+      "https://example.com/page2",
+      "https://example.com/page3"
+    ]
+  }'`}
+      />
+
+      <H3>Request body</H3>
+      <Table>
+        <ParamRow
+          name="urls"
+          type="string[]"
+          required
+          desc="Array of URLs to validate. Maximum 50 per request. Each URL must start with http:// or https://. Invalid URLs are returned as failed results rather than rejecting the whole batch."
+        />
+      </Table>
+
+      <H3>Headers</H3>
+      <Table>
+        <ParamRow name="x-api-key"    type="string" required desc="Your API key." />
+        <ParamRow name="Content-Type" type="string" required desc="Must be application/json." />
+      </Table>
+
+      <H3>Batch response (200)</H3>
+      <p className="text-gray-400 mb-4">
+        The response always has HTTP 200 as long as the request itself was valid (auth passed, body
+        was parseable, URL count was within limit). Per-URL failures are reported inside{" "}
+        <code className="text-emerald-400">results</code>, not as HTTP error codes.
+      </p>
+      <CodeBlock
+        language="json"
+        code={`{
+  "success": true,
+  "results": [
+    {
+      "url": "https://example.com/page1",
+      "success": true,
+      "schemas_found": 2,
+      "schemas": [ /* ... Schema objects ... */ ],
+      "summary": {
+        "score": 87,
+        "total_schemas": 2,
+        "valid_schemas": 2,
+        "invalid_schemas": 0,
+        "total_errors": 0,
+        "total_warnings": 3,
+        "rich_result_eligible": 1
+      }
+    },
+    {
+      "url": "https://example.com/bad-page",
+      "success": false,
+      "error": "Timeout after 10s"
+    }
+  ],
+  "meta": {
+    "total_urls": 2,
+    "successful": 1,
+    "failed": 1,
+    "credits_used": 1,
+    "credits_remaining": 248,
+    "total_response_time_ms": 4200
+  }
+}`}
+      />
+
+      <H3>Result item — success</H3>
+      <Table>
+        <FieldRow name="url"           type="string"   desc="The URL that was validated." />
+        <FieldRow name="success"       type="true"     desc="Always true for this shape." />
+        <FieldRow name="schemas_found" type="number"   desc="Count of JSON-LD schemas found on the page." />
+        <FieldRow name="schemas"       type="Schema[]" desc="Full validation results — same Schema objects as the single /validate endpoint." />
+        <FieldRow name="summary"       type="Summary"  desc="Aggregate stats — same Summary object as the single /validate endpoint." />
+        <FieldRow name="parse_errors"  type="string[]" optional desc="JSON parse errors from malformed script blocks. Present only when at least one block failed to parse." />
+        <FieldRow name="message"       type="string"   optional desc="Human-readable note when schemas_found is 0." />
+      </Table>
+
+      <H3>Result item — failure</H3>
+      <Table>
+        <FieldRow name="url"     type="string" desc="The URL that failed." />
+        <FieldRow name="success" type="false"  desc="Always false for this shape." />
+        <FieldRow name="error"   type="string" desc={<>Human-readable failure reason. Common values: <code className="text-emerald-400">&quot;Timeout after 10s&quot;</code>, <code className="text-emerald-400">&quot;URL must use http:// or https://&quot;</code>, <code className="text-emerald-400">&quot;Skipped — batch time budget exhausted.&quot;</code></>} />
+      </Table>
+
+      <H3>Batch meta object</H3>
+      <Table>
+        <FieldRow name="total_urls"             type="number"  desc="Total number of URLs submitted in the request." />
+        <FieldRow name="successful"             type="number"  desc="Count of URLs that validated without error." />
+        <FieldRow name="failed"                 type="number"  desc="Count of URLs that failed (invalid format, timeout, fetch error)." />
+        <FieldRow name="credits_used"           type="number"  desc="Total credits charged. One credit per successful, non-cached validation." />
+        <FieldRow name="credits_remaining"      type="number"  desc="Remaining credits after this batch." />
+        <FieldRow name="total_response_time_ms" type="number"  desc="Total wall-clock time for the entire batch in milliseconds." />
+        <FieldRow name="truncated"              type="boolean" optional desc="true if the 22-second batch budget was reached before all URLs could be processed. Remaining URLs will have a 'Skipped' error." />
+        <FieldRow name="truncated_reason"       type="string"  optional desc="Explanation of why the batch was truncated. Present only when truncated is true." />
+      </Table>
+
+      <H3>Batch limits and behaviour</H3>
+      <div className="space-y-3 mb-6">
+        {[
+          {
+            label: "Max URLs",
+            value: "50 per request. Submitting more than 50 returns HTTP 400.",
+          },
+          {
+            label: "Per-URL timeout",
+            value: "10 seconds. URLs that don't respond within 10s are returned as failed results.",
+          },
+          {
+            label: "Batch timeout",
+            value:
+              "22 seconds total. If the batch budget is reached, remaining unprocessed URLs are returned as skipped. This protects against Vercel's 25s function limit.",
+          },
+          {
+            label: "Rate limit",
+            value:
+              "The entire batch counts as 1 request against your per-minute rate limit, regardless of how many URLs are in it.",
+          },
+          {
+            label: "Credits",
+            value:
+              "1 credit per successfully validated URL. Cached results cost 0 credits. Failed and invalid URLs cost 0 credits.",
+          },
+          {
+            label: "Caching",
+            value:
+              "Each URL is checked against the cache individually (1-hour TTL). Cache hits within a batch cost 0 credits and are served instantly.",
+          },
+          {
+            label: "Partial failure",
+            value:
+              "The batch never fails wholesale. If 3 out of 10 URLs time out, you still receive results for the 7 that succeeded.",
+          },
+        ].map((row) => (
+          <div key={row.label} className="flex gap-4 py-2 border-b border-gray-800/60">
+            <span className="w-36 shrink-0 text-sm font-medium text-gray-500">{row.label}</span>
+            <span className="text-sm text-gray-300">{row.value}</span>
+          </div>
+        ))}
+      </div>
+
       {/* ── Supported types ── */}
       <H2>Supported schema types</H2>
       <p className="text-gray-400 mb-4">
@@ -363,7 +524,9 @@ export default function OptionsPage() {
       <H2>Rate limits</H2>
       <p className="text-gray-400 mb-5">
         Limits are per API key, per minute (sliding window). Exceeded requests return{" "}
-        <code className="text-red-400">rate_limit_exceeded</code> (HTTP 429).
+        <code className="text-red-400">rate_limit_exceeded</code> (HTTP 429). Note that the batch
+        endpoint counts as <strong className="text-white">one request</strong> against this limit
+        regardless of how many URLs are in the batch.
       </p>
       <div className="overflow-x-auto rounded-xl border border-gray-800">
         <table className="w-full text-sm">

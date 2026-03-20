@@ -16,7 +16,8 @@ export const DOC_NAV = [
   {
     group: "Integrations",
     items: [
-      { href: "/docs/mcp", label: "MCP Server", desc: "Use SchemaCheck inside Claude, Cursor, and other AI assistants" },
+      { href: "/docs/mcp",   label: "MCP Server",       desc: "Use SchemaCheck inside Claude, Cursor, and other AI assistants" },
+      { href: "/docs/ci-cd", label: "CI/CD Integration", desc: "GitHub Actions, GitLab CI, and Bitbucket Pipelines templates" },
     ],
   },
   {

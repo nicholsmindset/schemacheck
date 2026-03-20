@@ -1,0 +1,36 @@
+{
+  "name": "schemacheck-cli",
+  "version": "0.1.0",
+  "description": "CLI for SchemaCheck schema markup validation API",
+  "main": "./dist/index.js",
+  "bin": {
+    "schemacheck": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node src/index.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "schema",
+    "json-ld",
+    "structured-data",
+    "seo",
+    "validation",
+    "cli"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CodeBlock } from "@/components/shared/CodeBlock";
 
 export const metadata: Metadata = {
   title: "Schema Markup Validator Alternative — SchemaCheck",
   description:
-    "Better schema markup validator tool with a REST API. Compare SchemaCheck vs schema.org validator, JSON-LD validator, and schema markup checker tools. Automate validation in CI/CD, bulk-audit sitemaps, and power AI agents.",
+    "Better schema markup validator tool with a REST API. SchemaCheck checks Google rich result eligibility, not just syntax — with fix suggestions and monitoring.",
 };
 
 const JSONLD = JSON.stringify(
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Schema Markup Validator Alternative",
+    name: "Schema Markup Validator Alternative — SchemaCheck",
     description:
-      "Why developers choose a REST API over web-based schema markup validators. Compare SchemaCheck vs Schema.org validator and other tools.",
+      "SchemaCheck checks Google rich result eligibility, not just syntax — with fix suggestions, deprecation warnings, and continuous monitoring.",
     url: "https://schemacheck.dev/comparisons/schema-markup-validator-alternative",
     isPartOf: { "@type": "WebSite", name: "SchemaCheck", url: "https://schemacheck.dev" },
   },
@@ -22,85 +21,83 @@ const JSONLD = JSON.stringify(
   2
 );
 
-const CI_EXAMPLE = `# GitHub Actions — fails CI if schema errors are found
-# No web-based validator can do this
-- name: Validate schema markup
-  run: |
-    RESULT=$(curl -s "https://schemacheck.dev/api/v1/validate?url=https://example.com&access_key=$SCHEMACHECK_KEY")
-    ERRORS=$(echo $RESULT | jq '.summary.total_errors')
-    if [ "$ERRORS" -gt 0 ]; then
-      echo "Schema errors found:"
-      echo $RESULT | jq '.schemas[].errors[] | "  \\(.property): \\(.message)"'
-      exit 1
-    fi
-    echo "Schema valid — score: $(echo $RESULT | jq '.summary.score')/100"`;
-
 const comparison = [
-  {
-    feature: "REST API",
-    schemacheck: "✓",
-    schema_org: "—",
-    other: "—",
-  },
-  {
-    feature: "Validate raw JSON-LD (no live page)",
-    schemacheck: "✓",
-    schema_org: "✓",
-    other: "Varies",
-  },
-  {
-    feature: "Validate by URL",
-    schemacheck: "✓",
-    schema_org: "✓",
-    other: "✓",
-  },
-  {
-    feature: "Bulk / batch validation",
-    schemacheck: "✓",
-    schema_org: "—",
-    other: "—",
-  },
-  {
-    feature: "CI / CD integration",
-    schemacheck: "✓",
-    schema_org: "—",
-    other: "—",
-  },
-  {
-    feature: "Fix suggestions",
-    schemacheck: "✓",
-    schema_org: "—",
-    other: "—",
-  },
   {
     feature: "Rich result eligibility check",
     schemacheck: "✓",
     schema_org: "—",
     other: "—",
+    note: "SchemaCheck reports whether your schema qualifies for Google rich results.",
   },
   {
     feature: "Google deprecation warnings",
     schemacheck: "✓",
     schema_org: "—",
     other: "—",
+    note: "Flags HowTo, restricted FAQPage, and other deprecated schema patterns.",
+  },
+  {
+    feature: "Fix suggestions",
+    schemacheck: "✓",
+    schema_org: "—",
+    other: "—",
+    note: "Each error includes a specific remediation and documentation link.",
+  },
+  {
+    feature: "Validate by URL",
+    schemacheck: "✓",
+    schema_org: "✓",
+    other: "✓",
+    note: "All tools support URL-based validation.",
+  },
+  {
+    feature: "Validate raw JSON-LD",
+    schemacheck: "✓",
+    schema_org: "✓",
+    other: "Varies",
+    note: "Validate schema before publishing — no live page needed.",
+  },
+  {
+    feature: "REST API",
+    schemacheck: "✓",
+    schema_org: "—",
+    other: "—",
+    note: "SchemaCheck is the only option with a machine-readable API.",
+  },
+  {
+    feature: "Bulk / batch validation",
+    schemacheck: "✓",
+    schema_org: "—",
+    other: "—",
+    note: "Validate entire sitemaps programmatically.",
+  },
+  {
+    feature: "CI / CD integration",
+    schemacheck: "✓",
+    schema_org: "—",
+    other: "—",
+    note: "Block deploys with schema errors via GitHub Actions.",
+  },
+  {
+    feature: "URL monitoring",
+    schemacheck: "✓",
+    schema_org: "—",
+    other: "—",
+    note: "Re-validate on a schedule and alert on changes.",
   },
   {
     feature: "0–100 health score",
     schemacheck: "✓",
     schema_org: "—",
     other: "—",
-  },
-  {
-    feature: "Response caching",
-    schemacheck: "✓",
-    schema_org: "—",
-    other: "—",
+    note: "Machine-readable quality score for tracking over time.",
   },
   {
     feature: "Full Schema.org spec coverage",
-    schemacheck: "9 types",
+    schemacheck: "35+ types",
     schema_org: "Full",
     other: "Varies",
+    note: "Schema.org validator covers the full spec. SchemaCheck covers Google's supported types.",
   },
 ];
 
@@ -117,7 +114,7 @@ export default function SchemaMarkupValidatorAlternativePage() {
         <nav className="flex items-center gap-2 text-xs text-gray-500 mb-8">
           <Link href="/" className="hover:text-gray-400">SchemaCheck</Link>
           <span>/</span>
-          <Link href="/" className="hover:text-gray-400">Comparisons</Link>
+          <Link href="/comparisons" className="hover:text-gray-400">Comparisons</Link>
           <span>/</span>
           <span className="text-gray-400">vs Schema Markup Validators</span>
         </nav>
@@ -128,19 +125,20 @@ export default function SchemaMarkupValidatorAlternativePage() {
             Comparison
           </p>
           <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
-            Best Schema Markup Checker Alternative
+            The Best Schema Markup Validator Alternative
           </h1>
           <p className="text-gray-400 text-xl leading-relaxed">
-            Web-based schema validators are useful for one-off checks. They&apos;re useless for
-            automation. SchemaCheck gives you the REST API that existing validators don&apos;t —
-            so you can validate at scale, in CI, and in your own tools.
+            General validators check whether your schema is syntactically correct. SchemaCheck
+            checks what Google actually requires for rich results — including current
+            deprecations, property-level restrictions, and eligibility rules. Syntax is the
+            floor, not the goal.
           </p>
           <div className="flex flex-wrap gap-3 mt-6">
             <Link
               href="/docs/getting-started"
               className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors"
             >
-              Get free API key →
+              Start for free →
             </Link>
             <Link
               href="/docs/options"
@@ -151,54 +149,93 @@ export default function SchemaMarkupValidatorAlternativePage() {
           </div>
         </div>
 
-        {/* The problem with web-only validators */}
+        {/* The syntax vs eligibility gap */}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-white mb-4">
-            JSON-LD Validator Comparison
+            Syntax-valid is not the same as rich-result eligible
           </h2>
           <p className="text-gray-400 mb-4">
-            Compared to the schema.org validator (validator.schema.org) — which is the most comprehensive
-            structured data checker available — SchemaCheck adds the REST API that existing schema markup checker tools lack. Every web-based validator has the same
-            constraint: no API, no automation path.
+            Most schema markup validators confirm that your JSON-LD is well-formed and
+            matches the Schema.org specification. That&apos;s genuinely useful — but it answers
+            the wrong question. The question that matters for SEO is not &ldquo;is this
+            valid JSON-LD?&rdquo; It&apos;s &ldquo;will Google use this for rich results?&rdquo;
           </p>
-          <div className="grid sm:grid-cols-2 gap-3">
+          <p className="text-gray-400 mb-4">
+            Google maintains its own set of requirements that differ from the Schema.org spec.
+            It restricts which properties qualify, it deprecates entire schema types (HowTo
+            rich results were deprecated in 2023), and it imposes content policies that a
+            spec validator has no visibility into. SchemaCheck validates against Google&apos;s
+            current requirements — not just the spec.
+          </p>
+          <div className="space-y-2">
+            {[
+              {
+                label: "FAQPage restrictions",
+                desc: "Google restricted FAQPage rich results to authoritative government and health sites in 2023. A spec validator marks your FAQPage schema as valid. SchemaCheck flags that it won't generate rich results for most sites.",
+              },
+              {
+                label: "HowTo deprecation",
+                desc: "HowTo rich results were deprecated by Google. Schema.org still defines the type as valid. Only a Google-aware validator will warn you that the schema is a dead end.",
+              },
+              {
+                label: "Required vs recommended properties",
+                desc: "Google requires specific properties that the Schema.org spec marks as optional. Missing them produces a syntactically valid schema that Google can't use for rich results.",
+              },
+            ].map((item) => (
+              <div key={item.label} className="flex gap-3 p-4 rounded-lg bg-[#111118] border border-gray-800/60">
+                <span className="text-amber-500 text-sm shrink-0 mt-0.5">⚠</span>
+                <div>
+                  <p className="text-sm font-medium text-white">{item.label}</p>
+                  <p className="text-sm text-gray-500 mt-0.5">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Tools overview */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-semibold text-white mb-4">
+            How the tools compare
+          </h2>
+          <div className="grid sm:grid-cols-2 gap-3 mb-6">
             {[
               {
                 tool: "Schema.org Validator",
                 url: "validator.schema.org",
-                hasApi: false,
-                note: "Most comprehensive spec coverage. No API, no automation path.",
+                highlight: false,
+                note: "Most comprehensive spec coverage. Validates against the full Schema.org spec. No Google eligibility checks, no API.",
               },
               {
                 tool: "Google Rich Results Test",
                 url: "search.google.com/test/rich-results",
-                hasApi: false,
-                note: "Google's official renderer. No API, web UI only.",
+                highlight: false,
+                note: "Google's official renderer. Checks eligibility using Googlebot. Manual, web-only, one URL at a time.",
               },
               {
                 tool: "Merkle Schema Markup Validator",
                 url: "technicalseo.com/tools/schema-markup-validator",
-                hasApi: false,
-                note: "Popular SEO tool. No API, one URL at a time.",
+                highlight: false,
+                note: "Popular SEO tool. Web-based, no API, one URL at a time.",
               },
               {
-                tool: "SchemaCheck API",
+                tool: "SchemaCheck",
                 url: "schemacheck.dev/api/v1/validate",
-                hasApi: true,
-                note: "REST API. Built for automation, CI, and agent workflows.",
+                highlight: true,
+                note: "Google eligibility checks, fix suggestions, deprecation warnings, REST API, and monitoring.",
               },
             ].map((item) => (
               <div
                 key={item.tool}
                 className={`p-4 rounded-xl border ${
-                  item.hasApi
+                  item.highlight
                     ? "border-indigo-800/60 bg-indigo-950/10"
                     : "border-gray-800 bg-[#111118]"
                 }`}
               >
                 <div className="flex items-start gap-2 mb-1">
-                  <span className={`font-bold shrink-0 mt-0.5 ${item.hasApi ? "text-indigo-400" : "text-gray-600"}`}>
-                    {item.hasApi ? "✓" : "✗"}
+                  <span className={`font-bold shrink-0 mt-0.5 ${item.highlight ? "text-indigo-400" : "text-gray-600"}`}>
+                    {item.highlight ? "✓" : "✗"}
                   </span>
                   <p className="text-sm font-medium text-white">{item.tool}</p>
                 </div>
@@ -228,10 +265,14 @@ export default function SchemaMarkupValidatorAlternativePage() {
                     key={row.feature}
                     className={`border-b border-gray-800/50 ${i % 2 === 0 ? "bg-[#111118]" : "bg-[#0d0d14]"}`}
                   >
-                    <td className="px-4 py-3 text-sm text-gray-300">{row.feature}</td>
+                    <td className="px-4 py-3">
+                      <p className="text-sm text-white font-medium">{row.feature}</p>
+                      <p className="text-xs text-gray-600 mt-0.5">{row.note}</p>
+                    </td>
                     <td className="px-4 py-3 text-center">
                       <span className={`text-sm font-semibold ${
-                        row.schemacheck === "✓" ? "text-indigo-400" : "text-gray-500"
+                        row.schemacheck === "✓" ? "text-indigo-400" :
+                        row.schemacheck === "—" ? "text-gray-700" : "text-gray-400"
                       }`}>
                         {row.schemacheck}
                       </span>
@@ -259,55 +300,46 @@ export default function SchemaMarkupValidatorAlternativePage() {
           </div>
         </section>
 
-        {/* The thing no validator does */}
+        {/* Three differentiators */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-white mb-2">
-            What only SchemaCheck can do
+          <h2 className="text-2xl font-semibold text-white mb-6">
+            What SchemaCheck checks that other validators miss
           </h2>
-          <p className="text-gray-400 mb-4">
-            No web-based validator can be embedded in a GitHub Actions workflow. This means
-            schema regressions ship to production silently, and developers find out weeks
-            later when rich results disappear.
-          </p>
-          <CodeBlock language="yaml" code={CI_EXAMPLE} />
-        </section>
-
-        {/* Use cases where an API is required */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-white mb-4">
-            When you need an API instead of a web tool
-          </h2>
-          <div className="space-y-2">
-            {[
-              {
-                label: "Bulk sitemap audits",
-                desc: "Auditing 10,000 pages manually is impossible. With SchemaCheck's API you can pull all URLs from a sitemap, validate each one, and sort by worst score — in minutes.",
-              },
-              {
-                label: "Publish-time validation",
-                desc: "WordPress, Shopify, and Webflow all support webhooks on publish. You can call the SchemaCheck API from those webhooks and alert before the page has been cached by Google.",
-              },
-              {
-                label: "CI/CD schema gates",
-                desc: "Block a deploy when a developer removes a required schema property. Web validators can't do this — they have no way to be called from a terminal.",
-              },
-              {
-                label: "AI agent tool use",
-                desc: "When a user asks an LLM to audit their site's structured data, the agent needs an API endpoint to call. Every existing validator requires a browser.",
-              },
-              {
-                label: "Monitoring dashboards",
-                desc: "Track schema health score over time. Visualize which pages are rich-result eligible. Build a schema health dashboard inside your existing observability stack.",
-              },
-            ].map((item) => (
-              <div key={item.label} className="flex gap-3 p-4 rounded-lg bg-[#111118] border border-gray-800/60">
-                <span className="text-indigo-400 text-sm shrink-0 mt-0.5">→</span>
-                <div>
-                  <p className="text-sm font-medium text-white">{item.label}</p>
-                  <p className="text-sm text-gray-500 mt-0.5">{item.desc}</p>
-                </div>
-              </div>
-            ))}
+          <div className="space-y-4">
+            <div className="p-5 rounded-xl border border-gray-800 bg-[#111118]">
+              <h3 className="text-base font-semibold text-white mb-2">
+                Google&apos;s current deprecations and restrictions
+              </h3>
+              <p className="text-sm text-gray-400">
+                Schema.org validators are spec validators — they reflect what the specification
+                defines, not what Google currently supports. SchemaCheck tracks Google&apos;s
+                documented changes to rich result eligibility, including schema types that have
+                been deprecated or restricted for most sites. You get warned before your schema
+                becomes a dead end.
+              </p>
+            </div>
+            <div className="p-5 rounded-xl border border-gray-800 bg-[#111118]">
+              <h3 className="text-base font-semibold text-white mb-2">
+                Property-level fix suggestions, not just error counts
+              </h3>
+              <p className="text-sm text-gray-400">
+                Most validators tell you something is wrong and point at the spec. SchemaCheck
+                tells you exactly which property is missing or malformed, why it matters for
+                rich results, and what the correct value or format should be. Each error links
+                directly to the relevant Google documentation.
+              </p>
+            </div>
+            <div className="p-5 rounded-xl border border-gray-800 bg-[#111118]">
+              <h3 className="text-base font-semibold text-white mb-2">
+                Automation and monitoring that web tools can&apos;t provide
+              </h3>
+              <p className="text-sm text-gray-400">
+                Every web-based validator requires a browser, a person, and a single URL at a
+                time. SchemaCheck&apos;s REST API lets you validate at scale — in CI pipelines,
+                on a schedule, across thousands of URLs, or from any tool that can make an HTTP
+                request. Free tier covers 100 validations/month.
+              </p>
+            </div>
           </div>
         </section>
 
@@ -323,31 +355,33 @@ export default function SchemaMarkupValidatorAlternativePage() {
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="flex gap-2">
                 <span className="text-gray-500 shrink-0">→</span>
-                Manually debugging a single page that&apos;s not showing rich results in Google
+                Checking schema types that SchemaCheck doesn&apos;t yet support
               </li>
               <li className="flex gap-2">
                 <span className="text-gray-500 shrink-0">→</span>
-                Validating schemas on pages that rely on client-side JavaScript rendering
+                Validating against the full Schema.org specification rather than Google&apos;s subset
               </li>
               <li className="flex gap-2">
                 <span className="text-gray-500 shrink-0">→</span>
-                Checking types that SchemaCheck doesn&apos;t yet support (Event, Recipe, etc.)
+                Debugging a page with complex client-side JavaScript rendering
               </li>
               <li className="flex gap-2">
                 <span className="text-gray-500 shrink-0">→</span>
-                Getting Google&apos;s official ground-truth render result for a specific URL
+                Getting Google&apos;s ground-truth Googlebot render result for a specific URL
               </li>
             </ul>
             <p className="text-sm text-gray-500 mt-4">
-              Use both tools. SchemaCheck for automation and scale; Google&apos;s Rich Results
-              Test for ground-truth verification.
+              Use both. Web validators for one-off debugging against the spec;
+              SchemaCheck for Google eligibility checks, automation, and monitoring.
             </p>
           </div>
         </section>
 
         {/* CTA */}
         <section className="p-6 rounded-2xl border border-indigo-800/60 bg-indigo-950/20 mb-12">
-          <h2 className="text-xl font-semibold text-white mb-2">Start automating schema validation</h2>
+          <h2 className="text-xl font-semibold text-white mb-2">
+            Check what Google actually requires
+          </h2>
           <p className="text-gray-400 text-sm mb-4">
             Free plan — 100 validations/month. No credit card. Works with any language or
             platform that can make an HTTP request.
@@ -373,9 +407,9 @@ export default function SchemaMarkupValidatorAlternativePage() {
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">Related</h2>
           <div className="grid sm:grid-cols-2 gap-3">
             {[
-              { href: "/comparisons/google-rich-results-test-alternative", label: "vs Google Rich Results Test", desc: "Detailed comparison with Google's official tool" },
-              { href: "/use-cases/seo-audit", label: "SEO Audit use case", desc: "Bulk validate sitemaps with the API" },
-              { href: "/use-cases/ai-agents", label: "AI Agents", desc: "Let LLMs call the SchemaCheck API" },
+              { href: "/comparisons/google-rich-results-test-alternative", label: "vs Google Rich Results Test", desc: "Detailed comparison with Google's official manual tool" },
+              { href: "/comparisons/screaming-frog-schema-validation", label: "vs Screaming Frog", desc: "Schema validation beyond periodic site crawls" },
+              { href: "/comparisons/ahrefs-schema-validation", label: "vs Ahrefs", desc: "Purpose-built schema depth vs. broad SEO audits" },
               { href: "/docs/getting-started", label: "Getting started", desc: "API key in 30 seconds" },
             ].map((link) => (
               <Link

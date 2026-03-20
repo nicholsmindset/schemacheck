@@ -1,0 +1,29 @@
+{
+  "name": "n8n-nodes-schemacheck",
+  "version": "0.1.0",
+  "description": "n8n community node for SchemaCheck schema markup validation",
+  "keywords": ["n8n-community-node-package"],
+  "license": "MIT",
+  "homepage": "https://www.schemacheck.dev",
+  "author": "SchemaCheck",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schemacheck/n8n-nodes-schemacheck"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && gulp build:icons",
+    "dev": "tsc --watch"
+  },
+  "files": ["dist"],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": ["dist/credentials/SchemacheckApi.credentials.js"],
+    "nodes": ["dist/nodes/Schemacheck/Schemacheck.node.js"]
+  },
+  "devDependencies": {
+    "n8n-workflow": "*",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  }
+}

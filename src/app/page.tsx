@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-// ─── palette helpers ───────────────────────────────────────────────────────────
+// ─── palette helpers ────────────────────────────────────────────────────────
 const BG      = "bg-[#0a0a0f]";
 const SURFACE = "bg-[#111118]";
 const CARD    = "bg-[#16161f]";
@@ -13,7 +14,7 @@ function cn(...classes: (string | false | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-// ─── icons ─────────────────────────────────────────────────────────────────────
+// ─── icons ──────────────────────────────────────────────────────────────────
 function CheckIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="inline-block flex-shrink-0 mt-px">
@@ -52,212 +53,7 @@ function CopyIcon({ done }: { done: boolean }) {
   );
 }
 
-// ─── Nav ───────────────────────────────────────────────────────────────────────
-function Nav() {
-  return (
-    <nav className={cn("sticky top-0 z-50 border-b", BORDER, "bg-[#0a0a0f]/90 backdrop-blur-md")}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
-        <Link href="/" className="flex items-center gap-2 font-semibold text-white tracking-tight" aria-label="SchemaCheck home">
-          <span className="text-indigo-400 text-lg leading-none">⬡</span>
-          <span>Schema<span className="text-indigo-400">Check</span></span>
-        </Link>
-        <div className="hidden sm:flex items-center gap-6 text-sm text-gray-400">
-          <Link href="/docs" className="hover:text-white transition-colors">Docs</Link>
-          <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-          <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
-          <Link href="/comparisons/google-rich-results-test-alternative" className="hover:text-white transition-colors">
-            vs Google&apos;s Tool
-          </Link>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/dashboard/login"
-            className="text-sm text-gray-400 hover:text-white transition-colors"
-          >
-            Sign in
-          </Link>
-          <a
-            href="#signup"
-            className="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg transition-colors font-medium"
-          >
-            Get API Key →
-          </a>
-        </div>
-      </div>
-    </nav>
-  );
-}
-
-// ─── Hero ──────────────────────────────────────────────────────────────────────
-const HERO_JSON = `{
-  "success": true,
-  "schemas_found": 3,
-  "schemas": [
-    {
-      "type": "Organization",
-      "valid": true,
-      "rich_result_eligible": true,
-      "errors": [],
-      "warnings": [
-        {
-          "severity": "warning",
-          "property": "sameAs",
-          "message": "Recommended property
-                      'sameAs' is missing",
-          "fix": "Add sameAs with your
-                  social profile URLs"
-        }
-      ],
-      "rich_result": {
-        "eligible": true,
-        "reason": "Eligible for Organization
-                   rich results in Google Search."
-      }
-    }
-  ],
-  "summary": {
-    "score": 87,
-    "total_schemas": 3,
-    "valid_schemas": 3,
-    "total_errors": 0,
-    "total_warnings": 2,
-    "rich_result_eligible": 2
-  },
-  "meta": {
-    "cached": false,
-    "credits_used": 1,
-    "response_time_ms": 412
-  }
-}`;
-
-function Hero() {
-  const [copied, setCopied] = useState(false);
-  const endpoint = "https://api.schemacheck.dev/v1/validate?url=https://stripe.com&access_key=sc_live_...";
-
-  function copy() {
-    navigator.clipboard.writeText(endpoint.replace("sc_live_...", "YOUR_KEY"));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
-
-  return (
-    <section className="pt-20 pb-16 px-4 sm:px-6 max-w-6xl mx-auto">
-      {/* badge */}
-      <div className="flex justify-center mb-7">
-        <span className="text-xs px-3 py-1 rounded-full border border-indigo-900/60 bg-indigo-950/40 text-indigo-400 font-medium">
-          JSON-LD validation · REST API · 100 validations/month free forever
-        </span>
-      </div>
-
-      {/* headline */}
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-center text-white leading-[1.12] tracking-tight mb-5">
-        The schema validation API
-        <br />
-        <span className="text-indigo-400">for developers</span>
-      </h1>
-      <p className="text-center text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-        Validate structured data in one simple API call,
-        <br className="hidden sm:block" />
-        instead of manually checking with Google&apos;s tools.
-      </p>
-
-      {/* CTAs */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-3">
-        <a
-          href="#signup"
-          className="w-full sm:w-auto text-center bg-indigo-600 hover:bg-indigo-500 text-white px-7 py-3 rounded-xl font-semibold text-base transition-colors shadow-lg shadow-indigo-900/30"
-        >
-          Start validating for free →
-        </a>
-        <a
-          href="/docs"
-          className={cn("w-full sm:w-auto text-center border px-7 py-3 rounded-xl font-medium text-base transition-colors text-gray-300 hover:text-white hover:border-gray-600", BORDER)}
-        >
-          View documentation
-        </a>
-      </div>
-      <p className="text-center text-gray-700 text-sm mb-14">No credit card required.</p>
-
-      {/* demo */}
-      <div className="grid lg:grid-cols-2 gap-4 items-start">
-        {/* request card */}
-        <div className={cn("rounded-2xl border overflow-hidden", BORDER)}>
-          <div className={cn("flex items-center justify-between px-4 py-2.5 border-b text-xs", SURFACE, BORDER)}>
-            <div className="flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
-              <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
-              <span className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
-              <span className="ml-2 text-gray-600 font-mono">GET /v1/validate</span>
-            </div>
-            <button
-              onClick={copy}
-              className="flex items-center gap-1.5 text-gray-600 hover:text-gray-300 transition-colors"
-            >
-              <CopyIcon done={copied} />
-              <span>{copied ? "Copied!" : "Copy"}</span>
-            </button>
-          </div>
-
-          <div className={cn("p-5 font-mono text-sm", CARD)}>
-            <div className="flex flex-wrap gap-y-0.5 leading-relaxed">
-              <span className="text-emerald-400 mr-2">GET</span>
-              <span className="text-gray-500 break-all">
-                https://api.schemacheck.dev/v1/validate
-                <span className="text-indigo-400">?url=</span>
-                <span className="text-amber-300">https://stripe.com</span>
-                <span className="text-indigo-400">&amp;access_key=</span>
-                <span className="text-gray-600">sc_live_...</span>
-              </span>
-            </div>
-
-            <div className="mt-5 border-t border-gray-800/80 pt-4 space-y-1 text-xs">
-              <div className="flex gap-3">
-                <span className="text-gray-700 w-16">Accept</span>
-                <span className="text-gray-400">application/json</span>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-gray-700 w-16">Status</span>
-                <span className="text-emerald-400">200 OK</span>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-gray-700 w-16">Time</span>
-                <span className="text-gray-300">412ms</span>
-              </div>
-            </div>
-          </div>
-
-          <div className={cn("px-5 pb-5 pt-0 font-mono", CARD)}>
-            <p className="text-gray-700 text-xs mb-2">— or POST with JSON-LD directly:</p>
-            <pre className="text-xs text-gray-500 leading-relaxed">{`POST /v1/validate
-x-api-key: sc_live_...
-
-{
-  "jsonld": {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "My Post",
-    "author": { "@type": "Person", ... }
-  }
-}`}</pre>
-          </div>
-        </div>
-
-        {/* response card */}
-        <div className={cn("rounded-2xl border overflow-hidden", BORDER)}>
-          <div className={cn("flex items-center gap-2 px-4 py-2.5 border-b text-xs", SURFACE, BORDER)}>
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span className="text-gray-600 font-mono">response.json</span>
-            <span className="ml-auto text-emerald-400 font-mono text-xs">200 OK</span>
-          </div>
-          <pre className={cn("p-5 text-xs font-mono overflow-auto max-h-[400px] leading-relaxed", CARD)}>
-            <JsonHighlight code={HERO_JSON} />
-          </pre>
-        </div>
-      </div>
-    </section>
-  );
-}
-
+// ─── JsonHighlight ───────────────────────────────────────────────────────────
 function JsonHighlight({ code }: { code: string }) {
   return (
     <>
@@ -274,132 +70,448 @@ function JsonHighlight({ code }: { code: string }) {
   );
 }
 
-// ─── Stats bar ────────────────────────────────────────────────────────────────
-function StatsBar() {
-  const stats = [
-    { value: "35+",   label: "Schema types supported", sub: "across 4 validation tiers" },
-    { value: "99.9%", label: "Uptime SLA",             sub: "monitored 24/7" },
-    { value: "100",   label: "Free validations / month", sub: "forever, no card required" },
-  ];
+// ─── Nav ────────────────────────────────────────────────────────────────────
+function Nav() {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
-    <section className={cn("border-y py-12", BORDER)}>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-          {stats.map((s) => (
-            <div key={s.label}>
-              <div className="text-4xl font-bold text-white mb-1">{s.value}</div>
-              <div className="text-sm font-medium text-gray-300">{s.label}</div>
-              <div className="text-xs text-gray-600 mt-0.5">{s.sub}</div>
+    <nav className={cn("sticky top-0 z-50 border-b", BORDER, "bg-[#0a0a0f]/90 backdrop-blur-md")}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-semibold text-white tracking-tight"
+          aria-label="SchemaCheck home"
+        >
+          <span className="text-indigo-400 text-lg leading-none">⬡</span>
+          <span>Schema<span className="text-indigo-400">Check</span></span>
+        </Link>
+
+        {/* Desktop nav */}
+        <div className="hidden sm:flex items-center gap-6 text-sm text-gray-400">
+          <Link href="/docs" className="hover:text-white transition-colors">Docs</Link>
+          <Link href="/check" className="hover:text-white transition-colors">Check a URL</Link>
+          <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
+          <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+          <Link href="/schema-types" className="hover:text-white transition-colors">Schema Types</Link>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard/login"
+            className="hidden sm:block text-sm text-gray-400 hover:text-white transition-colors"
+          >
+            Sign in
+          </Link>
+          <a
+            href="#signup"
+            className="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg transition-colors font-medium"
+          >
+            Get API Key →
+          </a>
+          {/* Hamburger */}
+          <button
+            onClick={() => setMobileOpen((o) => !o)}
+            aria-label="Toggle menu"
+            className="sm:hidden flex flex-col gap-1.5 p-1.5 text-gray-400 hover:text-white transition-colors"
+          >
+            <span className={cn("block w-5 h-0.5 bg-current transition-transform origin-center", mobileOpen ? "rotate-45 translate-y-2" : "")} />
+            <span className={cn("block w-5 h-0.5 bg-current transition-opacity", mobileOpen ? "opacity-0" : "")} />
+            <span className={cn("block w-5 h-0.5 bg-current transition-transform origin-center", mobileOpen ? "-rotate-45 -translate-y-2" : "")} />
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <div className={cn("sm:hidden border-t px-4 py-4 space-y-3", BORDER, "bg-[#0a0a0f]")}>
+          <Link href="/docs" className="block text-sm text-gray-400 hover:text-white transition-colors py-1">Docs</Link>
+          <Link href="/check" className="block text-sm text-gray-400 hover:text-white transition-colors py-1">Check a URL</Link>
+          <a href="#pricing" className="block text-sm text-gray-400 hover:text-white transition-colors py-1" onClick={() => setMobileOpen(false)}>Pricing</a>
+          <Link href="/blog" className="block text-sm text-gray-400 hover:text-white transition-colors py-1">Blog</Link>
+          <Link href="/schema-types" className="block text-sm text-gray-400 hover:text-white transition-colors py-1">Schema Types</Link>
+          <Link href="/dashboard/login" className="block text-sm text-gray-400 hover:text-white transition-colors py-1">Sign in</Link>
+        </div>
+      )}
+    </nav>
+  );
+}
+
+// ─── Hero ────────────────────────────────────────────────────────────────────
+function Hero() {
+  const [url, setUrl] = useState("");
+  const router = useRouter();
+
+  function handleCheck(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = url.trim();
+    if (!trimmed) return;
+    const target = trimmed.startsWith("http") ? trimmed : `https://${trimmed}`;
+    router.push(`/check?url=${encodeURIComponent(target)}`);
+  }
+
+  return (
+    <section className="pt-20 pb-16 px-4 sm:px-6 max-w-6xl mx-auto">
+      {/* badge */}
+      <div className="flex justify-center mb-7">
+        <span className="text-xs px-3 py-1.5 rounded-full border border-indigo-900/60 bg-indigo-950/40 text-indigo-400 font-medium">
+          35+ schema types · Rich result eligibility · Fix suggestions included
+        </span>
+      </div>
+
+      {/* headline */}
+      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-center text-white leading-[1.1] tracking-tight mb-5 max-w-4xl mx-auto">
+        Find out if your structured data actually qualifies for rich results —{" "}
+        <span className="text-indigo-400">before Google tells you it doesn&apos;t.</span>
+      </h1>
+
+      <p className="text-center text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+        No more copy-pasting URLs into Google&apos;s Rich Results Test one at a time.
+        Validate one page or thousands — and get exact fix instructions.
+      </p>
+
+      {/* Primary: URL checker */}
+      <form onSubmit={handleCheck} className="max-w-2xl mx-auto mb-5">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <input
+            type="text"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="https://yoursite.com/product-page"
+            className={cn(
+              "flex-1 px-4 py-3.5 rounded-xl border text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-indigo-600 transition-colors",
+              BORDER, CARD
+            )}
+          />
+          <button
+            type="submit"
+            className="bg-indigo-600 hover:bg-indigo-500 text-white px-7 py-3.5 rounded-xl font-semibold text-sm transition-colors shadow-lg shadow-indigo-900/30 whitespace-nowrap"
+          >
+            Check for free →
+          </button>
+        </div>
+        <p className="text-center text-gray-700 text-xs mt-3">No account needed to check a URL.</p>
+      </form>
+
+      {/* Secondary: API key */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-3">
+        <a
+          href="#signup"
+          className={cn("text-sm border px-5 py-2.5 rounded-xl font-medium transition-colors text-gray-400 hover:text-white hover:border-gray-600", BORDER)}
+        >
+          Get API Key — validate at scale →
+        </a>
+        <Link
+          href="/docs"
+          className="text-sm text-gray-600 hover:text-gray-400 transition-colors"
+        >
+          Read the docs
+        </Link>
+      </div>
+
+      {/* validation result preview */}
+      <div className="mt-14 grid lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+        {/* error card */}
+        <div className={cn("rounded-2xl border overflow-hidden", "border-red-900/50")}>
+          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-red-900/30 bg-red-950/20 text-xs">
+            <span className="w-2 h-2 rounded-full bg-red-500" />
+            <span className="text-red-400 font-medium">2 errors found</span>
+          </div>
+          <div className="p-4 bg-red-950/10 space-y-3">
+            <div className="flex items-start gap-2.5">
+              <XIcon />
+              <div>
+                <p className="text-sm text-gray-200 font-medium">Missing author</p>
+                <p className="text-xs text-gray-500 mt-0.5">Required for Article rich results</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-2.5">
+              <XIcon />
+              <div>
+                <p className="text-sm text-gray-200 font-medium">Missing datePublished</p>
+                <p className="text-xs text-gray-500 mt-0.5">Required property not found</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* warning card */}
+        <div className={cn("rounded-2xl border overflow-hidden", "border-amber-900/50")}>
+          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-amber-900/30 bg-amber-950/20 text-xs">
+            <span className="w-2 h-2 rounded-full bg-amber-500" />
+            <span className="text-amber-400 font-medium">1 warning</span>
+          </div>
+          <div className="p-4 bg-amber-950/10 space-y-3">
+            <div className="flex items-start gap-2.5">
+              <WarnIcon />
+              <div>
+                <p className="text-sm text-gray-200 font-medium">Image missing</p>
+                <p className="text-xs text-gray-500 mt-0.5">Recommended for rich result display</p>
+              </div>
+            </div>
+            <div className="mt-2 rounded-lg bg-amber-950/30 border border-amber-900/30 px-3 py-2">
+              <p className="text-xs text-amber-300/80">Fix: Add <span className="font-mono">&quot;image&quot;</span> with an absolute URL</p>
+            </div>
+          </div>
+        </div>
+
+        {/* eligible card */}
+        <div className={cn("rounded-2xl border overflow-hidden", "border-emerald-900/50")}>
+          <div className="flex items-center gap-2 px-4 py-2.5 border-b border-emerald-900/30 bg-emerald-950/20 text-xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="text-emerald-400 font-medium">Rich result eligible</span>
+          </div>
+          <div className="p-4 bg-emerald-950/10 space-y-3">
+            <div className="flex items-start gap-2.5">
+              <CheckIcon />
+              <div>
+                <p className="text-sm text-gray-200 font-medium">Organization · valid</p>
+                <p className="text-xs text-gray-500 mt-0.5">All required properties present</p>
+              </div>
+            </div>
+            <div className="rounded-lg bg-emerald-950/30 border border-emerald-900/30 px-3 py-2">
+              <p className="text-xs text-emerald-300/80">Score: <span className="font-semibold">87</span> / 100</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── How It Works ────────────────────────────────────────────────────────────
+function HowItWorks() {
+  const steps = [
+    {
+      number: "1",
+      title: "Enter your URL or paste your schema",
+      description: "Drop in any page URL or paste schema markup directly. No setup, no account required to get started.",
+      icon: "🔗",
+      detail: "Works with any public URL — product pages, articles, local business listings, and more.",
+    },
+    {
+      number: "2",
+      title: "Get instant validation results",
+      description: "See every error, warning, and fix suggestion in seconds. Each issue includes an exact fix — not vague hints.",
+      icon: "⚡",
+      detail: "Errors block rich results. Warnings hurt them. We show you both, ranked by impact.",
+    },
+    {
+      number: "3",
+      title: "Check rich result eligibility",
+      description: "Know exactly which rich result types your page qualifies for — based on Google's current rules, not last year's.",
+      icon: "🎯",
+      detail: "Google changes the rules regularly. We track every update so your data stays current.",
+    },
+  ];
+
+  return (
+    <section className={cn("py-24 border-t", BORDER)}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-14">
+          <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">How it works</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 mb-4">
+            Three steps to knowing exactly where you stand
+          </h2>
+          <p className="text-gray-400 max-w-xl mx-auto">
+            No reading Google documentation. No guessing. Just clear answers.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          {steps.map((step) => (
+            <div
+              key={step.number}
+              className={cn("rounded-2xl border p-6 flex flex-col gap-4", BORDER, CARD)}
+            >
+              <div className="flex items-center gap-4">
+                <span className="w-9 h-9 rounded-xl bg-indigo-950/60 border border-indigo-900/50 flex items-center justify-center text-indigo-400 font-bold text-sm flex-shrink-0">
+                  {step.number}
+                </span>
+                <span className="text-2xl">{step.icon}</span>
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-white mb-2 leading-snug">{step.title}</h3>
+                <p className="text-sm text-gray-400 leading-relaxed mb-3">{step.description}</p>
+                <p className="text-xs text-gray-600 leading-relaxed">{step.detail}</p>
+              </div>
             </div>
           ))}
         </div>
+
+        <div className="text-center mt-10">
+          <Link
+            href="/check"
+            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-colors shadow-lg shadow-indigo-900/30"
+          >
+            Try it now — free →
+          </Link>
+        </div>
       </div>
     </section>
   );
 }
 
-// ─── Feature: Catch every error ───────────────────────────────────────────────
-const BROKEN_SCHEMA = `{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "A headline that is way too long and
-               exceeds the 110-character Google limit
-               for structured data markup on pages"
-}`;
-
-const VALIDATION_RESULT = `{
-  "type": "Article",
-  "valid": false,
-  "rich_result_eligible": false,
-  "errors": [
-    {
-      "severity": "error",
-      "property": "author",
-      "message": "Required property 'author' is missing",
-      "fix": "Add \\"author\\": {\\"@type\\": \\"Person\\",
-               \\"name\\": \\"Jane Doe\\"}",
-      "google_docs_url": "developers.google.com/..."
-    },
-    {
-      "severity": "error",
-      "property": "datePublished",
-      "message": "Required property 'datePublished'
-                  is missing"
-    },
-    {
-      "severity": "error",
-      "property": "headline",
-      "message": "'headline' exceeds 110 characters
-                  (128 found)",
-      "fix": "Shorten to 110 characters or fewer"
-    }
-  ],
-  "warnings": [
-    {
-      "severity": "warning",
-      "property": "image",
-      "message": "Recommended — required for rich results"
-    }
-  ],
-  "rich_result": {
-    "eligible": false,
-    "reason": "Missing required properties:
-               author, datePublished."
+// ─── What We Catch ───────────────────────────────────────────────────────────
+const CATCH_EXAMPLES = [
+  {
+    type: "Article",
+    status: "broken",
+    issue: "Missing author",
+    explanation: "Google won't show the rich result. Author is required for Article snippets.",
+    fixLabel: "Add author with @type Person and a name",
   },
-  "summary": { "score": 8, "total_errors": 3 }
-}`;
+  {
+    type: "Product",
+    status: "broken",
+    issue: "Offers missing price",
+    explanation: "No price means no rich snippet. Google requires both price and availability.",
+    fixLabel: "Add offers.price and offers.availability",
+  },
+  {
+    type: "HowTo",
+    status: "deprecated",
+    issue: "Deprecated schema type",
+    explanation: "Google retired HowTo rich results in August 2024. This markup does nothing.",
+    fixLabel: "Remove or replace with a supported type",
+  },
+  {
+    type: "FAQPage",
+    status: "restricted",
+    issue: "No longer eligible for your site",
+    explanation: "Since 2024, FAQPage rich results are restricted to government and health authority sites.",
+    fixLabel: "Consider switching to a different schema type",
+  },
+  {
+    type: "LocalBusiness",
+    status: "warning",
+    issue: "Phone number format invalid",
+    explanation: "The phone number uses a non-standard format. Use E.164 format for reliable parsing.",
+    fixLabel: 'Use "+1-555-000-0000" format',
+  },
+  {
+    type: "Recipe",
+    status: "broken",
+    issue: "Headline exceeds 110 characters",
+    explanation: "Google truncates headlines at 110 characters. The rich result may not display correctly.",
+    fixLabel: "Shorten headline to 110 characters or fewer",
+  },
+];
 
-function FeatureErrors() {
+const STATUS_COLORS = {
+  broken:     { card: "border-red-900/40 bg-red-950/10", badge: "bg-red-950/50 border-red-900/50 text-red-400", dot: "bg-red-500" },
+  deprecated: { card: "border-orange-900/40 bg-orange-950/10", badge: "bg-orange-950/50 border-orange-900/50 text-orange-400", dot: "bg-orange-500" },
+  restricted: { card: "border-amber-900/40 bg-amber-950/10", badge: "bg-amber-950/50 border-amber-900/50 text-amber-400", dot: "bg-amber-500" },
+  warning:    { card: "border-yellow-900/40 bg-yellow-950/10", badge: "bg-yellow-950/50 border-yellow-900/50 text-yellow-400", dot: "bg-yellow-500" },
+};
+
+const STATUS_LABELS = {
+  broken: "Error",
+  deprecated: "Deprecated",
+  restricted: "Restricted",
+  warning: "Warning",
+};
+
+function WhatWeCatch() {
   return (
-    <section className="py-24 px-4 sm:px-6 max-w-6xl mx-auto">
-      <div className="grid lg:grid-cols-2 gap-14 items-center">
-        <div>
-          <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Error detection</span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 mb-5 leading-tight">
-            Catch every error,<br />before Google does
+    <section className={cn("py-24 border-t", BORDER)}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-14">
+          <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">What we catch</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 mb-4">
+            Real problems. Real explanations. Real fixes.
           </h2>
-          <p className="text-gray-400 text-lg leading-relaxed mb-8">
-            Get clear errors, warnings, and actionable fix suggestions with direct links to Google&apos;s documentation — no more guessing why your rich results aren&apos;t showing.
+          <p className="text-gray-400 max-w-xl mx-auto">
+            Most schema tools tell you something is wrong. We tell you exactly what it means and how to fix it.
           </p>
-          <ul className="space-y-3 text-sm">
-            {[
-              [<XIcon key="x1" />,    "Required properties missing → error"],
-              [<XIcon key="x2" />,    "String length violations (e.g. headline > 110 chars)"],
-              [<XIcon key="x3" />,    "Invalid date formats — must be ISO 8601"],
-              [<WarnIcon key="w1" />, "Relative URLs where absolute required"],
-              [<WarnIcon key="w2" />, "Missing recommended properties flagged"],
-              [<CheckIcon key="c1" />, "Fix suggestions + google_docs_url on every issue"],
-              [<CheckIcon key="c2" />, "Nested property checks (e.g. author.url, offers.price)"],
-            ].map(([icon, text], i) => (
-              <li key={i} className="flex items-start gap-2.5">
-                {icon}
-                <span className="text-gray-300">{text}</span>
-              </li>
-            ))}
-          </ul>
         </div>
 
-        <div className="space-y-3">
-          <div className={cn("rounded-xl border overflow-hidden", BORDER)}>
-            <div className={cn("flex items-center gap-2 px-4 py-2 border-b text-xs font-mono", SURFACE, BORDER)}>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+          {CATCH_EXAMPLES.map((ex) => {
+            const colors = STATUS_COLORS[ex.status as keyof typeof STATUS_COLORS];
+            return (
+              <div key={ex.type + ex.issue} className={cn("rounded-2xl border p-5 flex flex-col gap-3", colors.card)}>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono text-gray-400">{ex.type}</span>
+                  <span className={cn("text-xs font-medium px-2 py-0.5 rounded-full border", colors.badge)}>
+                    {STATUS_LABELS[ex.status as keyof typeof STATUS_LABELS]}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-white mb-1">{ex.issue}</p>
+                  <p className="text-xs text-gray-400 leading-relaxed">{ex.explanation}</p>
+                </div>
+                <div className="mt-auto pt-2 border-t border-white/5">
+                  <p className="text-xs text-gray-500">
+                    <span className="text-indigo-400">Fix →</span> {ex.fixLabel}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Before / After */}
+        <div className="grid lg:grid-cols-2 gap-6 items-stretch">
+          {/* Before */}
+          <div className={cn("rounded-2xl border overflow-hidden flex flex-col", "border-red-900/40")}>
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-red-900/30 bg-red-950/20">
               <span className="w-2 h-2 rounded-full bg-red-500" />
-              <span className="text-gray-600">broken-schema.json — input</span>
+              <span className="text-xs font-medium text-red-400">Before — missing required fields</span>
             </div>
-            <pre className={cn("p-4 text-xs font-mono text-gray-400 overflow-auto leading-relaxed", CARD)}>
-              {BROKEN_SCHEMA}
-            </pre>
+            <div className="p-5 flex-1 space-y-3">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-red-950/20 border border-red-900/30">
+                <XIcon />
+                <div>
+                  <p className="text-sm text-white font-medium">Article schema · not eligible</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Missing: author, datePublished, image</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-red-950/20 border border-red-900/30">
+                <XIcon />
+                <div>
+                  <p className="text-sm text-white font-medium">Score: 12 / 100</p>
+                  <p className="text-xs text-gray-500 mt-0.5">3 errors blocking rich results</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-amber-950/20 border border-amber-900/30">
+                <WarnIcon />
+                <div>
+                  <p className="text-sm text-white font-medium">HowTo schema present</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Deprecated — Google stopped showing these in Aug 2024</p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="flex justify-center text-gray-700 text-sm font-mono">↓ POST /v1/validate →</div>
-
-          <div className={cn("rounded-xl border overflow-hidden", BORDER)}>
-            <div className={cn("flex items-center gap-2 px-4 py-2 border-b text-xs font-mono", SURFACE, BORDER)}>
-              <span className="w-2 h-2 rounded-full bg-amber-500" />
-              <span className="text-gray-600">response.json — output</span>
+          {/* After */}
+          <div className={cn("rounded-2xl border overflow-hidden flex flex-col", "border-emerald-900/40")}>
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-emerald-900/30 bg-emerald-950/20">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              <span className="text-xs font-medium text-emerald-400">After — fully valid, rich result eligible</span>
             </div>
-            <pre className={cn("p-4 text-xs font-mono text-gray-400 overflow-auto max-h-72 leading-relaxed", CARD)}>
-              {VALIDATION_RESULT}
-            </pre>
+            <div className="p-5 flex-1 space-y-3">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-emerald-950/20 border border-emerald-900/30">
+                <CheckIcon />
+                <div>
+                  <p className="text-sm text-white font-medium">Article schema · eligible</p>
+                  <p className="text-xs text-gray-500 mt-0.5">All required properties present</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-emerald-950/20 border border-emerald-900/30">
+                <CheckIcon />
+                <div>
+                  <p className="text-sm text-white font-medium">Score: 94 / 100</p>
+                  <p className="text-xs text-gray-500 mt-0.5">0 errors · 1 optional recommendation</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-emerald-950/20 border border-emerald-900/30">
+                <CheckIcon />
+                <div>
+                  <p className="text-sm text-white font-medium">HowTo replaced with Article</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Eligible for Google rich result display</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -407,7 +519,7 @@ function FeatureErrors() {
   );
 }
 
-// ─── Feature: Rich result eligibility ─────────────────────────────────────────
+// ─── Rich Result Eligibility ─────────────────────────────────────────────────
 const SCHEMA_STATUS = [
   { type: "Article",            status: "eligible",   note: "headline + author + image + datePublished" },
   { type: "Product",            status: "eligible",   note: "name + image + offers (price + availability)" },
@@ -415,6 +527,8 @@ const SCHEMA_STATUS = [
   { type: "BreadcrumbList",     status: "eligible",   note: "non-empty itemListElement" },
   { type: "WebSite",            status: "eligible",   note: "name + url + potentialAction with urlTemplate" },
   { type: "Organization",       status: "eligible",   note: "name + url + logo" },
+  { type: "Recipe",             status: "eligible",   note: "name + image + recipeIngredient + instructions" },
+  { type: "Event",              status: "eligible",   note: "name + startDate + location" },
   { type: "FAQPage",            status: "restricted", note: "Government & health authority sites only (2024)" },
   { type: "HowTo",              status: "deprecated", note: "Retired by Google — August 2024" },
   { type: "SpecialAnnouncement", status: "deprecated", note: "Retired by Google — 2025" },
@@ -426,7 +540,7 @@ const STATUS_BADGE: Record<string, string> = {
   deprecated: "bg-red-950/50    border-red-900/60    text-red-400",
 };
 
-function FeatureRichResults() {
+function RichResultEligibility() {
   return (
     <section className={cn("py-24 border-t", BORDER)}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -448,24 +562,29 @@ function FeatureRichResults() {
                 </span>
               </div>
             ))}
+            <div className={cn("px-5 py-3 text-center", SURFACE)}>
+              <Link href="/schema-types" className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
+                See all 35+ schema types →
+              </Link>
+            </div>
           </div>
 
           <div>
-            <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Rich results</span>
+            <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Rich result eligibility</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 mb-5 leading-tight">
-              Know exactly what<br />Google will show
+              Google changes the rules.<br />We track the changes.
             </h2>
-            <p className="text-gray-400 text-lg leading-relaxed mb-8">
-              Rich result eligibility changes when Google updates their requirements. SchemaCheck reflects the current rules — including types they&apos;ve deprecated or restricted since 2024.
+            <p className="text-gray-400 text-lg leading-relaxed mb-6">
+              FAQPage was restricted in 2024 to government and health sites. HowTo was killed in August 2024. SpecialAnnouncement is gone. SchemaCheck reflects these changes so your audit results are accurate — not based on outdated information.
             </p>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-3 text-sm mb-8">
               {[
                 "Checks all current Google rich result requirements",
-                "Flags deprecated types with specific retirement messages",
-                "FAQPage restriction flagged for non-gov/health sites",
-                "Product offers depth check (price + availability required)",
-                "Per-schema rich_result object with reason string",
-                "google_docs_url on every error and warning",
+                "Deprecated types flagged with exact retirement dates",
+                "FAQPage restriction applied for non-gov/health sites",
+                "Product offers depth check — price and availability required",
+                "Every issue links directly to Google's documentation",
+                "Updated when Google changes the rules",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2.5">
                   <CheckIcon />
@@ -473,6 +592,11 @@ function FeatureRichResults() {
                 </li>
               ))}
             </ul>
+            <div className={cn("rounded-xl border p-4 text-sm", BORDER, CARD)}>
+              <p className="text-gray-400 leading-relaxed">
+                <span className="text-white font-medium">Why this matters:</span> If your page still uses HowTo schema, it has zero chance of showing a rich result — even if it&apos;s perfectly formatted. Knowing this upfront saves hours of debugging.
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -480,8 +604,8 @@ function FeatureRichResults() {
   );
 }
 
-// ─── Feature: Code examples ───────────────────────────────────────────────────
-const TABS: { key: string; label: string }[] = [
+// ─── For Developers ──────────────────────────────────────────────────────────
+const DEV_TABS: { key: string; label: string }[] = [
   { key: "curl",       label: "curl"       },
   { key: "javascript", label: "JavaScript" },
   { key: "python",     label: "Python"     },
@@ -489,7 +613,7 @@ const TABS: { key: string; label: string }[] = [
   { key: "go",         label: "Go"         },
 ];
 
-const CODE: Record<string, string> = {
+const DEV_CODE: Record<string, string> = {
   curl: `curl -s \\
   "https://api.schemacheck.dev/v1/validate\\
 ?url=https://example.com\\
@@ -614,119 +738,283 @@ func main() {
 }`,
 };
 
-function FeatureCode() {
+function ForDevelopers() {
   const [tab,    setTab]    = useState("javascript");
   const [copied, setCopied] = useState(false);
 
   function copy() {
-    navigator.clipboard.writeText(CODE[tab]);
+    navigator.clipboard.writeText(DEV_CODE[tab]);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
 
   return (
     <section className={cn("py-24 border-t", BORDER)}>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="grid lg:grid-cols-2 gap-14 items-start">
+          <div>
+            <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">For developers</span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 mb-5 leading-tight">
+              Built API-first.<br />Plug in anywhere.
+            </h2>
+            <p className="text-gray-400 text-lg leading-relaxed mb-8">
+              Validate structured data in CI/CD before shipping. Catch regressions in your CMS on every publish. Run batch audits across thousands of URLs programmatically.
+            </p>
+            <ul className="space-y-3 text-sm mb-8">
+              {[
+                "One endpoint — GET or POST, your choice",
+                "Pass a URL or raw schema markup directly",
+                "Returns errors, warnings, fixes, and eligibility in one call",
+                "Sub-50ms for direct schema input, 1–3s for URL fetching",
+                "Cached responses free — repeat checks don't burn credits",
+                "SDKs for JavaScript, Python, PHP, Go, Ruby, C#",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2.5">
+                  <CheckIcon />
+                  <span className="text-gray-300">{item}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="/docs/quickstart"
+                className="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-medium transition-colors"
+              >
+                Quickstart guide →
+              </Link>
+              <Link
+                href="/openapi.json"
+                className={cn("text-sm border px-5 py-2.5 rounded-xl text-gray-400 hover:text-white hover:border-gray-700 transition-colors", BORDER)}
+              >
+                OpenAPI spec
+              </Link>
+            </div>
+          </div>
+
+          <div className={cn("rounded-2xl border overflow-hidden", BORDER)}>
+            {/* tab bar */}
+            <div className={cn("flex items-stretch border-b overflow-x-auto", BORDER, SURFACE)}>
+              {DEV_TABS.map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setTab(key)}
+                  className={cn(
+                    "px-4 py-2.5 text-sm font-medium border-r flex-shrink-0 transition-colors",
+                    BORDER,
+                    tab === key
+                      ? "text-white bg-[#16161f]"
+                      : "text-gray-500 hover:text-gray-300 hover:bg-[#16161f]/50"
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+              <div className="flex-1" />
+              <button
+                onClick={copy}
+                className="flex items-center gap-1.5 px-4 py-2.5 text-xs text-gray-600 hover:text-gray-300 transition-colors flex-shrink-0"
+              >
+                <CopyIcon done={copied} />
+                <span>{copied ? "Copied!" : "Copy"}</span>
+              </button>
+            </div>
+
+            {/* code */}
+            <pre className={cn("p-6 text-sm font-mono overflow-auto max-h-80 leading-relaxed text-gray-300", CARD)}>
+              {DEV_CODE[tab]}
+            </pre>
+
+            {/* endpoint hint */}
+            <div className={cn("px-6 py-4 border-t text-xs text-gray-600 font-mono", BORDER, SURFACE)}>
+              POST https://api.schemacheck.dev/v1/validate
+              <span className="mx-2 text-gray-800">·</span>
+              <span className="text-indigo-400">x-api-key</span>: YOUR_KEY
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Integrations ────────────────────────────────────────────────────────────
+function Integrations() {
+  const tools = [
+    { name: "Zapier",         icon: "⚡", status: "soon",  desc: "Trigger validations from any Zap" },
+    { name: "Make",           icon: "◎", status: "soon",  desc: "Schema checks in any automation" },
+    { name: "n8n",            icon: "⬡", status: "soon",  desc: "Self-hosted workflow automation" },
+    { name: "CLI Tool",       icon: "⌨", status: "soon",  desc: "Validate from your terminal" },
+    { name: "GitHub Action",  icon: "🐙", status: "soon",  desc: "Block deploys on schema errors" },
+  ];
+
+  return (
+    <section className={cn("py-24 border-t", BORDER)}>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-12">
-          <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Code examples</span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 mb-4">
-            Use the language you love
-          </h2>
-          <p className="text-gray-400 text-lg max-w-xl mx-auto">
-            One endpoint, any language. Real, working code you can paste directly into your project.
+          <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Integrations</span>
+          <h2 className="text-3xl font-bold text-white mt-3 mb-3">Works with your existing workflow</h2>
+          <p className="text-gray-500 max-w-md mx-auto">
+            Connect SchemaCheck to your CMS, CI/CD pipeline, or no-code automation tool.
           </p>
         </div>
 
-        <div className={cn("rounded-2xl border overflow-hidden", BORDER)}>
-          {/* tab bar */}
-          <div className={cn("flex items-stretch border-b overflow-x-auto", BORDER, SURFACE)}>
-            {TABS.map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => setTab(key)}
-                className={cn(
-                  "px-4 py-2.5 text-sm font-medium border-r flex-shrink-0 transition-colors",
-                  BORDER,
-                  tab === key
-                    ? "text-white bg-[#16161f]"
-                    : "text-gray-500 hover:text-gray-300 hover:bg-[#16161f]/50"
-                )}
-              >
-                {label}
-              </button>
-            ))}
-            <div className="flex-1" />
-            <button
-              onClick={copy}
-              className="flex items-center gap-1.5 px-4 py-2.5 text-xs text-gray-600 hover:text-gray-300 transition-colors flex-shrink-0"
-            >
-              <CopyIcon done={copied} />
-              <span>{copied ? "Copied!" : "Copy"}</span>
-            </button>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+          {tools.map(({ name, icon, desc }) => (
+            <div key={name} className={cn("flex items-start gap-4 border rounded-2xl px-5 py-4", BORDER, CARD)}>
+              <span className="text-2xl flex-shrink-0 mt-0.5">{icon}</span>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-semibold text-gray-200 text-sm">{name}</span>
+                  <span className="text-xs px-1.5 py-0.5 rounded border border-indigo-900/60 text-indigo-500">Soon</span>
+                </div>
+                <p className="text-xs text-gray-500">{desc}</p>
+              </div>
+            </div>
+          ))}
+          {/* REST API — available now */}
+          <div className={cn("flex items-start gap-4 border rounded-2xl px-5 py-4 border-emerald-900/40 bg-emerald-950/10")}>
+            <span className="text-2xl flex-shrink-0 mt-0.5">🔌</span>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-semibold text-gray-200 text-sm">REST API</span>
+                <span className="text-xs px-1.5 py-0.5 rounded border border-emerald-900/50 text-emerald-400">Available now</span>
+              </div>
+              <p className="text-xs text-gray-500">Integrate anywhere with HTTP</p>
+            </div>
           </div>
+        </div>
 
-          {/* code */}
-          <pre className={cn("p-6 text-sm font-mono overflow-auto max-h-80 leading-relaxed text-gray-300", CARD)}>
-            {CODE[tab]}
-          </pre>
+        <div className="text-center">
+          <a
+            href="#signup"
+            className={cn("inline-flex items-center gap-2 border text-sm px-5 py-2.5 rounded-xl text-gray-400 hover:text-white hover:border-gray-700 transition-colors", BORDER)}
+          >
+            Get notified when integrations launch →
+          </a>
         </div>
       </div>
     </section>
   );
 }
 
-// ─── Integrations ─────────────────────────────────────────────────────────────
-function Integrations() {
+// ─── Use Cases ───────────────────────────────────────────────────────────────
+const USE_CASES = [
+  {
+    persona: "SEO Manager",
+    icon: "📊",
+    description: "Managing structured data across 20 sites is impossible manually. SchemaCheck gives you a single API to audit all of them on a schedule — and alerts you when something breaks.",
+    highlights: [
+      "Batch validate hundreds of URLs at once",
+      "Schedule recurring checks for monitoring",
+      "Get alerts when schema errors appear",
+      "Export results for client reports",
+    ],
+    badge: "For SEOs",
+    badgeColor: "bg-blue-950/50 border-blue-900/50 text-blue-400",
+  },
+  {
+    persona: "Developer",
+    icon: "⚙️",
+    description: "Schema bugs ship silently. A rich result that worked yesterday can break tomorrow after a template change. SchemaCheck plugs into CI/CD so you catch regressions before they reach production.",
+    highlights: [
+      "Validate in CI/CD with one API call",
+      "POST raw schema markup directly",
+      "Non-zero exit code on errors (blocks deploys)",
+      "SDKs for every major language",
+    ],
+    badge: "For Devs",
+    badgeColor: "bg-violet-950/50 border-violet-900/50 text-violet-400",
+  },
+  {
+    persona: "Agency",
+    icon: "🏢",
+    description: "Client audits that used to take days now take minutes. Run a full schema audit across a client's entire site, export a clean report, and show exactly what needs fixing and why.",
+    highlights: [
+      "Audit entire sites programmatically",
+      "Structured results ready for reports",
+      "Catch deprecated schema before client review",
+      "White-label API for your own tools",
+    ],
+    badge: "For Agencies",
+    badgeColor: "bg-emerald-950/50 border-emerald-900/50 text-emerald-400",
+  },
+  {
+    persona: "E-commerce",
+    icon: "🛒",
+    description: "Product rich results drive clicks. But with thousands of product pages, one template change can break rich results sitewide. SchemaCheck monitors your catalog continuously.",
+    highlights: [
+      "Validate Product schema at scale",
+      "Catch missing price or availability instantly",
+      "Monitor catalog pages on a schedule",
+      "Trigger alerts on schema regressions",
+    ],
+    badge: "For E-commerce",
+    badgeColor: "bg-orange-950/50 border-orange-900/50 text-orange-400",
+  },
+];
+
+function UseCases() {
   return (
     <section className={cn("py-24 border-t", BORDER)}>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-        <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Coming in v1.1</span>
-        <h2 className="text-3xl font-bold text-white mt-3 mb-3">Automate without code</h2>
-        <p className="text-gray-500 mb-10 max-w-md mx-auto">
-          Connect SchemaCheck to your CMS or content workflow using popular automation platforms.
-        </p>
-        <div className="flex flex-wrap justify-center gap-5 mb-10">
-          {[
-            { name: "Zapier", icon: "⚡" },
-            { name: "Make",   icon: "◎" },
-            { name: "n8n",    icon: "⬡" },
-          ].map(({ name, icon }) => (
-            <div key={name} className={cn("flex items-center gap-3 border rounded-2xl px-7 py-5", BORDER, CARD)}>
-              <span className="text-2xl">{icon}</span>
-              <span className="font-semibold text-gray-300">{name}</span>
-              <span className="text-xs px-2 py-0.5 rounded-full border border-indigo-900/60 text-indigo-500 ml-1">Soon</span>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-14">
+          <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Use cases</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 mb-4">
+            Built for everyone who cares about rich results
+          </h2>
+          <p className="text-gray-400 max-w-xl mx-auto">
+            Whether you manage one site or thousands, SchemaCheck fits into how you work.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {USE_CASES.map((uc) => (
+            <div key={uc.persona} className={cn("rounded-2xl border p-6", BORDER, CARD)}>
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{uc.icon}</span>
+                  <h3 className="text-base font-semibold text-white">{uc.persona}</h3>
+                </div>
+                <span className={cn("text-xs font-medium px-2.5 py-1 rounded-full border flex-shrink-0", uc.badgeColor)}>
+                  {uc.badge}
+                </span>
+              </div>
+              <p className="text-sm text-gray-400 leading-relaxed mb-5">{uc.description}</p>
+              <ul className="space-y-2">
+                {uc.highlights.map((h) => (
+                  <li key={h} className="flex items-start gap-2.5 text-sm">
+                    <CheckIcon />
+                    <span className="text-gray-300">{h}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
-        <a
-          href="#signup"
-          className={cn("inline-flex items-center gap-2 border text-sm px-5 py-2.5 rounded-xl text-gray-400 hover:text-white hover:border-gray-700 transition-colors", BORDER)}
-        >
-          Sign up to get notified when integrations launch →
-        </a>
       </div>
     </section>
   );
 }
 
-// ─── Pricing ──────────────────────────────────────────────────────────────────
+// ─── Pricing ─────────────────────────────────────────────────────────────────
 type Plan = {
-  name:        string;
-  monthly:     number;
-  annual:      number;
-  limit:       number;
-  rate:        string;
-  overage:     string;
-  cta:         string;
-  href:        string;
+  name:         string;
+  monthly:      number;
+  annual:       number;
+  limit:        number;
+  rate:         string;
+  overage:      string;
+  monitored:    string;
+  cta:          string;
+  href:         string;
   recommended?: boolean;
-  features:    string[];
+  features:     string[];
 };
 
 const PLANS: Plan[] = [
   {
     name: "Free", monthly: 0, annual: 0,
-    limit: 100, rate: "10 req/min", overage: "—",
+    limit: 100, rate: "10 req/min", overage: "—", monitored: "1 URL monitored",
     cta: "Get started free", href: "#signup",
     features: [
       "100 validations / month",
@@ -735,11 +1023,12 @@ const PLANS: Plan[] = [
       "Rich result eligibility",
       "Fix suggestions + google_docs_url",
       "1-hour response cache",
+      "1 URL monitored",
     ],
   },
   {
     name: "Basic", monthly: 19, annual: 159,
-    limit: 3_000, rate: "30 req/min", overage: "$0.008 / extra",
+    limit: 3_000, rate: "30 req/min", overage: "$0.008 / extra", monitored: "10 URLs monitored",
     cta: "Start with Basic", href: "/dashboard/login?plan=basic",
     features: [
       "3,000 validations / month",
@@ -747,11 +1036,12 @@ const PLANS: Plan[] = [
       "Overage billing ($0.008 ea)",
       "Usage alerts at 90% + 100%",
       "Email support",
+      "10 URLs monitored",
     ],
   },
   {
     name: "Growth", monthly: 79, annual: 659,
-    limit: 15_000, rate: "60 req/min", overage: "$0.005 / extra",
+    limit: 15_000, rate: "60 req/min", overage: "$0.005 / extra", monitored: "50 URLs monitored",
     cta: "Start with Growth", href: "/dashboard/login?plan=growth",
     recommended: true,
     features: [
@@ -760,11 +1050,12 @@ const PLANS: Plan[] = [
       "Overage billing ($0.005 ea)",
       "60 req/min rate limit",
       "Priority email support",
+      "50 URLs monitored",
     ],
   },
   {
     name: "Scale", monthly: 199, annual: 1_659,
-    limit: 75_000, rate: "120 req/min", overage: "$0.003 / extra",
+    limit: 75_000, rate: "120 req/min", overage: "$0.003 / extra", monitored: "200 URLs monitored",
     cta: "Start with Scale", href: "/dashboard/login?plan=scale",
     features: [
       "75,000 validations / month",
@@ -772,6 +1063,7 @@ const PLANS: Plan[] = [
       "Overage billing ($0.003 ea)",
       "120 req/min rate limit",
       "SLA + priority support",
+      "200 URLs monitored",
     ],
   },
 ];
@@ -859,6 +1151,9 @@ function Pricing() {
                   <div className="text-gray-500">
                     Overage: <span className="text-gray-300">{plan.overage}</span>
                   </div>
+                  <div className="text-gray-500">
+                    Monitoring: <span className="text-gray-300">{plan.monitored}</span>
+                  </div>
                 </div>
 
                 <ul className="space-y-2 mb-6 flex-1">
@@ -894,10 +1189,22 @@ function Pricing() {
   );
 }
 
-// ─── FAQ ───────────────────────────────────────────────────────────────────────
+// ─── FAQ ─────────────────────────────────────────────────────────────────────
 type FaqItem = { q: string; a: React.ReactNode };
 
 const FAQS: FaqItem[] = [
+  {
+    q: "Do I need to know how to code?",
+    a: "No. Use the web checker at /check — paste a URL and get results instantly, no account needed. If you want to automate or connect to other tools, you can also use Zapier or n8n (coming soon). The API is there when you need it.",
+  },
+  {
+    q: "What's the difference between SchemaCheck and Google's Rich Results Test?",
+    a: "Google's tool is for checking one URL manually in a browser. SchemaCheck is for checking at scale — programmatically, continuously, in CI/CD, or across hundreds of URLs at once. We also track Google's rule changes so your results stay accurate over time.",
+  },
+  {
+    q: "Can I validate my entire site at once?",
+    a: "Yes. Use batch validation via the API — POST a list of URLs and get results back in one call. You can also paste a list of URLs in the web checker at /check. For large sites, the API is the fastest path.",
+  },
   {
     q: "Do failed validations count against my quota?",
     a: "No. Only successful 200 responses from real computation count. 4xx errors (bad API key, invalid URL, missing input, rate limit) never consume a credit.",
@@ -912,15 +1219,11 @@ const FAQS: FaqItem[] = [
   },
   {
     q: "Is there really a free tier — forever?",
-    a: "Yes. 100 validations per month, no credit card, no trial period, no expiry. It's enough to validate your own site or test the integration before committing to a paid plan.",
+    a: "Yes. 100 validations per month, no credit card, no trial period, no expiry. It's enough to check your own site or test the integration before committing to a paid plan.",
   },
   {
     q: "How fast is the API?",
-    a: "JSON-LD input is typically < 50ms. URL requests require fetching the target page — most return in 1–3 seconds. Cache hits are near-instant.",
-  },
-  {
-    q: "Do you support Microdata or RDFa?",
-    a: "Not yet. SchemaCheck currently validates JSON-LD only — the format Google recommends and that covers the vast majority of structured data used in the wild.",
+    a: "Schema markup input is typically under 50ms. URL requests require fetching the target page — most return in 1–3 seconds. Cache hits are near-instant.",
   },
   {
     q: "Can I cancel anytime?",
@@ -931,7 +1234,7 @@ const FAQS: FaqItem[] = [
     a: "30-day no-questions refund on all paid plans. Email us with your order and you'll be refunded within one business day.",
   },
   {
-    q: "Is SchemaCheck the best schema validation API?",
+    q: "Is SchemaCheck the best schema validation tool?",
     a: (
       <>
         We think so — but you should decide for yourself.{" "}
@@ -980,12 +1283,14 @@ function Faq() {
   );
 }
 
-// ─── Signup CTA ────────────────────────────────────────────────────────────────
+// ─── Signup CTA ──────────────────────────────────────────────────────────────
 function SignupCta() {
   const [email,   setEmail]   = useState("");
   const [status,  setStatus]  = useState<"idle" | "loading" | "success" | "error">("idle");
   const [apiKey,  setApiKey]  = useState("");
   const [errMsg,  setErrMsg]  = useState("");
+  const [urlInput, setUrlInput] = useState("");
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -1013,81 +1318,114 @@ function SignupCta() {
     }
   }
 
+  function handleUrlCheck(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = urlInput.trim();
+    if (!trimmed) return;
+    const target = trimmed.startsWith("http") ? trimmed : `https://${trimmed}`;
+    router.push(`/check?url=${encodeURIComponent(target)}`);
+  }
+
   return (
     <section id="signup" className={cn("py-24 border-t", BORDER)}>
-      <div className="max-w-lg mx-auto px-4 sm:px-6 text-center">
-        <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Get started</span>
-        <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 mb-3">
-          Validate your structured data
-        </h2>
-        <p className="text-gray-400 mb-4">
-          Enter your email and get an API key instantly.
-          <br />Free forever — no credit card required.
-        </p>
-        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-950/60 border border-indigo-800/50 px-4 py-1.5 mb-6">
-          <span className="text-indigo-400 text-sm">Launch offer:</span>
-          <span className="text-white text-sm font-medium">first 50 signups get 500 free validations/month</span>
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-10">
+          <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">Get started</span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mt-3 mb-3">
+            Check your structured data today
+          </h2>
+          <p className="text-gray-400">
+            No account needed to check a URL. Free API key for automation.
+          </p>
         </div>
 
-        {status === "success" ? (
-          <div className={cn("rounded-2xl border p-6 text-left", BORDER, CARD)}>
-            <div className="flex items-center gap-3 mb-5">
-              <span className="text-3xl">🎉</span>
-              <div>
-                <p className="text-white font-semibold">Your API key is ready</p>
-                <p className="text-gray-600 text-xs mt-0.5">Save it somewhere safe — treat it like a password</p>
-              </div>
+        <div className="grid sm:grid-cols-2 gap-6">
+          {/* URL checker */}
+          <div className={cn("rounded-2xl border p-6", BORDER, CARD)}>
+            <div className="mb-4">
+              <p className="text-sm font-semibold text-white mb-1">Check a URL now</p>
+              <p className="text-xs text-gray-500">No account required</p>
             </div>
-            <div className={cn("rounded-lg border p-3 font-mono text-sm break-all select-all cursor-text mb-4", BORDER, SURFACE)}>
-              <span className="text-indigo-300">{apiKey}</span>
-            </div>
-            <div className="text-xs text-gray-600 space-y-1">
-              <p>
-                Next: read the{" "}
-                <Link href="/docs/quickstart" className="text-indigo-400 underline underline-offset-2 hover:text-indigo-300">
-                  quickstart guide →
-                </Link>
-              </p>
-              <p>Your free plan includes 100 validations/month.</p>
-            </div>
-          </div>
-        ) : (
-          <>
-            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 mb-3">
+            <form onSubmit={handleUrlCheck} className="space-y-3">
               <input
-                type="email"
-                required
-                placeholder="you@company.com"
-                value={email}
-                onChange={(e) => { setEmail(e.target.value); setStatus("idle"); }}
+                type="text"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                placeholder="https://yoursite.com/page"
                 className={cn(
-                  "flex-1 px-4 py-3 rounded-xl border text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-indigo-600 transition-colors",
-                  BORDER, CARD
+                  "w-full px-4 py-3 rounded-xl border text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-indigo-600 transition-colors",
+                  BORDER, SURFACE
                 )}
               />
               <button
                 type="submit"
-                disabled={status === "loading"}
-                className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-colors whitespace-nowrap"
+                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-semibold text-sm transition-colors"
               >
-                {status === "loading" ? "Creating..." : "Get API Key →"}
+                Validate for free →
               </button>
             </form>
+          </div>
 
-            {status === "error" && (
-              <p className="text-red-400 text-sm mb-2">{errMsg}</p>
+          {/* API key */}
+          <div className={cn("rounded-2xl border p-6", BORDER, CARD)}>
+            <div className="mb-4">
+              <p className="text-sm font-semibold text-white mb-1">Get an API key</p>
+              <p className="text-xs text-gray-500">100 validations/month free forever</p>
+            </div>
+
+            {status === "success" ? (
+              <div>
+                <p className="text-xs text-gray-400 mb-2">Your API key is ready. Save it somewhere safe.</p>
+                <div className={cn("rounded-lg border p-3 font-mono text-xs break-all select-all cursor-text mb-3", BORDER, SURFACE)}>
+                  <span className="text-indigo-300">{apiKey}</span>
+                </div>
+                <Link href="/docs/quickstart" className="text-xs text-indigo-400 underline underline-offset-2 hover:text-indigo-300">
+                  Read the quickstart guide →
+                </Link>
+              </div>
+            ) : (
+              <>
+                <form onSubmit={handleSubmit} className="space-y-3">
+                  <input
+                    type="email"
+                    required
+                    placeholder="you@company.com"
+                    value={email}
+                    onChange={(e) => { setEmail(e.target.value); setStatus("idle"); }}
+                    className={cn(
+                      "w-full px-4 py-3 rounded-xl border text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-indigo-600 transition-colors",
+                      BORDER, SURFACE
+                    )}
+                  />
+                  <button
+                    type="submit"
+                    disabled={status === "loading"}
+                    className="w-full bg-gray-800 hover:bg-gray-700 disabled:opacity-50 text-white py-3 rounded-xl font-semibold text-sm transition-colors border border-gray-700"
+                  >
+                    {status === "loading" ? "Creating..." : "Get API Key →"}
+                  </button>
+                </form>
+                {status === "error" && (
+                  <p className="text-red-400 text-xs mt-2">{errMsg}</p>
+                )}
+                <p className="text-gray-700 text-xs mt-3 text-center">No credit card · 30 seconds</p>
+              </>
             )}
-            <p className="text-gray-700 text-xs">
-              No credit card · No trial · 100 validations/month free · Takes 30 seconds
-            </p>
-          </>
-        )}
+          </div>
+        </div>
+
+        <div className="mt-6 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-950/60 border border-indigo-800/50 px-4 py-1.5">
+            <span className="text-indigo-400 text-xs">Launch offer:</span>
+            <span className="text-white text-xs font-medium">first 50 signups get 500 free validations/month</span>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
 
-// ─── Footer ────────────────────────────────────────────────────────────────────
+// ─── Footer ──────────────────────────────────────────────────────────────────
 const FOOTER: Record<string, { label: string; href: string }[]> = {
   Integrations: [
     { label: "Zapier (soon)", href: "/integrations/zapier" },
@@ -1105,6 +1443,7 @@ const FOOTER: Record<string, { label: string; href: string }[]> = {
     { label: "Quickstart",      href: "/docs/quickstart"        },
     { label: "Authentication",  href: "/docs/authentication"    },
     { label: "Error Codes",     href: "/docs/errors"            },
+    { label: "Schema Types",    href: "/schema-types"           },
     { label: "Changelog",       href: "/changelog"              },
     { label: "Blog",            href: "/blog"                   },
     { label: "Status",          href: "https://status.schemacheck.dev" },
@@ -1125,6 +1464,7 @@ const FOOTER: Record<string, { label: string; href: string }[]> = {
   Legal: [
     { label: "Privacy Policy",   href: "/legal/privacy" },
     { label: "Terms of Service", href: "/legal/terms"   },
+    { label: "Contact",          href: "/contact"       },
   ],
 };
 
@@ -1188,7 +1528,7 @@ function Footer() {
           </div>
 
           <p className="text-xs text-gray-800">
-            Made for developers who care about structured data.
+            Structured data validation for SEOs and developers.
           </p>
         </div>
       </div>
@@ -1196,24 +1536,24 @@ function Footer() {
   );
 }
 
-// ─── Page ──────────────────────────────────────────────────────────────────────
+// ─── Page ────────────────────────────────────────────────────────────────────
 export default function HomePage() {
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
+      { "@type": "Question", name: "Do I need to know how to code?",
+        acceptedAnswer: { "@type": "Answer", text: "No. Use the web checker at /check — paste a URL and get results instantly, no account needed. You can also use Zapier or n8n (coming soon) without writing code." } },
+      { "@type": "Question", name: "What's the difference between SchemaCheck and Google's Rich Results Test?",
+        acceptedAnswer: { "@type": "Answer", text: "Google's tool is for checking one URL manually in a browser. SchemaCheck is for checking at scale — programmatically, continuously, in CI/CD, or across hundreds of URLs at once." } },
+      { "@type": "Question", name: "Can I validate my entire site at once?",
+        acceptedAnswer: { "@type": "Answer", text: "Yes. Use batch validation via the API or paste a list of URLs in the web checker at /check." } },
       { "@type": "Question", name: "Do failed validations count against my quota?",
         acceptedAnswer: { "@type": "Answer", text: "No. Only successful 200 responses from real computation count. 4xx errors never consume a credit." } },
       { "@type": "Question", name: "Do cached responses count against my quota?",
         acceptedAnswer: { "@type": "Answer", text: "No. URL results are cached for 1 hour. Repeat requests for the same URL within that window return instantly and use zero credits." } },
-      { "@type": "Question", name: "What schema types do you support?",
-        acceptedAnswer: { "@type": "Answer", text: "35+ schema types across 4 validation tiers including Article, Product, LocalBusiness, Organization, BreadcrumbList, WebSite, FAQPage, Recipe, Event, VideoObject, JobPosting, Course, SoftwareApplication and more." } },
       { "@type": "Question", name: "Is there really a free tier — forever?",
         acceptedAnswer: { "@type": "Answer", text: "Yes. 100 validations per month, no credit card, no trial period, no expiry." } },
-      { "@type": "Question", name: "How fast is the API?",
-        acceptedAnswer: { "@type": "Answer", text: "JSON-LD input is typically under 50ms. URL requests return in 1–3 seconds. Cache hits are near-instant." } },
-      { "@type": "Question", name: "Do you support Microdata or RDFa?",
-        acceptedAnswer: { "@type": "Answer", text: "Not yet. SchemaCheck currently validates JSON-LD only — the format Google recommends." } },
       { "@type": "Question", name: "Can I cancel anytime?",
         acceptedAnswer: { "@type": "Answer", text: "Yes. Cancel from your dashboard at any time. You retain access until the end of the current billing period. No cancellation fees." } },
       { "@type": "Question", name: "What is the refund policy?",
@@ -1227,11 +1567,12 @@ export default function HomePage() {
       <Nav />
       <main>
         <Hero />
-        <StatsBar />
-        <FeatureErrors />
-        <FeatureRichResults />
-        <FeatureCode />
+        <HowItWorks />
+        <WhatWeCatch />
+        <RichResultEligibility />
+        <ForDevelopers />
         <Integrations />
+        <UseCases />
         <Pricing />
         <Faq />
         <SignupCta />

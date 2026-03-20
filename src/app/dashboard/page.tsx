@@ -104,6 +104,12 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
               Pricing
             </Link>
             <span className="text-sm text-white font-medium">Dashboard</span>
+            <Link
+              href="/dashboard/monitors"
+              className="text-sm text-gray-400 hover:text-white transition-colors"
+            >
+              Monitors
+            </Link>
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden sm:block text-sm text-gray-500">{apiKey.email}</span>

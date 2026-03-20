@@ -1,20 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CodeBlock } from "@/components/shared/CodeBlock";
 
 export const metadata: Metadata = {
   title: "Google Rich Results Test Alternative — SchemaCheck",
   description:
-    "Looking for a Google Rich Results Test tool alternative? SchemaCheck is the programmatic alternative with a REST API. Automate schema validation in CI, bulk-audit sitemaps, and power AI agents.",
+    "Looking for a Google Rich Results Test alternative with an API? SchemaCheck validates structured data at scale — batch validation, CI/CD integration, and monitoring. Free tier available.",
 };
 
 const JSONLD = JSON.stringify(
   {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Google Rich Results Test Alternative",
+    name: "Google Rich Results Test Alternative — SchemaCheck",
     description:
-      "SchemaCheck is the programmatic alternative to Google's Rich Results Test. Automate schema validation with a REST API.",
+      "SchemaCheck validates structured data at scale — batch validation, CI/CD integration, and monitoring. The programmatic alternative to Google's Rich Results Test.",
     url: "https://schemacheck.dev/comparisons/google-rich-results-test-alternative",
     isPartOf: { "@type": "WebSite", name: "SchemaCheck", url: "https://schemacheck.dev" },
   },
@@ -22,41 +21,30 @@ const JSONLD = JSON.stringify(
   2
 );
 
-const API_EXAMPLE = `// SchemaCheck API — what Google's Rich Results Test can't do
-const result = await fetch(
-  \`https://schemacheck.dev/api/v1/validate?url=\${encodeURIComponent(url)}&access_key=\${API_KEY}\`
-).then(r => r.json());
-
-// Structured, machine-readable response
-console.log(result.summary.score);              // 0-100 health score
-console.log(result.summary.rich_result_eligible); // true / false
-console.log(result.schemas[0].errors);           // per-property error list
-console.log(result.schemas[0].errors[0].fix);    // actionable fix suggestion`;
-
 const comparison = [
   {
-    feature: "REST API",
+    feature: "No-code web checker",
     schemacheck: "✓",
-    google: "—",
-    note: "SchemaCheck is API-first. Google's tool is web-only.",
+    google: "✓",
+    note: "Both offer a no-code URL checker for quick one-off validation.",
   },
   {
-    feature: "GET + POST requests",
+    feature: "URL monitoring",
     schemacheck: "✓",
     google: "—",
-    note: "Validate a URL (GET) or raw JSON-LD (POST).",
-  },
-  {
-    feature: "Raw JSON-LD input",
-    schemacheck: "✓",
-    google: "—",
-    note: "Validate schema before publishing — no live page needed.",
+    note: "SchemaCheck monitors URLs continuously. Google's tool is manual-only.",
   },
   {
     feature: "Bulk / batch validation",
     schemacheck: "✓",
     google: "—",
-    note: "Validate thousands of URLs programmatically.",
+    note: "Validate thousands of URLs programmatically. Not possible with Google's tool.",
+  },
+  {
+    feature: "REST API",
+    schemacheck: "✓",
+    google: "—",
+    note: "SchemaCheck is API-first. Google's tool is web-only.",
   },
   {
     feature: "CI / CD integration",
@@ -65,10 +53,10 @@ const comparison = [
     note: "Block deploys with schema errors via GitHub Actions.",
   },
   {
-    feature: "AI agent friendly",
+    feature: "Validate before publish",
     schemacheck: "✓",
     google: "—",
-    note: "JSON out — designed for LLM tool use.",
+    note: "Submit raw JSON-LD — no live page needed.",
   },
   {
     feature: "Fix suggestions",
@@ -77,34 +65,34 @@ const comparison = [
     note: "Each error includes a specific fix with documentation link.",
   },
   {
+    feature: "Rich result eligibility",
+    schemacheck: "✓",
+    google: "✓",
+    note: "Both check eligibility. SchemaCheck returns a machine-readable result.",
+  },
+  {
     feature: "Deprecation warnings",
     schemacheck: "✓",
     google: "Partial",
-    note: "SchemaCheck flags HowTo and restricted FAQPage schemas.",
-  },
-  {
-    feature: "Response caching",
-    schemacheck: "✓",
-    google: "—",
-    note: "Re-validate the same URL for free within 1 hour.",
+    note: "SchemaCheck flags HowTo and restricted FAQPage schemas explicitly.",
   },
   {
     feature: "0–100 health score",
     schemacheck: "✓",
     google: "—",
-    note: "Machine-readable quality score for monitoring.",
+    note: "Machine-readable quality score for tracking and monitoring.",
   },
   {
-    feature: "Google's official rendering",
-    schemacheck: "—",
-    google: "✓",
-    note: "Google uses Googlebot's actual renderer — the ground truth.",
+    feature: "Free tier",
+    schemacheck: "✓ 100/mo",
+    google: "✓ Unlimited",
+    note: "Google's tool is free for manual use. SchemaCheck free tier covers automation.",
   },
   {
     feature: "JavaScript-rendered schemas",
     schemacheck: "Partial",
     google: "✓",
-    note: "SchemaCheck fetches server-side HTML; Google renders JS.",
+    note: "SchemaCheck fetches server-side HTML. Google renders JS via Googlebot.",
   },
 ];
 
@@ -121,7 +109,7 @@ export default function GoogleRichResultsAlternativePage() {
         <nav className="flex items-center gap-2 text-xs text-gray-500 mb-8">
           <Link href="/" className="hover:text-gray-400">SchemaCheck</Link>
           <span>/</span>
-          <Link href="/" className="hover:text-gray-400">Comparisons</Link>
+          <Link href="/comparisons" className="hover:text-gray-400">Comparisons</Link>
           <span>/</span>
           <span className="text-gray-400">vs Google Rich Results Test</span>
         </nav>
@@ -132,19 +120,19 @@ export default function GoogleRichResultsAlternativePage() {
             Comparison
           </p>
           <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
-            Best Rich Results Test Alternative
+            The Best Google Rich Results Test Alternative
           </h1>
           <p className="text-gray-400 text-xl leading-relaxed">
-            Google&apos;s Rich Results Test is the industry standard for manual schema validation.
-            It has no API, no bulk mode, and no CI path. SchemaCheck is what you use when you
-            need to automate what Google&apos;s tool can only do by hand.
+            Google&apos;s Rich Results Test is the right tool for checking one URL manually.
+            SchemaCheck is for when you need to validate at scale, programmatically, or
+            continuously — with a REST API, batch mode, and monitoring built in.
           </p>
           <div className="flex flex-wrap gap-3 mt-6">
             <Link
               href="/docs/getting-started"
               className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors"
             >
-              Get free API key →
+              Start for free →
             </Link>
             <Link
               href="/docs/options"
@@ -155,23 +143,25 @@ export default function GoogleRichResultsAlternativePage() {
           </div>
         </div>
 
-        {/* The core limitation */}
+        {/* When Google's tool isn't enough */}
         <section className="mb-12">
           <h2 className="text-2xl font-semibold text-white mb-4">
-            Why Google&apos;s Rich Results Test isn&apos;t enough for developers
+            When Google&apos;s tool stops being enough
           </h2>
           <p className="text-gray-400 mb-4">
-            Unlike the Google rich snippet tool, SchemaCheck exposes a REST API — so you can automate what the Rich Results Test can only do by hand. The Rich Results Test gives you a pass/fail result for a single URL in a browser tab.
-            That&apos;s exactly what you need for a pre-launch sanity check. It&apos;s not what
-            you need for any of the following:
+            Google&apos;s Rich Results Test is excellent for what it does: check a single URL in a
+            browser and see whether Google can render rich results. It&apos;s the industry standard
+            for one-off debugging. But it has a hard ceiling. It can&apos;t be automated, can&apos;t
+            be called from a script, and can&apos;t watch your pages over time. If any of the
+            following sounds familiar, you need something more:
           </p>
           <div className="space-y-2">
             {[
-              "Auditing 50,000 product pages for missing schema fields",
-              "Blocking a deploy when a developer accidentally removes an Article's datePublished",
-              "Giving an AI agent a way to programmatically check structured data",
-              "Validating schema in a staging environment before the page exists publicly",
-              "Monitoring rich result eligibility across your content archive",
+              "You have hundreds or thousands of pages to audit and can't check them one by one",
+              "A developer removed a required schema field and it shipped to production undetected",
+              "You want to validate schema on staging before the page is live",
+              "You need schema validation in your CI pipeline or deploy workflow",
+              "You want to know when a page's rich result eligibility changes — without manually checking",
             ].map((item) => (
               <div key={item} className="flex gap-3 p-3 rounded-lg bg-[#111118] border border-gray-800/60">
                 <span className="text-red-500 text-sm shrink-0 mt-0.5 font-bold">✗</span>
@@ -183,7 +173,9 @@ export default function GoogleRichResultsAlternativePage() {
 
         {/* Feature comparison table */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-white mb-4">Rich Results Test vs Google Search Console</h2>
+          <h2 className="text-2xl font-semibold text-white mb-4">
+            SchemaCheck vs Google Rich Results Test
+          </h2>
           <div className="overflow-x-auto rounded-xl border border-gray-800">
             <table className="w-full text-sm">
               <thead>
@@ -206,7 +198,7 @@ export default function GoogleRichResultsAlternativePage() {
                     <td className="px-4 py-3 text-center">
                       <span
                         className={`text-base font-semibold ${
-                          row.schemacheck === "✓"
+                          row.schemacheck === "✓" || row.schemacheck === "✓ 100/mo"
                             ? "text-indigo-400"
                             : row.schemacheck === "Partial"
                             ? "text-amber-500"
@@ -219,7 +211,7 @@ export default function GoogleRichResultsAlternativePage() {
                     <td className="px-4 py-3 text-center">
                       <span
                         className={`text-base font-semibold ${
-                          row.google === "✓"
+                          row.google === "✓" || row.google === "✓ Unlimited"
                             ? "text-green-500"
                             : row.google === "Partial"
                             ? "text-amber-500"
@@ -236,14 +228,47 @@ export default function GoogleRichResultsAlternativePage() {
           </div>
         </section>
 
-        {/* Code example */}
+        {/* Three differentiators */}
         <section className="mb-12">
-          <h2 className="text-2xl font-semibold text-white mb-2">What the API looks like</h2>
-          <p className="text-gray-400 mb-4">
-            One GET request. Structured JSON back. Everything you need to automate what
-            Google&apos;s tool does manually.
-          </p>
-          <CodeBlock language="javascript" code={API_EXAMPLE} />
+          <h2 className="text-2xl font-semibold text-white mb-6">
+            What SchemaCheck adds on top
+          </h2>
+          <div className="space-y-4">
+            <div className="p-5 rounded-xl border border-gray-800 bg-[#111118]">
+              <h3 className="text-base font-semibold text-white mb-2">
+                Validate at scale, not one URL at a time
+              </h3>
+              <p className="text-sm text-gray-400">
+                SchemaCheck&apos;s REST API lets you validate any number of URLs in a loop — from
+                a sitemap, a product feed, or a database export. Run a nightly audit across
+                your entire content archive and surface pages that have dropped out of rich
+                result eligibility, without opening a browser.
+              </p>
+            </div>
+            <div className="p-5 rounded-xl border border-gray-800 bg-[#111118]">
+              <h3 className="text-base font-semibold text-white mb-2">
+                Catch schema regressions before they deploy
+              </h3>
+              <p className="text-sm text-gray-400">
+                Add SchemaCheck to your GitHub Actions workflow and block deploys when schema
+                errors are introduced. Google&apos;s tool requires a live page and a browser — it
+                has no way to be called from a terminal or CI pipeline. SchemaCheck also
+                accepts raw JSON-LD, so you can validate schemas that don&apos;t yet exist on a
+                live URL.
+              </p>
+            </div>
+            <div className="p-5 rounded-xl border border-gray-800 bg-[#111118]">
+              <h3 className="text-base font-semibold text-white mb-2">
+                Monitor pages continuously, not just on demand
+              </h3>
+              <p className="text-sm text-gray-400">
+                Google&apos;s tool only checks when you open it. SchemaCheck can re-validate URLs
+                on a schedule and alert you when a page&apos;s schema health score drops or its
+                rich result eligibility changes — useful for CMS-driven sites where a template
+                change can silently break structured data across thousands of pages.
+              </p>
+            </div>
+          </div>
         </section>
 
         {/* When to use each */}
@@ -255,10 +280,10 @@ export default function GoogleRichResultsAlternativePage() {
                 Use <span className="text-green-400">Google Rich Results Test</span> when:
               </p>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li className="flex gap-2"><span className="text-green-400 shrink-0">→</span>Verifying a specific page before launch</li>
-                <li className="flex gap-2"><span className="text-green-400 shrink-0">→</span>Debugging a rich result that Google is not showing</li>
-                <li className="flex gap-2"><span className="text-green-400 shrink-0">→</span>Checking JavaScript-rendered schemas (Google executes JS)</li>
-                <li className="flex gap-2"><span className="text-green-400 shrink-0">→</span>You need Google&apos;s ground-truth render result</li>
+                <li className="flex gap-2"><span className="text-green-400 shrink-0">→</span>Verifying a single page before launch</li>
+                <li className="flex gap-2"><span className="text-green-400 shrink-0">→</span>Debugging a rich result that isn&apos;t showing in Search</li>
+                <li className="flex gap-2"><span className="text-green-400 shrink-0">→</span>Checking pages that rely on JavaScript rendering</li>
+                <li className="flex gap-2"><span className="text-green-400 shrink-0">→</span>You need Google&apos;s ground-truth Googlebot render</li>
               </ul>
             </div>
             <div className="p-5 rounded-xl border border-indigo-800/60 bg-indigo-950/10">
@@ -269,8 +294,8 @@ export default function GoogleRichResultsAlternativePage() {
                 <li className="flex gap-2"><span className="text-indigo-400 shrink-0">→</span>Validating hundreds or thousands of URLs</li>
                 <li className="flex gap-2"><span className="text-indigo-400 shrink-0">→</span>Blocking deploys with schema regressions in CI</li>
                 <li className="flex gap-2"><span className="text-indigo-400 shrink-0">→</span>Validating raw JSON-LD before publishing</li>
-                <li className="flex gap-2"><span className="text-indigo-400 shrink-0">→</span>Building AI agents that audit structured data</li>
-                <li className="flex gap-2"><span className="text-indigo-400 shrink-0">→</span>Running nightly monitors across your content archive</li>
+                <li className="flex gap-2"><span className="text-indigo-400 shrink-0">→</span>Monitoring pages continuously for schema changes</li>
+                <li className="flex gap-2"><span className="text-indigo-400 shrink-0">→</span>Building tools or agents that need a schema API</li>
               </ul>
             </div>
           </div>
@@ -278,9 +303,11 @@ export default function GoogleRichResultsAlternativePage() {
 
         {/* CTA */}
         <section className="p-6 rounded-2xl border border-indigo-800/60 bg-indigo-950/20 mb-12">
-          <h2 className="text-xl font-semibold text-white mb-2">Automate what Google&apos;s tool can only do manually</h2>
+          <h2 className="text-xl font-semibold text-white mb-2">
+            Start validating for free
+          </h2>
           <p className="text-gray-400 text-sm mb-4">
-            Free plan — 100 validations/month. API key in 30 seconds. No credit card.
+            100 validations/month, no credit card required. API key in under a minute.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -303,10 +330,10 @@ export default function GoogleRichResultsAlternativePage() {
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">Related</h2>
           <div className="grid sm:grid-cols-2 gap-3">
             {[
-              { href: "/use-cases/seo-audit", label: "SEO Audits", desc: "Bulk validate sitemaps and monitor at scale" },
-              { href: "/use-cases/ai-agents", label: "AI Agents", desc: "Let LLMs validate structured data programmatically" },
-              { href: "/comparisons/schema-markup-validator-alternative", label: "vs Schema Markup Validator", desc: "Compare with other web-based validators" },
-              { href: "/docs/options", label: "Response reference", desc: "Full API response object documentation" },
+              { href: "/comparisons/schema-markup-validator-alternative", label: "vs Schema Markup Validators", desc: "Compare with schema.org validator and other web-based tools" },
+              { href: "/comparisons/screaming-frog-schema-validation", label: "vs Screaming Frog", desc: "Schema validation beyond periodic site crawls" },
+              { href: "/comparisons/ahrefs-schema-validation", label: "vs Ahrefs", desc: "Purpose-built schema depth vs. broad site audits" },
+              { href: "/docs/options", label: "API reference", desc: "Full response object and parameter documentation" },
             ].map((link) => (
               <Link
                 key={link.href}
