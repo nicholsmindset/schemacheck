@@ -53,23 +53,6 @@ function CopyIcon({ done }: { done: boolean }) {
   );
 }
 
-// ─── JsonHighlight ───────────────────────────────────────────────────────────
-function JsonHighlight({ code }: { code: string }) {
-  return (
-    <>
-      {code.split("\n").map((line, i) => {
-        const h = line
-          .replace(/("[@\w-]+")\s*:/g, (_, k) => `<span style="color:#a5b4fc">${k}</span>:`)
-          .replace(/:\s*("(?:[^"\\]|\\.)*")/g, (_, v) => `: <span style="color:#fcd34d">${v}</span>`)
-          .replace(/:\s*(true|false)/g, (_, v) => `: <span style="color:#34d399">${v}</span>`)
-          .replace(/:\s*(\d+(?:\.\d+)?)\b/g, (_, v) => `: <span style="color:#67e8f9">${v}</span>`)
-          .replace(/\[\.\.\.\]/g, '<span style="color:#4b5563">[...]</span>');
-        return <div key={i} style={{ color: "#d1d5db" }} dangerouslySetInnerHTML={{ __html: h }} />;
-      })}
-    </>
-  );
-}
-
 // ─── Nav ────────────────────────────────────────────────────────────────────
 function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false);

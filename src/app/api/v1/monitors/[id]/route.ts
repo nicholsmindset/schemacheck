@@ -76,7 +76,6 @@ export const PATCH = withAuth(async (request, { apiKey }) => {
   }
 
   const allowed = ["frequency", "alert_on", "paused"] as const;
-  type PatchKey = typeof allowed[number];
   const updates: Record<string, unknown> = {};
 
   for (const key of allowed) {

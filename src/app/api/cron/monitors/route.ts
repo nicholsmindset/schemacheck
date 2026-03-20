@@ -15,7 +15,6 @@ import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { validate } from "@/lib/validator/index";
 import {
-  computeStatus,
   buildStoredResult,
   detectChanges,
   shouldSendAlert,
@@ -29,7 +28,6 @@ export const maxDuration = 60;
 
 const BATCH_SIZE      = 20;
 const CRON_SECRET     = process.env.CRON_SECRET;
-const APP_URL         = process.env.NEXT_PUBLIC_APP_URL ?? "https://www.schemacheck.dev";
 
 // ============================================================
 // Auth guard
@@ -140,13 +138,10 @@ async function checkMonitor(
 ): Promise<number> {
   const checkedAt = new Date().toISOString();
   let result: StoredResult;
-  let checkFailed = false;
-
   try {
     const validation = await validate({ url: monitor.url });
     result = buildStoredResult(monitor.url, validation.schemas, validation.summary);
   } catch (err) {
-    checkFailed = true;
     console.error(`[cron/monitors] Validation failed for ${monitor.url}:`, err);
 
     // Record a check_failed event and update the monitor's last_checked_at

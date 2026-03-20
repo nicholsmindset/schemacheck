@@ -77,7 +77,7 @@ function Nav() {
         <div className="hidden sm:flex items-center gap-6 text-sm text-gray-400">
           <Link href="/docs" className="hover:text-white transition-colors">Docs</Link>
           <Link href="/check" className="text-white transition-colors">Check a URL</Link>
-          <a href="/#pricing" className="hover:text-white transition-colors">Pricing</a>
+          <Link href="/#pricing" className="hover:text-white transition-colors">Pricing</Link>
           <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
           <Link href="/schema-types" className="hover:text-white transition-colors">Schema Types</Link>
         </div>
@@ -89,12 +89,12 @@ function Nav() {
           >
             Sign in
           </Link>
-          <a
+          <Link
             href="/#signup"
             className="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-1.5 rounded-lg transition-colors font-medium"
           >
             Get API Key →
-          </a>
+          </Link>
           {/* Hamburger */}
           <button
             onClick={() => setMobileOpen((o) => !o)}
@@ -113,7 +113,7 @@ function Nav() {
         <div className={cn("sm:hidden border-t px-4 py-4 space-y-3", BORDER, "bg-[#0a0a0f]")}>
           <Link href="/docs" className="block text-sm text-gray-400 hover:text-white transition-colors py-1">Docs</Link>
           <Link href="/check" className="block text-sm text-white transition-colors py-1">Check a URL</Link>
-          <a href="/#pricing" className="block text-sm text-gray-400 hover:text-white transition-colors py-1" onClick={() => setMobileOpen(false)}>Pricing</a>
+          <Link href="/#pricing" className="block text-sm text-gray-400 hover:text-white transition-colors py-1" onClick={() => setMobileOpen(false)}>Pricing</Link>
           <Link href="/blog" className="block text-sm text-gray-400 hover:text-white transition-colors py-1">Blog</Link>
           <Link href="/schema-types" className="block text-sm text-gray-400 hover:text-white transition-colors py-1">Schema Types</Link>
           <Link href="/dashboard/login" className="block text-sm text-gray-400 hover:text-white transition-colors py-1">Sign in</Link>
@@ -394,12 +394,12 @@ function SoftGateModal({ onDismiss }: { onDismiss: () => void }) {
           </p>
 
           <div className="flex flex-col gap-3">
-            <a
+            <Link
               href="/#signup"
               className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-indigo-900/30"
             >
               Sign Up Free →
-            </a>
+            </Link>
             <button
               onClick={onDismiss}
               className="w-full text-sm text-gray-600 hover:text-gray-400 transition-colors py-1"
@@ -433,8 +433,7 @@ function CheckPageContent() {
       hasAutoSubmitted.current = true;
       runCheck(initialUrl);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialUrl]);
+  }, [initialUrl]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function runCheck(targetUrl: string) {
     const trimmed = targetUrl.trim();
@@ -509,7 +508,6 @@ function CheckPageContent() {
     runCheck(url);
   }
 
-  const summary = result?.summary;
   const noSchemas = result && result.schemas_found === 0;
 
   return (
@@ -717,12 +715,12 @@ function CheckPageContent() {
                 Get a free API key — 100 validations/month, no credit card required.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <a
+                <Link
                   href="/#signup"
                   className="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-indigo-900/30"
                 >
                   Get Free API Key →
-                </a>
+                </Link>
                 <Link
                   href="/docs"
                   className={cn("text-sm border px-5 py-2.5 rounded-xl font-medium transition-colors text-gray-400 hover:text-white hover:border-gray-600", BORDER)}
