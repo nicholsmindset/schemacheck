@@ -433,7 +433,7 @@ function CheckPageContent() {
       hasAutoSubmitted.current = true;
       runCheck(initialUrl);
     }
-  }, [initialUrl]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [initialUrl]);
 
   async function runCheck(targetUrl: string) {
     const trimmed = targetUrl.trim();
